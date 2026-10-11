@@ -133,7 +133,7 @@
 <!--__FOOTER__-->
 
 <script>
-// ---- 言語ごとの設定（generator/locales/<locale>.js を埋め込む） ----
+// ---- 言語の設定と文字種のルール（generator/locales/<locale>.js と generator/scripts/<script>.js を埋め込む） ----
 /*__LOCALE__*/
 
 // ---- パズル ----
@@ -287,6 +287,8 @@ function onCellClick(r, c) {
 function enter(text) {
   if (!selected) return setMessage('先にカギを選んでください。');
   const letters = [...normalize(text)];
+  // 入力はあるのに、マスに入る文字が 1 つもない（アルファベットの問題にかなを入れた、など）
+  if (text.trim() && !letters.length) return setMessage(`入力した文字はマスに入りません。${inputHint}`);
   const invalid = letters.filter((ch) => !isValidAnswer(ch));
   if (invalid.length) return setMessage(`使えない文字があります: ${[...new Set(invalid)].join(' ')}`);
   const target = selected;
@@ -367,8 +369,8 @@ function detailOf(w) {
     '<p class="row"><span class="lbl">答え</span><span><span class="ans"></span><span class="reading"></span><span class="tag" hidden></span></span></p>' +
     '<p class="row"><span class="lbl">解説</span><span class="body"></span></p>';
   div.querySelector('.ans').textContent = w.display;
-  // 漢字などで書く答えには、マスに入れた読みを添える
-  if (!isValidAnswer(normalize(w.display))) div.querySelector('.reading').textContent = `（${w.answer}）`;
+  // 表記とマスの文字がちがう答え（漢字の語、C# など）には、マスに入れた文字を添える
+  if (normalize(w.display) !== w.answer) div.querySelector('.reading').textContent = `（${w.answer}）`;
   // テーマ外の「つなぎの言葉」には印をつける
   if (!mainThemes.includes(w.theme)) {
     const tag = div.querySelector('.tag');
@@ -457,6 +459,8 @@ for (const text of [...PUZZLE.rules, ...rules]) {
   li.textContent = text;
   rulesEl.append(li);
 }
+document.getElementById('answer').placeholder = inputPlaceholder;
+if (script === 'latin') document.getElementById('answer').setAttribute('autocapitalize', 'characters');
 document.getElementById('form').addEventListener('submit', (e) => {
   e.preventDefault();
   enter(document.getElementById('answer').value);

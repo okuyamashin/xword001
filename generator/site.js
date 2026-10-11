@@ -102,30 +102,22 @@ function escapeHtml(text) {
   return String(text).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 }
 
-// 単語帳の五十音の行
-const GYOU = [
-  ['ア', 'アイウエオ'], ['カ', 'カキクケコガギグゲゴ'], ['サ', 'サシスセソザジズゼゾ'], ['タ', 'タチツテトダヂヅデド'],
-  ['ナ', 'ナニヌネノ'], ['ハ', 'ハヒフヘホバビブベボパピプペポ'], ['マ', 'マミムメモ'], ['ヤ', 'ヤユヨ'],
-  ['ラ', 'ラリルレロ'], ['ワ', 'ワヲン'],
-];
-function gyouOf(answer) {
-  return GYOU.find(([, chars]) => chars.includes(answer[0]))?.[0] ?? 'ワ';
-}
 const LEVELS = { 1: 'やさしい', 2: 'ふつう', 3: 'むずかしい' };
 
 // ジャンルの単語帳（言葉・読み・難しさ・カギ・解説）。theme: テーマファイル。puzzles: このジャンルのパズル。image: 一覧用の小さい絵。jsonName: ダウンロード用の JSON
-export function renderWordsHtml({ template, parts, site, theme, puzzles, image, jsonName, isValidAnswer, normalize }) {
+// lang: 言語設定と文字種を合わせたもの（scripts/index.js の langFor）。見出しは文字種ごと（五十音の行・頭文字）
+export function renderWordsHtml({ template, parts, site, theme, puzzles, image, jsonName, lang }) {
   const words = [...theme.words].sort((a, b) => a.answer.localeCompare(b.answer, 'ja') || a.display.localeCompare(b.display, 'ja'));
-  const groups = GYOU.map(([g]) => [g, words.filter((w) => gyouOf(w.answer) === g)]).filter(([, ws]) => ws.length);
+  const groups = lang.groups.map((g) => [g, words.filter((w) => lang.groupOf(w.answer) === g)]).filter(([, ws]) => ws.length);
   const entry = (w) => {
-    // 漢字などで書く語には、マスに入る読みを添える
-    const reading = isValidAnswer(normalize(w.display)) ? '' : `<span class="reading">${escapeHtml(w.answer)}</span>`;
+    // 表記とマスの文字がちがう語（漢字の語、C# など）には、マスに入る文字を添える
+    const reading = lang.normalize(w.display) === w.answer ? '' : `<span class="reading">${escapeHtml(w.answer)}</span>`;
     const level = w.level ? `<span class="level">${LEVELS[w.level]}</span>` : '';
     const row = (label, text) => (text ? `\n        <p class="row"><span class="lbl">${label}</span><span class="text">${escapeHtml(text)}</span></p>` : '');
     return `      <li class="entry"><p class="word">${escapeHtml(w.display)}${reading}${level}</p>${row('カギ', w.clue)}${row('解説', w.explanation)}</li>`;
   };
   const entries = groups
-    .map(([g, ws]) => `  <section class="group">\n    <h2 class="gyou" id="gyou-${g}">${g}行</h2>\n    <ul class="entries">\n${ws.map(entry).join('\n')}\n    </ul>\n  </section>`)
+    .map(([g, ws]) => `  <section class="group">\n    <h2 class="gyou" id="gyou-${g}">${lang.groupTitle(g)}</h2>\n    <ul class="entries">\n${ws.map(entry).join('\n')}\n    </ul>\n  </section>`)
     .join('\n');
   const kana = `    <nav class="kana">${groups.map(([g]) => `<a href="#gyou-${g}">${g}</a>`).join('')}</nav>`;
   const rounds = puzzles.length

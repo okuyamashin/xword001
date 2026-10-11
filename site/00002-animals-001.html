@@ -201,39 +201,14 @@
 
 
 <script>
-// ---- 言語ごとの設定（generator/locales/<locale>.js を埋め込む） ----
-// 日本語の文字ルール（全体のルール）
-
-const SMALL = Object.fromEntries(
-  [...'ァィゥェォッャュョヮヵヶ'].map((c, i) => [c, 'アイウエオツヤユヨワカケ'[i]]),
-);
-const VU = [['ヴァ', 'バ'], ['ヴィ', 'ビ'], ['ヴェ', 'ベ'], ['ヴォ', 'ボ'], ['ヴ', 'ブ']];
+// ---- 言語の設定と文字種のルール（generator/locales/<locale>.js と generator/scripts/<script>.js を埋め込む） ----
+// 日本語の言語設定（画面の文言、カギと解説の標準の指示）。
+// 答えの文字のルールは文字種ごとに generator/scripts/ にある。
+// このファイルはブラウザでもそのまま動かす（パズルのページに埋め込む）。import を使わないこと。
 
 const locale = 'ja';
 
 const labels = { across: 'ヨコ', down: 'タテ' };
-
-const rules = [
-  '答えはカタカナで、1マスに1文字入ります（ひらがなで入力してもかまいません）',
-  '小さい文字は大きい文字で入れます（例: シャツ → シヤツ）',
-  '濁点・半濁点のついた文字は1文字です（例: ガ は1マス）',
-  '「ヴ」は使わず、バ行で表します（例: ヴァイオリン → バイオリン）',
-  '長音「ー」は1文字です',
-];
-
-// 入力やリストの文字列を、マスに入る形にそろえる
-function normalize(text) {
-  let s = [...text.normalize('NFKC')]
-    .map((c) => (c >= 'ぁ' && c <= 'ゖ' ? String.fromCodePoint(c.codePointAt(0) + 0x60) : c))
-    .join('');
-  for (const [from, to] of VU) s = s.replaceAll(from, to);
-  s = [...s].map((c) => SMALL[c] ?? c).join('');
-  return s.replace(/[・\s]/g, '');
-}
-
-function isValidAnswer(answer) {
-  return /^[ア-ンー]+$/.test(answer) && !/[ァィゥェォッャュョヮヵヶヴ]/.test(answer);
-}
 
 // ヒント生成の標準設定（テーマファイルの clue で上書きできる）
 const clueDefaults = {
@@ -262,12 +237,68 @@ const explanationDefaults = {
 // 解説の欄で、テーマ外の「つなぎの言葉」につける印
 const fillerLabel = 'つなぎの言葉';
 
-// カギに答えが漏れていないかを調べる
+// 文字種: かな（カタカナ）。答えのマスに入る文字のルール
+// このファイルはブラウザでもそのまま動かす（パズルのページに埋め込む）。import を使わないこと。
+
+const SMALL = Object.fromEntries(
+  [...'ァィゥェォッャュョヮヵヶ'].map((c, i) => [c, 'アイウエオツヤユヨワカケ'[i]]),
+);
+const VU = [['ヴァ', 'バ'], ['ヴィ', 'ビ'], ['ヴェ', 'ベ'], ['ヴォ', 'ボ'], ['ヴ', 'ブ']];
+
+const script = 'kana';
+
+// AI への依頼などで、answer を何と呼ぶか
+const answerLabel = '読み';
+
+// つなぎの言葉に使う汎用リスト
+const fillerTheme = 'general';
+
+const inputPlaceholder = '答えを入力（ひらがな・カタカナ）';
+const inputHint = 'ひらがなかカタカナで入力してください。';
+
+// 答えの書き方（ページの「答えの書き方」に出す）
+const rules = [
+  '答えはカタカナで、1マスに1文字入ります（ひらがなで入力してもかまいません）',
+  '小さい文字は大きい文字で入れます（例: シャツ → シヤツ）',
+  '濁点・半濁点のついた文字は1文字です（例: ガ は1マス）',
+  '「ヴ」は使わず、バ行で表します（例: ヴァイオリン → バイオリン）',
+  '長音「ー」は1文字です',
+];
+
+// 入力やリストの文字列を、マスに入る形にそろえる
+function normalize(text) {
+  let s = [...text.normalize('NFKC')]
+    .map((c) => (c >= 'ぁ' && c <= 'ゖ' ? String.fromCodePoint(c.codePointAt(0) + 0x60) : c))
+    .join('');
+  for (const [from, to] of VU) s = s.replaceAll(from, to);
+  s = [...s].map((c) => SMALL[c] ?? c).join('');
+  return s.replace(/[・\s]/g, '');
+}
+
+function isValidAnswer(answer) {
+  return /^[ア-ンー]+$/.test(answer) && !/[ァィゥェォッャュョヮヵヶヴ]/.test(answer);
+}
+
+// カギに答えが漏れていないかを調べる（ひらがな・小さい文字で書いてあっても見つける）
 function leaksAnswer(clue, word) {
   const text = normalize(clue);
   if (text.includes(word.answer)) return `答え「${word.answer}」が含まれている`;
   if (word.display && clue.includes(word.display)) return `答えの表記「${word.display}」が含まれている`;
   return null;
+}
+
+// 単語帳の見出し（五十音の行）
+const GYOU = [
+  ['ア', 'アイウエオ'], ['カ', 'カキクケコガギグゲゴ'], ['サ', 'サシスセソザジズゼゾ'], ['タ', 'タチツテトダヂヅデド'],
+  ['ナ', 'ナニヌネノ'], ['ハ', 'ハヒフヘホバビブベボパピプペポ'], ['マ', 'マミムメモ'], ['ヤ', 'ヤユヨ'],
+  ['ラ', 'ラリルレロ'], ['ワ', 'ワヲン'],
+];
+const groups = GYOU.map(([g]) => g);
+function groupOf(answer) {
+  return GYOU.find(([, chars]) => chars.includes(answer[0]))?.[0] ?? 'ワ';
+}
+function groupTitle(group) {
+  return `${group}行`;
 }
 
 
@@ -422,6 +453,8 @@ function onCellClick(r, c) {
 function enter(text) {
   if (!selected) return setMessage('先にカギを選んでください。');
   const letters = [...normalize(text)];
+  // 入力はあるのに、マスに入る文字が 1 つもない（アルファベットの問題にかなを入れた、など）
+  if (text.trim() && !letters.length) return setMessage(`入力した文字はマスに入りません。${inputHint}`);
   const invalid = letters.filter((ch) => !isValidAnswer(ch));
   if (invalid.length) return setMessage(`使えない文字があります: ${[...new Set(invalid)].join(' ')}`);
   const target = selected;
@@ -502,8 +535,8 @@ function detailOf(w) {
     '<p class="row"><span class="lbl">答え</span><span><span class="ans"></span><span class="reading"></span><span class="tag" hidden></span></span></p>' +
     '<p class="row"><span class="lbl">解説</span><span class="body"></span></p>';
   div.querySelector('.ans').textContent = w.display;
-  // 漢字などで書く答えには、マスに入れた読みを添える
-  if (!isValidAnswer(normalize(w.display))) div.querySelector('.reading').textContent = `（${w.answer}）`;
+  // 表記とマスの文字がちがう答え（漢字の語、C# など）には、マスに入れた文字を添える
+  if (normalize(w.display) !== w.answer) div.querySelector('.reading').textContent = `（${w.answer}）`;
   // テーマ外の「つなぎの言葉」には印をつける
   if (!mainThemes.includes(w.theme)) {
     const tag = div.querySelector('.tag');
@@ -592,6 +625,8 @@ for (const text of [...PUZZLE.rules, ...rules]) {
   li.textContent = text;
   rulesEl.append(li);
 }
+document.getElementById('answer').placeholder = inputPlaceholder;
+if (script === 'latin') document.getElementById('answer').setAttribute('autocapitalize', 'characters');
 document.getElementById('form').addEventListener('submit', (e) => {
   e.preventDefault();
   enter(document.getElementById('answer').value);

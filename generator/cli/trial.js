@@ -3,7 +3,7 @@
 
 import { parseArgs } from 'node:util';
 import { buildPuzzle } from '../build.js';
-import { loadThemeFile } from '../lib/words.js';
+import { loadThemeFile, loadFillerFile } from '../lib/words.js';
 
 const { values } = parseArgs({
   options: {
@@ -14,7 +14,8 @@ const { values } = parseArgs({
 });
 
 const themeFiles = await Promise.all(values.theme.split('+').map((t) => loadThemeFile(values.locale, t)));
-const generalFile = await loadThemeFile(values.locale, 'general');
+// つなぎの言葉は、テーマと同じ文字種の汎用リスト（なければ使わない）
+const generalFile = await loadFillerFile(values.locale, themeFiles[0].script);
 const days = Number(values.days);
 const tally = { words: [], general: [], crossings: [], filled: [], failed: 0 };
 const start = new Date('2026-10-12');

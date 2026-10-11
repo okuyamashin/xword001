@@ -6,7 +6,7 @@ import { writeFile, mkdir, readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 import { parseArgs } from 'node:util';
 import { buildPuzzle, nextNumbers, genreOf } from '../build.js';
-import { loadThemeFile, ROOT } from '../lib/words.js';
+import { loadThemeFile, loadFillerFile, ROOT } from '../lib/words.js';
 
 const { values } = parseArgs({
   options: {
@@ -18,7 +18,8 @@ const { values } = parseArgs({
 });
 
 const themeFiles = await Promise.all(values.theme.split('+').map((t) => loadThemeFile(values.locale, t)));
-const generalFile = await loadThemeFile(values.locale, 'general');
+// つなぎの言葉は、テーマと同じ文字種の汎用リスト（なければ使わない）
+const generalFile = await loadFillerFile(values.locale, themeFiles[0].script);
 // 通し番号とジャンル内の連番（puzzles/ にある既存のクロスワードから決める）
 const dir = path.join(ROOT, 'puzzles');
 await mkdir(dir, { recursive: true });

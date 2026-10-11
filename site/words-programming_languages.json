@@ -1,0 +1,510 @@
+{
+  "locale": "ja",
+  "theme": "programming_languages",
+  "title": "プログラミング言語",
+  "subtitle": "Programming Languages",
+  "description": "Python、Java、COBOL、Haskell……。昔からある言語から新しい言語まで、プログラミング言語の名前をアルファベットで埋めていきましょう。",
+  "rules": [
+    "答えはプログラミング言語の名前です。マークアップ言語・シェル・ハードウェア記述言語なども含みます",
+    "記号は読み方の英語で書きます（例: C# → CSHARP、C++ → CPLUSPLUS）"
+  ],
+  "words": [
+    {
+      "answer": "PYTHON",
+      "display": "Python",
+      "level": 1,
+      "clue": "インデントでまとまりを表す、AI分野でも人気の言語",
+      "explanation": "1991年にグイド・ヴァンロッサムが公開しました。名前はヘビではなく、イギリスのコメディ番組『空飛ぶモンティ・パイソン』に由来します。"
+    },
+    {
+      "answer": "JAVA",
+      "display": "Java",
+      "level": 1,
+      "clue": "「一度書けばどこでも動く」を掲げたサン・マイクロシステムズの言語",
+      "explanation": "1995年に公開されました。名前はコーヒー豆の産地として知られるジャワ島にちなみ、ロゴもコーヒーカップです。"
+    },
+    {
+      "answer": "RUBY",
+      "display": "Ruby",
+      "level": 1,
+      "clue": "まつもとゆきひろが開発した、日本生まれの言語",
+      "explanation": "1995年に公開されました。先輩格のPerl（真珠は6月の誕生石）を意識し、7月の誕生石の名前を付けたといわれます。"
+    },
+    {
+      "answer": "RUST",
+      "display": "Rust",
+      "level": 2,
+      "clue": "所有権の仕組みでメモリの安全を守るシステム言語",
+      "explanation": "Mozillaの研究から生まれ、2015年に1.0が公開されました。名前は、植物に付く「さび病」の菌にちなむとされます。"
+    },
+    {
+      "answer": "GO",
+      "display": "Go",
+      "level": 2,
+      "clue": "Googleで開発された、並行処理が得意なシンプルな言語",
+      "explanation": "2009年に公開されました。マスコットはホリネズミ（ゴーファー）です。設計者にはUNIXの生みの親の一人、ケン・トンプソンもいます。"
+    },
+    {
+      "answer": "SWIFT",
+      "display": "Swift",
+      "level": 1,
+      "clue": "Appleが2014年に発表した、iPhoneアプリ開発の主力言語",
+      "explanation": "それまでの主力だったObjective-Cに代わる言語として登場しました。名前は英語で「速い」の意味で、鳥のアマツバメも指します。"
+    },
+    {
+      "answer": "KOTLIN",
+      "display": "Kotlin",
+      "level": 2,
+      "clue": "JetBrains生まれの、Androidアプリ開発の推奨言語",
+      "explanation": "名前はロシアのサンクトペテルブルク近くにあるコトリン島に由来します。Java（ジャワ島）にならって島の名前を選んだとされます。"
+    },
+    {
+      "answer": "PERL",
+      "display": "Perl",
+      "level": 2,
+      "clue": "ラリー・ウォールが作った、文字列処理が得意な言語",
+      "explanation": "1987年に公開されました。シンボルのラクダは、定番の解説書の表紙に描かれていたことから広まりました。"
+    },
+    {
+      "answer": "PHP",
+      "display": "PHP",
+      "level": 1,
+      "clue": "Webサーバー側で動き、WordPressにも使われる言語",
+      "explanation": "もとは「Personal Home Page」の略でした。今は「PHP: Hypertext Preprocessor」という、自分の名前を含む再帰的な略語とされています。"
+    },
+    {
+      "answer": "LISP",
+      "display": "Lisp",
+      "level": 2,
+      "clue": "括弧だらけの見た目で知られる、1958年生まれの言語",
+      "explanation": "ジョン・マッカーシーが考案しました。名前は「LISt Processor（リスト処理）」の略で、現役の言語の中でもとくに古い一つです。"
+    },
+    {
+      "answer": "HASKELL",
+      "display": "Haskell",
+      "level": 3,
+      "clue": "遅延評価を特徴とする、純粋関数型言語",
+      "explanation": "名前は論理学者ハスケル・カリーにちなみます。関数の引数を一つずつ受け取る形に変える「カリー化」も、彼の名前から来ています。"
+    },
+    {
+      "answer": "SCALA",
+      "display": "Scala",
+      "level": 3,
+      "clue": "Java仮想マシン上で動く、関数型とオブジェクト指向をあわせた言語",
+      "explanation": "名前は「scalable language（大きく育てられる言語）」から。イタリア語では「階段」の意味もあり、ロゴも階段の形です。"
+    },
+    {
+      "answer": "ELIXIR",
+      "display": "Elixir",
+      "level": 3,
+      "clue": "Erlangの仮想マシン上で動く、Ruby風の文法の言語",
+      "explanation": "ブラジル出身のジョゼ・ヴァリムが2012年ごろに公開しました。名前は英語で「霊薬・万能薬」の意味です。"
+    },
+    {
+      "answer": "ERLANG",
+      "display": "Erlang",
+      "level": 3,
+      "clue": "エリクソン社が電話交換機のために開発した言語",
+      "explanation": "止まらないことが求められる電話網のために作られ、並行処理と障害への強さが特徴です。チャットサービスの裏側などでも使われています。"
+    },
+    {
+      "answer": "FORTRAN",
+      "display": "FORTRAN",
+      "level": 2,
+      "clue": "1957年にIBMが公開した、科学技術計算向けの言語",
+      "explanation": "名前は「FORmula TRANslation（数式の翻訳）」の略です。現役の高水準言語では最も古い部類で、今もスーパーコンピュータで使われます。"
+    },
+    {
+      "answer": "COBOL",
+      "display": "COBOL",
+      "level": 2,
+      "clue": "事務処理向けに1959年に設計され、銀行で今も現役の言語",
+      "explanation": "名前は「COmmon Business-Oriented Language」の略です。英語の文章に近い書き方で、設計には海軍のグレース・ホッパーの考えが大きく影響しました。"
+    },
+    {
+      "answer": "PASCAL",
+      "display": "Pascal",
+      "level": 2,
+      "clue": "教育用にニクラウス・ヴィルトが設計した言語",
+      "explanation": "名前はフランスの数学者・哲学者パスカルにちなみます。1970年に発表され、構造化プログラミングの教育で広く使われました。"
+    },
+    {
+      "answer": "BASIC",
+      "display": "BASIC",
+      "level": 1,
+      "clue": "初心者向けに1964年に生まれ、昔のパソコンに付いてきた言語",
+      "explanation": "アメリカのダートマス大学で生まれました。名前は「初心者向けの汎用記号命令コード」を表す英語の頭文字です。"
+    },
+    {
+      "answer": "SQL",
+      "display": "SQL",
+      "level": 1,
+      "clue": "データベースに問い合わせるための言語",
+      "explanation": "1970年代にIBMで開発されました。一文字ずつ読むほかに「シークェル」とも読み、こちらはもとの名前SEQUELに由来します。"
+    },
+    {
+      "answer": "HTML",
+      "display": "HTML",
+      "level": 1,
+      "clue": "Webページの見出しや段落など、構造を記述する言語",
+      "explanation": "World Wide Webを考案したティム・バーナーズ＝リーが作りました。厳密にはプログラミング言語ではなく、文書の構造を表すマークアップ言語です。"
+    },
+    {
+      "answer": "CSS",
+      "display": "CSS",
+      "level": 1,
+      "clue": "Webページの色や配置などの見た目を指定する言語",
+      "explanation": "「Cascading Style Sheets」の略です。指定が重なったときの優先順位の決まりが、滝が段々に流れるようすから「カスケード」と呼ばれます。"
+    },
+    {
+      "answer": "DART",
+      "display": "Dart",
+      "level": 3,
+      "clue": "Googleが開発し、Flutterでアプリを作るときに使う言語",
+      "explanation": "2011年に発表されました。一つのコードからスマートフォンやWeb向けのアプリを作れる仕組み、Flutterの言語として広まりました。"
+    },
+    {
+      "answer": "JULIA",
+      "display": "Julia",
+      "level": 3,
+      "clue": "科学技術計算での速さをめざしてMITで生まれた言語",
+      "explanation": "2012年に公開されました。Pythonのような書きやすさと、C言語のような速さを両立させることをめざして作られました。"
+    },
+    {
+      "answer": "LUA",
+      "display": "Lua",
+      "level": 3,
+      "clue": "ゲームの組み込みに多い、ブラジル生まれの軽量言語",
+      "explanation": "名前はポルトガル語で「月」の意味です。1993年にリオデジャネイロのカトリック大学で生まれ、多くのゲームで使われています。"
+    },
+    {
+      "answer": "MATLAB",
+      "display": "MATLAB",
+      "level": 2,
+      "clue": "行列計算が得意な、工学の分野で広く使われる数値計算の言語",
+      "explanation": "名前は「MATrix LABoratory（行列の実験室）」の略です。MathWorks社の製品で、大学の工学教育でもよく使われます。"
+    },
+    {
+      "answer": "OCAML",
+      "display": "OCaml",
+      "level": 3,
+      "clue": "フランスの研究所で生まれた、型推論をもつ関数型言語",
+      "explanation": "フランス国立情報学自動制御研究所（INRIA）で開発されました。型の誤りを動かす前に見つけやすく、コンパイラの開発などに使われます。"
+    },
+    {
+      "answer": "CLOJURE",
+      "display": "Clojure",
+      "level": 3,
+      "clue": "Java仮想マシン上で動く、現代的なLispの方言",
+      "explanation": "リッチ・ヒッキーが2007年に公開しました。データを書き換えずに新しく作る「不変性」を重んじる設計が特徴です。"
+    },
+    {
+      "answer": "SCHEME",
+      "display": "Scheme",
+      "level": 3,
+      "clue": "MITで生まれた、仕様の小さなLispの方言",
+      "explanation": "1975年ごろ、ガイ・スティールとジェラルド・サスマンが考案しました。名著『計算機プログラムの構造と解釈』で使われたことでも知られます。"
+    },
+    {
+      "answer": "PROLOG",
+      "display": "Prolog",
+      "level": 3,
+      "clue": "事実と規則を書いて推論させる論理型言語",
+      "explanation": "1972年ごろフランスで生まれました。名前は「論理によるプログラミング」を表すフランス語から。日本の第五世代コンピュータ計画でも注目されました。"
+    },
+    {
+      "answer": "SMALLTALK",
+      "display": "Smalltalk",
+      "level": 3,
+      "clue": "ゼロックスのパロアルト研究所で生まれたオブジェクト指向言語",
+      "explanation": "アラン・ケイらが1970年代に開発しました。「オブジェクトにメッセージを送る」という考え方は、後の多くの言語に影響を与えました。"
+    },
+    {
+      "answer": "ALGOL",
+      "display": "ALGOL",
+      "level": 3,
+      "clue": "1958年に国際委員会が設計し、多くの言語の祖先となった言語",
+      "explanation": "名前は「ALGOrithmic Language」の略です。アルゴリズムを論文に書く共通の言葉としても使われ、PascalやC言語の祖先にあたります。"
+    },
+    {
+      "answer": "ADA",
+      "display": "Ada",
+      "level": 3,
+      "clue": "アメリカ国防総省の主導で作られた、安全性重視の言語",
+      "explanation": "名前は、世界初のプログラマーともいわれる19世紀の数学者エイダ・ラブレスにちなみます。航空機や鉄道の制御にも使われます。"
+    },
+    {
+      "answer": "APL",
+      "display": "APL",
+      "level": 3,
+      "clue": "独特の記号をたくさん使う、配列計算向けの言語",
+      "explanation": "ケネス・アイバーソンが考案しました。名前は彼の本の題『A Programming Language』の頭文字です。専用のキーボードが使われたこともあります。"
+    },
+    {
+      "answer": "ZIG",
+      "display": "Zig",
+      "level": 3,
+      "clue": "C言語の後継をめざして2016年ごろ登場したシステム言語",
+      "explanation": "アンドリュー・ケリーが開発しています。見えないところでの処理やメモリの確保をなくし、書いたとおりに動くことを重視しています。"
+    },
+    {
+      "answer": "NIM",
+      "display": "Nim",
+      "level": 3,
+      "clue": "Python風の文法で書き、C言語に変換して動かす言語",
+      "explanation": "2008年ごろに開発が始まり、もとはNimrodという名前でした。インデントでまとまりを表す点はPythonに似ています。"
+    },
+    {
+      "answer": "CRYSTAL",
+      "display": "Crystal",
+      "level": 3,
+      "clue": "Ruby風の文法で、型を推論して速く動く言語",
+      "explanation": "Rubyのような書きやすさと、C言語に近い速さをめざした言語です。名前は英語で「水晶」の意味で、宝石の名を持つRubyを意識しています。"
+    },
+    {
+      "answer": "GROOVY",
+      "display": "Groovy",
+      "level": 3,
+      "clue": "Java仮想マシン上で動き、ビルド道具Gradleの設定にも使われた言語",
+      "explanation": "2003年に登場しました。Javaとほぼ同じように書けて、より短く柔軟に書けるのが特徴です。名前は英語の俗語で「いかした」の意味です。"
+    },
+    {
+      "answer": "ELM",
+      "display": "Elm",
+      "level": 3,
+      "clue": "Webの画面作りに特化した、実行時エラーの少ない関数型言語",
+      "explanation": "2012年にエヴァン・チャプリキが発表しました。画面の状態を一か所で管理する設計は、JavaScriptの世界にも影響を与えました。"
+    },
+    {
+      "answer": "BASH",
+      "display": "Bash",
+      "level": 2,
+      "clue": "多くのLinuxで標準のシェルと、その命令の言語",
+      "explanation": "名前は「Bourne-Again SHell」の略で、それ以前のBourneシェルと「生まれ変わり（born again）」をかけた言葉遊びです。"
+    },
+    {
+      "answer": "AWK",
+      "display": "AWK",
+      "level": 3,
+      "clue": "テキストの行と列を処理する、UNIXの小さな言語",
+      "explanation": "1977年に生まれました。名前は作者3人（エイホ、ワインバーガー、カーニハン）の名字の頭文字を並べたものです。"
+    },
+    {
+      "answer": "ASSEMBLY",
+      "display": "Assembly",
+      "level": 2,
+      "clue": "CPUの機械語とほぼ一対一に対応する、低水準の言語",
+      "explanation": "命令を「MOV」「ADD」のような短い記号で書きます。CPUの種類ごとに書き方が異なり、速さが必要な部分や組み込み機器で使われます。"
+    },
+    {
+      "answer": "SIMULA",
+      "display": "Simula",
+      "level": 3,
+      "clue": "ノルウェーで生まれた、最初のオブジェクト指向言語とされる言語",
+      "explanation": "1960年代にオーレ＝ヨハン・ダールとクリステン・ニガードが開発しました。クラスという考え方はここから始まりました。"
+    },
+    {
+      "answer": "LOGO",
+      "display": "Logo",
+      "level": 2,
+      "clue": "画面のカメに命令して図形を描く、教育向けの言語",
+      "explanation": "1967年にシーモア・パパートらが開発しました。名前はギリシャ語で「言葉」を意味するロゴスに由来します。"
+    },
+    {
+      "answer": "SCRATCH",
+      "display": "Scratch",
+      "level": 1,
+      "clue": "ブロックを組み合わせて作る、子ども向けの言語",
+      "explanation": "MITメディアラボが開発しました。名前は、DJがレコードを手で動かして音を作る「スクラッチ」にちなみます。"
+    },
+    {
+      "answer": "DELPHI",
+      "display": "Delphi",
+      "level": 3,
+      "clue": "Object Pascalを使う、ボーランド社の開発環境とその言語",
+      "explanation": "1995年に登場しました。名前は古代ギリシャの神託の地デルポイにちなみ、データベース「Oracle（神託）」につながることを意識しています。"
+    },
+    {
+      "answer": "VBA",
+      "display": "VBA",
+      "level": 2,
+      "clue": "Excelなどの作業を自動化する、マイクロソフトのマクロ言語",
+      "explanation": "「Visual Basic for Applications」の略です。表計算ソフトなどの中で動き、事務作業の自動化に広く使われています。"
+    },
+    {
+      "answer": "RACKET",
+      "display": "Racket",
+      "level": 3,
+      "clue": "教育や言語研究に使われる、Schemeから発展した言語",
+      "explanation": "もとはPLT Schemeという名前で、2010年に改名しました。新しい言語を作るための機能が充実していることでも知られます。"
+    },
+    {
+      "answer": "TCL",
+      "display": "Tcl",
+      "level": 3,
+      "clue": "GUI部品のTkと組み合わせて使われるスクリプト言語",
+      "explanation": "「Tool Command Language」の略で、「ティックル」と読みます。1988年にジョン・オースターハウトが開発しました。"
+    },
+    {
+      "answer": "FORTH",
+      "display": "Forth",
+      "level": 3,
+      "clue": "スタックを使い、逆ポーランド記法で書く言語",
+      "explanation": "1970年ごろチャールズ・ムーアが開発しました。「Fourth（第4世代）」と名付けたかったものの、当時の計算機が名前に5文字までしか使えず、この名前になりました。"
+    },
+    {
+      "answer": "EIFFEL",
+      "display": "Eiffel",
+      "level": 3,
+      "clue": "「契約による設計」を取り入れたオブジェクト指向言語",
+      "explanation": "1986年にバートランド・メイヤーが発表しました。名前はパリのエッフェル塔と、その設計者エッフェルにちなみます。"
+    },
+    {
+      "answer": "ABAP",
+      "display": "ABAP",
+      "level": 3,
+      "clue": "ドイツのSAP社の業務ソフトの中で使われる言語",
+      "explanation": "企業の会計や在庫などを扱うSAP社の業務システムの中で使われます。名前はもとはドイツ語の「一般的な帳票作成処理」を表す言葉の略でした。"
+    },
+    {
+      "answer": "PLSQL",
+      "display": "PL/SQL",
+      "level": 3,
+      "clue": "Oracleデータベースの中で手続きを書くための言語",
+      "explanation": "SQLに、条件分岐やくり返しなどの手続き的な書き方を足した言語です。名前の「PL」はProcedural Languageの略です。"
+    },
+    {
+      "answer": "HACK",
+      "display": "Hack",
+      "level": 3,
+      "clue": "Facebookが開発した、型を備えたPHP派生の言語",
+      "explanation": "2014年に公開されました。Facebook（現Meta）が自社のサービスのために、PHPに型の仕組みを加えて作りました。"
+    },
+    {
+      "answer": "VALA",
+      "display": "Vala",
+      "level": 3,
+      "clue": "GNOMEのアプリ開発向けに作られた、C言語に変換される言語",
+      "explanation": "C#に似た文法で書き、C言語のコードに変換してから動かします。Linuxのデスクトップ環境GNOMEのアプリ開発で使われます。"
+    },
+    {
+      "answer": "MOJO",
+      "display": "Mojo",
+      "level": 3,
+      "clue": "Pythonに近い書き方で、AI向けの高速な処理をめざす言語",
+      "explanation": "2023年にModular社が発表しました。Pythonの書きやすさを保ちながら、速さが必要なAIの処理を書けることをめざしています。"
+    },
+    {
+      "answer": "LEAN",
+      "display": "Lean",
+      "level": 3,
+      "clue": "数学の証明を書いて、計算機で正しさを確かめる言語",
+      "explanation": "マイクロソフト研究所のレオナルド・デ・モウラが開発を始めました。数学の定理を計算機で検証する取り組みで広く使われています。"
+    },
+    {
+      "answer": "SAS",
+      "display": "SAS",
+      "level": 3,
+      "clue": "統計解析ソフトとその言語。医薬の分野で広く使われる",
+      "explanation": "もとはアメリカのノースカロライナ州立大学で、農業のデータを解析するために作られました。今は製薬会社の臨床試験の解析などで使われます。"
+    },
+    {
+      "answer": "VERILOG",
+      "display": "Verilog",
+      "level": 3,
+      "clue": "電子回路の設計を記述するハードウェア記述言語",
+      "explanation": "1984年ごろに生まれ、のちにIEEEの標準になりました。ソフトウェアではなく、チップの中の回路を表すために使います。"
+    },
+    {
+      "answer": "VHDL",
+      "display": "VHDL",
+      "level": 3,
+      "clue": "アメリカ国防総省の計画から生まれたハードウェア記述言語",
+      "explanation": "名前の「VHSIC」は超高速集積回路を意味する計画の名前です。文法は、同じく国防総省ゆかりのAdaの影響を受けています。"
+    },
+    {
+      "answer": "GLSL",
+      "display": "GLSL",
+      "level": 3,
+      "clue": "OpenGLで画面の点の色などを計算するシェーダー言語",
+      "explanation": "「OpenGL Shading Language」の略です。画面の一つひとつの点の色などを、GPUで並列に計算するプログラムを書きます。"
+    },
+    {
+      "answer": "ML",
+      "display": "ML",
+      "level": 3,
+      "clue": "型推論で知られる関数型言語。OCamlの祖先",
+      "explanation": "1973年ごろロビン・ミルナーが、定理を証明する仕組みのために作りました。名前は「Meta Language」の略です。"
+    },
+    {
+      "answer": "MIRANDA",
+      "display": "Miranda",
+      "level": 3,
+      "clue": "Haskellに先立つ、遅延評価の純粋関数型言語",
+      "explanation": "1985年にデビッド・ターナーが発表しました。のちに作られたHaskellの設計に大きな影響を与えました。"
+    },
+    {
+      "answer": "SNOBOL",
+      "display": "SNOBOL",
+      "level": 3,
+      "clue": "1960年代にベル研究所で生まれた文字列処理言語",
+      "explanation": "文字列のパターン照合に優れ、テキストの分析などに使われました。正規表現が広まる前の、文字列処理の代表的な言語の一つです。"
+    },
+    {
+      "answer": "GLEAM",
+      "display": "Gleam",
+      "level": 3,
+      "clue": "Erlangの仮想マシン上で動く、静的な型をもつ関数型言語",
+      "explanation": "2024年に1.0が公開されました。Elixirと同じ仮想マシンで動き、型によって誤りを動かす前に見つけられます。"
+    },
+    {
+      "answer": "SOLIDITY",
+      "display": "Solidity",
+      "level": 3,
+      "clue": "イーサリアムのスマートコントラクトを書く言語",
+      "explanation": "2014年ごろに提案されました。ブロックチェーンの上で自動的に実行される「契約」のプログラムを書くために使われます。"
+    },
+    {
+      "answer": "TEX",
+      "display": "TeX",
+      "level": 2,
+      "clue": "数式の組版に強い、クヌースが作った組版システムとその言語",
+      "explanation": "ドナルド・クヌースが1978年に開発しました。版を重ねるごとにバージョン番号が円周率に近づいていく、という変わった決まりがあります。"
+    },
+    {
+      "answer": "DYLAN",
+      "display": "Dylan",
+      "level": 3,
+      "clue": "1990年代にAppleが開発した、Lispの流れをくむ動的な言語",
+      "explanation": "1990年代前半にAppleが中心となって開発しました。名前は「DYnamic LANguage（動的な言語）」を縮めたものとされます。"
+    },
+    {
+      "answer": "RPG",
+      "display": "RPG",
+      "level": 3,
+      "clue": "IBMの事務処理向けの、帳票作成から生まれた言語",
+      "explanation": "「Report Program Generator」の略です。1959年に登場し、IBMの業務用コンピュータで今も使われています。"
+    },
+    {
+      "answer": "CSHARP",
+      "display": "C#",
+      "level": 1,
+      "clue": "マイクロソフトが.NET向けに開発したオブジェクト指向言語",
+      "explanation": "2000年に発表されました。名前の「#」は音楽で半音上げる記号のシャープで、C言語を一歩進めた言語という意味が込められています。"
+    },
+    {
+      "answer": "FSHARP",
+      "display": "F#",
+      "level": 3,
+      "clue": "マイクロソフト研究所が開発した、.NETで動く関数型言語",
+      "explanation": "OCamlの流れをくむ関数型言語です。2005年ごろに公開され、.NETのたくさんの部品をそのまま使えます。"
+    },
+    {
+      "answer": "CPLUSPLUS",
+      "display": "C++",
+      "level": 1,
+      "clue": "C言語にクラスなどを加えた、ストロヴストルップが作った言語",
+      "explanation": "名前の「++」は、C言語で値を1増やす演算子です。「Cを一つ進めた言語」という意味の言葉遊びになっています。"
+    }
+  ]
+}

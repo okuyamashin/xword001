@@ -1,6 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import * as ja from '../generator/locales/ja.js';
+import * as jaLocale from '../generator/locales/ja.js';
+import { langFor } from '../generator/scripts/index.js';
+
+const ja = langFor(jaLocale, 'kana');
 import { addClues, addExplanations } from '../generator/clues/index.js';
 import { buildRequest } from '../generator/clues/request.js';
 import { checkClue, checkExplanation } from '../generator/clues/checks.js';

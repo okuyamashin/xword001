@@ -3,6 +3,8 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { access } from 'node:fs/promises';
+import { scriptOf } from '../scripts/index.js';
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
@@ -32,4 +34,11 @@ export async function saveThemeFile(locale, doc) {
   const text = formatThemeFile(doc);
   JSON.parse(text);
   await writeFile(themeFilePath(locale, doc.theme), text);
+}
+
+// 文字種に合ったつなぎの言葉（汎用リスト）。なければ null
+export async function loadFillerFile(locale, scriptName = 'kana') {
+  const theme = scriptOf(scriptName).fillerTheme;
+  const exists = await access(themeFilePath(locale, theme)).then(() => true, () => false);
+  return exists ? loadThemeFile(locale, theme) : null;
 }

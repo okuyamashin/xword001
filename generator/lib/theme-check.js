@@ -4,6 +4,7 @@
 import { GENRE_PATTERN } from '../build.js';
 import { checkClue, checkExplanation } from '../clues/checks.js';
 import { resolveSettings } from '../clues/request.js';
+import { SCRIPTS, langFor } from '../scripts/index.js';
 
 const MIN_LEN = 2;
 const MAX_LEN = 9; // 盤面 9×9 に入る長さ
@@ -17,9 +18,15 @@ const MAX_LEN = 9; // 盤面 9×9 に入る長さ
  * @param {string} [options.fileName]  テーマファイルの名前（例: sangetsuki.json）
  * @param {boolean} [options.strict]   すべての語にカギと解説が必要（公開してよい状態か）
  */
-export function checkTheme(doc, { locale, site, imageFiles, fileName, strict = false }) {
+export function checkTheme(doc, { locale: baseLocale, site, imageFiles, fileName, strict = false }) {
   const errors = [];
   const warnings = [];
+  if (doc.script != null && !SCRIPTS[doc.script]) {
+    errors.push(`script（文字種）は ${Object.keys(SCRIPTS).join(' / ')} のどれか: ${doc.script}`);
+    return { errors, warnings };
+  }
+  // 言語の設定と、文字種（答えの文字のルール）を合わせる
+  const locale = langFor(baseLocale, doc.script);
   const filler = doc.filler === true;
 
   // テーマ全体

@@ -1,0 +1,203 @@
+{
+  "id": "00004-programming_languages-001",
+  "serial": 4,
+  "genre": "programming_languages",
+  "round": 1,
+  "date": "2026-10-11",
+  "locale": "ja",
+  "script": "latin",
+  "theme": "programming_languages",
+  "title": "プログラミング言語",
+  "subtitle": "Programming Languages",
+  "description": "Python、Java、COBOL、Haskell……。昔からある言語から新しい言語まで、プログラミング言語の名前をアルファベットで埋めていきましょう。",
+  "image": "programming_languages.webp",
+  "design": {
+    "accent": "#2f5d50"
+  },
+  "rules": [
+    "答えはプログラミング言語の名前です。マークアップ言語・シェル・ハードウェア記述言語なども含みます",
+    "記号は読み方の英語で書きます（例: C# → CSHARP、C++ → CPLUSPLUS）"
+  ],
+  "size": {
+    "rows": 9,
+    "cols": 9
+  },
+  "grid": [
+    "CSS##VALA",
+    "S#A#D#P#L",
+    "HASKELL#G",
+    "A###L###O",
+    "RPG#PLSQL",
+    "P#L#H####",
+    "#VERILOG#",
+    "##A##U#O#",
+    "SIMULA###"
+  ],
+  "words": [
+    {
+      "number": 1,
+      "direction": "across",
+      "row": 0,
+      "col": 0,
+      "answer": "CSS",
+      "display": "CSS",
+      "theme": "programming_languages",
+      "clue": "Webページの色や配置などの見た目を指定する言語",
+      "explanation": "「Cascading Style Sheets」の略です。指定が重なったときの優先順位の決まりが、滝が段々に流れるようすから「カスケード」と呼ばれます。"
+    },
+    {
+      "number": 3,
+      "direction": "across",
+      "row": 0,
+      "col": 5,
+      "answer": "VALA",
+      "display": "Vala",
+      "theme": "programming_languages",
+      "clue": "GNOMEのアプリ開発向けに作られた、C言語に変換される言語",
+      "explanation": "C#に似た文法で書き、C言語のコードに変換してから動かします。Linuxのデスクトップ環境GNOMEのアプリ開発で使われます。"
+    },
+    {
+      "number": 7,
+      "direction": "across",
+      "row": 2,
+      "col": 0,
+      "answer": "HASKELL",
+      "display": "Haskell",
+      "theme": "programming_languages",
+      "clue": "遅延評価を特徴とする、純粋関数型言語",
+      "explanation": "名前は論理学者ハスケル・カリーにちなみます。関数の引数を一つずつ受け取る形に変える「カリー化」も、彼の名前から来ています。"
+    },
+    {
+      "number": 8,
+      "direction": "across",
+      "row": 4,
+      "col": 0,
+      "answer": "RPG",
+      "display": "RPG",
+      "theme": "programming_languages",
+      "clue": "IBMの事務処理向けの、帳票作成から生まれた言語",
+      "explanation": "「Report Program Generator」の略です。1959年に登場し、IBMの業務用コンピュータで今も使われています。"
+    },
+    {
+      "number": 10,
+      "direction": "across",
+      "row": 4,
+      "col": 4,
+      "answer": "PLSQL",
+      "display": "PL/SQL",
+      "theme": "programming_languages",
+      "clue": "Oracleデータベースの中で手続きを書くための言語",
+      "explanation": "SQLに、条件分岐やくり返しなどの手続き的な書き方を足した言語です。名前の「PL」はProcedural Languageの略です。"
+    },
+    {
+      "number": 11,
+      "direction": "across",
+      "row": 6,
+      "col": 1,
+      "answer": "VERILOG",
+      "display": "Verilog",
+      "theme": "programming_languages",
+      "clue": "電子回路の設計を記述するハードウェア記述言語",
+      "explanation": "1984年ごろに生まれ、のちにIEEEの標準になりました。ソフトウェアではなく、チップの中の回路を表すために使います。"
+    },
+    {
+      "number": 14,
+      "direction": "across",
+      "row": 8,
+      "col": 0,
+      "answer": "SIMULA",
+      "display": "Simula",
+      "theme": "programming_languages",
+      "clue": "ノルウェーで生まれた、最初のオブジェクト指向言語とされる言語",
+      "explanation": "1960年代にオーレ＝ヨハン・ダールとクリステン・ニガードが開発しました。クラスという考え方はここから始まりました。"
+    },
+    {
+      "number": 1,
+      "direction": "down",
+      "row": 0,
+      "col": 0,
+      "answer": "CSHARP",
+      "display": "C#",
+      "theme": "programming_languages",
+      "clue": "マイクロソフトが.NET向けに開発したオブジェクト指向言語",
+      "explanation": "2000年に発表されました。名前の「#」は音楽で半音上げる記号のシャープで、C言語を一歩進めた言語という意味が込められています。"
+    },
+    {
+      "number": 2,
+      "direction": "down",
+      "row": 0,
+      "col": 2,
+      "answer": "SAS",
+      "display": "SAS",
+      "theme": "programming_languages",
+      "clue": "統計解析ソフトとその言語。医薬の分野で広く使われる",
+      "explanation": "もとはアメリカのノースカロライナ州立大学で、農業のデータを解析するために作られました。今は製薬会社の臨床試験の解析などで使われます。"
+    },
+    {
+      "number": 4,
+      "direction": "down",
+      "row": 0,
+      "col": 6,
+      "answer": "APL",
+      "display": "APL",
+      "theme": "programming_languages",
+      "clue": "独特の記号をたくさん使う、配列計算向けの言語",
+      "explanation": "ケネス・アイバーソンが考案しました。名前は彼の本の題『A Programming Language』の頭文字です。専用のキーボードが使われたこともあります。"
+    },
+    {
+      "number": 5,
+      "direction": "down",
+      "row": 0,
+      "col": 8,
+      "answer": "ALGOL",
+      "display": "ALGOL",
+      "theme": "programming_languages",
+      "clue": "1958年に国際委員会が設計し、多くの言語の祖先となった言語",
+      "explanation": "名前は「ALGOrithmic Language」の略です。アルゴリズムを論文に書く共通の言葉としても使われ、PascalやC言語の祖先にあたります。"
+    },
+    {
+      "number": 6,
+      "direction": "down",
+      "row": 1,
+      "col": 4,
+      "answer": "DELPHI",
+      "display": "Delphi",
+      "theme": "programming_languages",
+      "clue": "Object Pascalを使う、ボーランド社の開発環境とその言語",
+      "explanation": "1995年に登場しました。名前は古代ギリシャの神託の地デルポイにちなみ、データベース「Oracle（神託）」につながることを意識しています。"
+    },
+    {
+      "number": 9,
+      "direction": "down",
+      "row": 4,
+      "col": 2,
+      "answer": "GLEAM",
+      "display": "Gleam",
+      "theme": "programming_languages",
+      "clue": "Erlangの仮想マシン上で動く、静的な型をもつ関数型言語",
+      "explanation": "2024年に1.0が公開されました。Elixirと同じ仮想マシンで動き、型によって誤りを動かす前に見つけられます。"
+    },
+    {
+      "number": 12,
+      "direction": "down",
+      "row": 6,
+      "col": 5,
+      "answer": "LUA",
+      "display": "Lua",
+      "theme": "programming_languages",
+      "clue": "ゲームの組み込みに多い、ブラジル生まれの軽量言語",
+      "explanation": "名前はポルトガル語で「月」の意味です。1993年にリオデジャネイロのカトリック大学で生まれ、多くのゲームで使われています。"
+    },
+    {
+      "number": 13,
+      "direction": "down",
+      "row": 6,
+      "col": 7,
+      "answer": "GO",
+      "display": "Go",
+      "theme": "programming_languages",
+      "clue": "Googleで開発された、並行処理が得意なシンプルな言語",
+      "explanation": "2009年に公開されました。マスコットはホリネズミ（ゴーファー）です。設計者にはUNIXの生みの親の一人、ケン・トンプソンもいます。"
+    }
+  ]
+}

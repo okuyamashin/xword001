@@ -26,6 +26,12 @@ const wordsTemplate = await read('template/words.html');
 const wordsIndexTemplate = await read('template/words-index.html');
 const parts = { baseCss: await read('template/base.css'), header: await read('template/header.html'), footer: await read('template/footer.html') };
 const localeSource = await read(`generator/locales/${values.locale}.js`);
+// ページに埋め込む言語設定と文字種のルール（文字種ごと）
+const scriptSources = new Map();
+const sourceFor = async (scriptName = 'kana') => {
+  if (!scriptSources.has(scriptName)) scriptSources.set(scriptName, `${localeSource}\n${await read(`generator/scripts/${scriptName}.js`)}`);
+  return scriptSources.get(scriptName);
+};
 const site = JSON.parse(await read(`data/site/${values.locale}.json`));
 const outDir = values.out;
 await mkdir(outDir, { recursive: true });
@@ -73,7 +79,7 @@ for (const puzzle of puzzles) {
   const related = puzzles
     .filter((p) => p.theme === puzzle.theme && p.id !== puzzle.id)
     .sort((a, b) => (a.round ?? 1) - (b.round ?? 1));
-  const args = { template, parts, puzzle, localeSource, site, image: imageFor(puzzle), related };
+  const args = { template, parts, puzzle, localeSource: await sourceFor(puzzle.script), site, image: imageFor(puzzle), related };
   await writeFile(path.join(outDir, pageName(puzzle)), renderPuzzleHtml(args));
   console.error(`→ ${pageName(puzzle)}`);
   if (puzzle === latest) {
@@ -87,6 +93,7 @@ console.error('→ archive.html');
 
 // 単語帳
 const locale = await import(`../locales/${values.locale}.js`);
+const { langFor } = await import('../scripts/index.js');
 const books = [];
 for (const theme of themes) {
   const genrePuzzles = puzzles.filter((p) => p.theme.split('+')[0] === theme.theme).sort((a, b) => (a.round ?? 1) - (b.round ?? 1));
@@ -95,7 +102,7 @@ for (const theme of themes) {
   await writeFile(path.join(outDir, jsonName), `${JSON.stringify(publicWordList(theme), null, 2)}\n`);
   const html = renderWordsHtml({
     template: wordsTemplate, parts, site, theme, puzzles: genrePuzzles, image, jsonName,
-    isValidAnswer: locale.isValidAnswer, normalize: locale.normalize,
+    lang: langFor(locale, theme.script),
   });
   await writeFile(path.join(outDir, wordsPageName(theme.theme)), html);
   books.push({ theme, image, puzzleCount: genrePuzzles.length });

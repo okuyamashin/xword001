@@ -29,7 +29,8 @@ for (const f of steps) if (!STEPS.includes(f)) throw new Error(`--only は ${STE
 const fields = steps.filter((f) => FIELDS[f]);
 
 let puzzle = JSON.parse(await readFile(values.puzzle, 'utf8'));
-const locale = await import(`../locales/${puzzle.locale}.js`);
+const { langFor } = await import('../scripts/index.js');
+const locale = langFor(await import(`../locales/${puzzle.locale}.js`), puzzle.script);
 const themes = [...new Set(puzzle.words.map((w) => w.theme))];
 const themeFiles = await Promise.all(themes.map((t) => loadThemeFile(puzzle.locale, t)));
 

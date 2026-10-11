@@ -28,6 +28,10 @@ export function nextNumbers(existing, { locale, genre }) {
 // date は作った日（記録用）。並び順や名前には使わない
 export function buildPuzzle({ serial, round, date, locale, themeFiles, generalFile, layout = {}, seed }) {
   const genre = genreOf(themeFiles);
+  // 文字種（かな・アルファベット）。合わせるテーマはすべて同じ文字種であること
+  const script = themeFiles[0].script ?? 'kana';
+  if (themeFiles.some((f) => (f.script ?? 'kana') !== script)) throw new Error('文字種のちがうテーマは合わせられない');
+  if (generalFile && (generalFile.script ?? 'kana') !== script) throw new Error(`つなぎの言葉の文字種が ${script} ではない`);
   const id = puzzleId({ serial, genre, round });
   const themeWords = themeFiles.flatMap((f) => f.words);
   const result = generate({
@@ -46,6 +50,7 @@ export function buildPuzzle({ serial, round, date, locale, themeFiles, generalFi
     round,
     date,
     locale,
+    script,
     theme: themeFiles.map((f) => f.theme).join('+'),
     title: themeFiles.map((f) => f.title).join('・'),
     subtitle: themeFiles.map((f) => f.subtitle).filter(Boolean).join(' & '),

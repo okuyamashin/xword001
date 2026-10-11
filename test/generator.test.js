@@ -1,9 +1,26 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { normalize, isValidAnswer } from '../generator/locales/ja.js';
+import { normalize } from '../generator/scripts/kana.js';
+import * as latin from '../generator/scripts/latin.js';
+import { scriptOf } from '../generator/scripts/index.js';
 import { buildPuzzle } from '../generator/build.js';
 import { validatePuzzle } from '../generator/lib/validate.js';
 import { loadThemeFile } from '../generator/lib/words.js';
+
+test('アルファベットの正規化と答えの漏れの点検', () => {
+  assert.equal(latin.normalize('Python'), 'PYTHON');
+  assert.equal(latin.normalize('PL/SQL'), 'PLSQL');
+  assert.equal(latin.normalize('ｒｕｂｙ'), 'RUBY');
+  assert.equal(latin.normalize('Café'), 'CAFE');
+  assert.ok(latin.isValidAnswer('GO'));
+  assert.ok(!latin.isValidAnswer('C#'));
+  const go = { answer: 'GO', display: 'Go' };
+  assert.equal(latin.leaksAnswer('Googleで開発された言語', go), null); // GOOGLE は GO ではない
+  assert.match(latin.leaksAnswer('go言語とも呼ばれる', go), /答え/);
+  assert.match(latin.leaksAnswer('Go 1.0 は2012年', go), /答え/);
+  assert.match(latin.leaksAnswer('C#と同じく.NETで動く', { answer: 'CSHARP', display: 'C#' }), /表記/);
+  assert.equal(latin.leaksAnswer('C言語にクラスを加えた', { answer: 'CPLUSPLUS', display: 'C++' }), null);
+});
 
 test('日本語の正規化', () => {
   assert.equal(normalize('しゃつ'), 'シヤツ');
@@ -13,15 +30,16 @@ test('日本語の正規化', () => {
   assert.equal(normalize('ｶﾞｲｱﾅ'), 'ガイアナ');
 });
 
-test('単語リストの answer はすべて正規化済み', async () => {
+test('単語リストの answer はすべて、それぞれの文字種で正規化済み', async () => {
   const { readdir } = await import('node:fs/promises');
   const themes = (await readdir(new URL('../data/words/ja/', import.meta.url))).map((f) => f.replace(/\.json$/, ''));
   assert.ok(themes.length >= 3);
   for (const theme of themes) {
     const file = await loadThemeFile('ja', theme);
+    const script = scriptOf(file.script);
     for (const w of file.words) {
-      assert.ok(isValidAnswer(w.answer), `${theme}: ${w.answer}`);
-      assert.equal(normalize(w.answer), w.answer, `${theme}: ${w.answer}`);
+      assert.ok(script.isValidAnswer(w.answer), `${theme}: ${w.answer}`);
+      assert.equal(script.normalize(w.answer), w.answer, `${theme}: ${w.answer}`);
     }
   }
 });

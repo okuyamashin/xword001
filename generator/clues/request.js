@@ -72,7 +72,7 @@ export function buildRequest({ field, themeFile, locale, words, retry = [] }) {
   const lines = words.map((w, i) => {
     const note = w.note ? ` メモ: ${w.note}` : '';
     const clue = field === 'explanation' && w.clue ? ` カギ: ${w.clue}` : '';
-    return `${i + 1}. ${w.display}（読み: ${w.answer}、${[...w.answer].length}文字）${note}${clue}`;
+    return `${i + 1}. ${w.display}（${locale.answerLabel ?? '読み'}: ${w.answer}、${[...w.answer].length}文字）${note}${clue}`;
   });
   let prompt = `次の単語それぞれに${name}を1つずつ書いてください。id には単語の番号、text には${name}を入れて、全部の単語について返してください。\n${lines.join('\n')}`;
   if (retry.length) {

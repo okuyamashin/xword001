@@ -486,8 +486,8 @@
 <footer class="site"><div class="site-inner">よろずのクロスワードパズル ─ 毎日ひとつ、いろいろなテーマのクロスワードパズル。 <a href="archive.html">バックナンバー</a> <a href="words.html">単語帳</a></div></footer>
 
 <script>
-// 絞り込み（ひらがなで入れてもカタカナの読みに当たるようにする）
-const toKata = (s) => s.replace(/[ぁ-ゖ]/g, (c) => String.fromCharCode(c.charCodeAt(0) + 0x60));
+// 絞り込み（ひらがなで入れてもカタカナの読みに当たり、英字は大文字・小文字を区別しない）
+const toKata = (s) => s.normalize('NFKC').replace(/[ぁ-ゖ]/g, (c) => String.fromCharCode(c.charCodeAt(0) + 0x60)).toUpperCase();
 const entries = [...document.querySelectorAll('.entry')];
 const groups = [...document.querySelectorAll('section.group')];
 const count = document.getElementById('count');

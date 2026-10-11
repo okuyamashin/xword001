@@ -7,6 +7,7 @@ import { addTexts } from '../clues/index.js';
 import { FIELDS } from '../clues/request.js';
 import { loadThemeFile, saveThemeFile } from '../lib/words.js';
 import { createOpenAIWriter, DEFAULT_MODEL } from '../clues/writers/openai.js';
+import { langFor } from '../scripts/index.js';
 
 const { values } = parseArgs({
   options: {
@@ -21,8 +22,8 @@ if (!values.theme) throw new Error('--theme を指定してください');
 const fields = values.only ? [values.only] : Object.keys(FIELDS);
 for (const f of fields) if (!FIELDS[f]) throw new Error(`--only は ${Object.keys(FIELDS).join(' / ')} のどれか`);
 
-const locale = await import(`../locales/${values.locale}.js`);
 const themeFile = await loadThemeFile(values.locale, values.theme);
+const locale = langFor(await import(`../locales/${values.locale}.js`), themeFile.script);
 const writer = createOpenAIWriter({ model: values.model ?? DEFAULT_MODEL });
 console.error(`writer: ${writer.name}  テーマ: ${themeFile.title}（${themeFile.words.length}語）`);
 
