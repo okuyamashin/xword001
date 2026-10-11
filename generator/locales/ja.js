@@ -30,3 +30,23 @@ export function normalize(text) {
 export function isValidAnswer(answer) {
   return /^[ア-ンー]+$/.test(answer) && !/[ァィゥェォッャュョヮヵヶヴ]/.test(answer);
 }
+
+// ヒント生成の標準設定（テーマファイルの clue で上書きできる）
+export const clueDefaults = {
+  maxLength: 40,
+  instructions: [
+    'クロスワードパズルのカギ（ヒント）を日本語で書く。',
+    '1つのカギは短い1〜2文で書く。です・ます調にしない（「〜の国」「〜するもの」のような体言止めか常体）。',
+    '答えの言葉そのもの、答えの漢字、答えの一部をカギに含めない。',
+    'カギだけを読んで、答えが1つに絞れるようにする。',
+    '事実として確かなことだけを書く。自信がないことは書かない。',
+  ],
+};
+
+// カギに答えが漏れていないかを調べる
+export function leaksAnswer(clue, word) {
+  const text = normalize(clue);
+  if (text.includes(word.answer)) return `カギに答え「${word.answer}」が含まれている`;
+  if (word.display && clue.includes(word.display)) return `カギに表記「${word.display}」が含まれている`;
+  return null;
+}
