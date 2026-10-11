@@ -59,17 +59,24 @@
   .clues li.done { color: var(--muted); }
   .clues li.wrong { background: var(--wrong); color: var(--fg); }
   .clues li .n { font-weight: bold; margin-right: 4px; }
-  .clues li .ans { color: var(--revealed); margin-left: 4px; }
-  .clues li .explain { display: none; margin: 4px 0 2px; font-size: 0.9rem; color: var(--fg); }
-  .clues li.show-explain .explain { display: block; }
   .note { margin: 8px 0 0; padding: 10px 14px; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); background: rgba(244, 237, 224, .55); font-size: 0.95rem; }
   .note p { margin: 0; }
   .note p + p { margin-top: 6px; }
   .note[hidden] { display: none; }
-  .note .label { font-weight: bold; color: var(--accent); margin-right: 6px; }
-  .note .word { font-weight: bold; margin-right: 6px; }
-  .clues li .tag[hidden] { display: none; }
-  .clues li .tag { display: inline-block; margin-right: 6px; padding: 0 6px; border: 1px solid var(--muted); border-radius: 999px; font-size: 0.75rem; color: var(--muted); }
+  /* カギの下の「答え」「解説」。カギと区別するため、縦線で区切り、見出しの札をつける */
+  .detail { display: none; margin: 6px 0 4px 1.4em; padding: 2px 0 2px 12px; border-left: 2px solid var(--rule); cursor: default; }
+  .clues li.show-explain .detail { display: block; }
+  .detail .row { margin: 0; display: flex; gap: 10px; align-items: baseline; }
+  .detail .row + .row { margin-top: 4px; }
+  .detail .lbl { flex: none; padding: 0 6px; border: 1px solid var(--muted); font-size: .7rem; letter-spacing: .15em; line-height: 1.7; color: var(--muted); }
+  .detail .ans { font-weight: 700; color: var(--revealed); }
+  .detail .reading { margin-left: 2px; font-size: .8em; font-weight: 500; color: var(--muted); }
+  .detail .tag { margin-left: 8px; padding: 0 8px; border: 1px dashed var(--muted); border-radius: 999px; font-size: .7rem; font-weight: 500; color: var(--muted); }
+  .detail .tag[hidden] { display: none; }
+  .detail .body { font-size: .9rem; line-height: 1.8; color: var(--fg); }
+  .note .item + .item { margin-top: 10px; }
+  .note .head { margin: 0 0 4px; font-weight: 700; color: var(--accent); letter-spacing: .1em; }
+  .note .detail { display: block; margin-left: 0; }
 
   .related { margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--rule); }
   .related h2 { font-size: 1rem; letter-spacing: .2em; margin: 0 0 6px; }
@@ -218,16 +225,9 @@ function buildClues() {
   document.getElementById('down-label').textContent = labels.down;
   for (const w of words) {
     const li = document.createElement('li');
-    li.innerHTML = `<span class="n">${w.number}</span><span class="text"></span><span class="ans"></span>` +
-      '<div class="explain"><span class="tag" hidden></span><span class="body"></span></div>';
+    li.innerHTML = `<span class="n">${w.number}</span><span class="text"></span>`;
     li.querySelector('.text').textContent = w.clue ?? '（カギなし）';
-    li.querySelector('.body').textContent = w.explanation ?? '';
-    // テーマ外の「つなぎの言葉」には印をつける
-    if (!mainThemes.includes(w.theme)) {
-      const tag = li.querySelector('.tag');
-      tag.textContent = fillerLabel;
-      tag.hidden = false;
-    }
+    li.append(detailOf(w));
     li.addEventListener('click', () => select(w));
     document.getElementById(w.direction).append(li);
     w.li = li;
@@ -249,7 +249,6 @@ function render() {
     w.li.classList.toggle('wrong', w.cells.some(([r, c]) => isWrong(r, c)));
     const shown = explained || isCorrect(w) || shownWords.includes(w.index);
     w.li.classList.toggle('show-explain', shown);
-    w.li.querySelector('.ans').textContent = shown ? `→ ${w.display}` : '';
   }
   const current = document.getElementById('current');
   if (selected) {
@@ -360,16 +359,40 @@ function isCorrect(w) {
   return w.cells.every(([r, c]) => filled[r][c] === solution[r][c]);
 }
 
+// 「答え」と「解説」のまとまり（カギの一覧と、入力欄の下の両方で使う）
+function detailOf(w) {
+  const div = document.createElement('div');
+  div.className = 'detail';
+  div.innerHTML =
+    '<p class="row"><span class="lbl">答え</span><span><span class="ans"></span><span class="reading"></span><span class="tag" hidden></span></span></p>' +
+    '<p class="row"><span class="lbl">解説</span><span class="body"></span></p>';
+  div.querySelector('.ans').textContent = w.display;
+  // 漢字などで書く答えには、マスに入れた読みを添える
+  if (!isValidAnswer(normalize(w.display))) div.querySelector('.reading').textContent = `（${w.answer}）`;
+  // テーマ外の「つなぎの言葉」には印をつける
+  if (!mainThemes.includes(w.theme)) {
+    const tag = div.querySelector('.tag');
+    tag.textContent = fillerLabel;
+    tag.hidden = false;
+  }
+  div.querySelector('.body').textContent = w.explanation ?? '';
+  if (!w.explanation) div.lastChild.remove();
+  // 解説を読んでいるときに押しても、カギの選択（キーボードが開く）にならないようにする
+  div.addEventListener('click', (e) => e.stopPropagation());
+  return div;
+}
+
 function showNote(targets, label) {
   const note = document.getElementById('note');
   note.replaceChildren(
     ...targets.map((w) => {
-      const p = document.createElement('p');
-      p.innerHTML = '<span class="label"></span><span class="word"></span><span class="body"></span>';
-      p.querySelector('.label').textContent = label;
-      p.querySelector('.word').textContent = w.display;
-      p.querySelector('.body').textContent = w.explanation ?? '';
-      return p;
+      const item = document.createElement('div');
+      item.className = 'item';
+      const head = document.createElement('p');
+      head.className = 'head';
+      head.textContent = `${label}　${labels[w.direction]}${w.number}`;
+      item.append(head, detailOf(w));
+      return item;
     }),
   );
   note.hidden = false;
@@ -443,7 +466,7 @@ document.getElementById('reveal-word').addEventListener('click', () => {
   if (!selected) return setMessage('先にカギを選んでください。');
   reveal([selected]);
   document.getElementById('answer').value = selected.answer;
-  showNote([selected], '答え');
+  showNote([selected], '答えを表示');
   if (allFilled()) judge();
   else setMessage('');
 });
