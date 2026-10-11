@@ -1,0 +1,260 @@
+{
+  "id": "2026-10-14-ja",
+  "date": "2026-10-14",
+  "locale": "ja",
+  "theme": "sangetsuki",
+  "title": "山月記",
+  "round": 1,
+  "subtitle": "Sangetsuki — The Moon over the Mountain",
+  "description": "中島敦の名作「山月記」。詩人として名を残そうとして、虎になってしまった李徴の物語から、人物・地名・印象的な言葉を集めました。",
+  "image": "sangetsuki.webp",
+  "design": {
+    "accent": "#3d4a63"
+  },
+  "rules": [
+    "作中の言葉は、読みをカタカナで答えてください（例: 李徴 → リチョウ）",
+    "本文は青空文庫などで読めます"
+  ],
+  "size": {
+    "rows": 9,
+    "cols": 9
+  },
+  "grid": [
+    "ナ#モジ##カ#ハ",
+    "カ#ウ#カクリヤク",
+    "ジンコデン###ガ",
+    "マ###サ#シサク",
+    "ア#アカツキ###",
+    "ツキ##ギ#コツク",
+    "シ#ツ#ヨ#ボ#サ",
+    "#シユンシヨウ#ム",
+    "オカ###ル#トラ"
+  ],
+  "words": [
+    {
+      "number": 2,
+      "direction": "across",
+      "row": 0,
+      "col": 2,
+      "answer": "モジ",
+      "display": "文字",
+      "theme": "general",
+      "clue": "ことばを書き表すしるし",
+      "explanation": "漢字、かな、アルファベットなど、文字体系は世界に多数あります。Unicodeには絵文字も登録されています。"
+    },
+    {
+      "number": 5,
+      "direction": "across",
+      "row": 1,
+      "col": 4,
+      "answer": "カクリヤク",
+      "display": "虢略",
+      "theme": "sangetsuki",
+      "clue": "退官後の李徴が創作にふけった故郷",
+      "explanation": "李徴が官を退いた後、故山として帰った地名です。ここで世俗を離れ、詩作にふける生活へ移ります。"
+    },
+    {
+      "number": 6,
+      "direction": "across",
+      "row": 2,
+      "col": 0,
+      "answer": "ジンコデン",
+      "display": "人虎伝",
+      "theme": "sangetsuki",
+      "clue": "唐代の怪異小説。『山月記』のもと",
+      "explanation": "『山月記』のもとになった唐代の伝奇小説です。題名からも、人が虎になる設定の源流がうかがえます。"
+    },
+    {
+      "number": 7,
+      "direction": "across",
+      "row": 3,
+      "col": 6,
+      "answer": "シサク",
+      "display": "詩作",
+      "theme": "sangetsuki",
+      "clue": "李徴が退官後、ひたすらふけった営み",
+      "explanation": "李徴が官を退いた後に打ち込んだ、詩を作ることです。彼の望みが官途より詩名に向いたことを示します。"
+    },
+    {
+      "number": 8,
+      "direction": "across",
+      "row": 4,
+      "col": 2,
+      "answer": "アカツキ",
+      "display": "暁",
+      "theme": "sangetsuki",
+      "clue": "李徴との別れのころ近づいた夜明け",
+      "explanation": "李徴と袁傪の別れが近づくころの夜明けを指します。再会が夜中に始まり、暁で終わる構成が印象的です。"
+    },
+    {
+      "number": 9,
+      "direction": "across",
+      "row": 5,
+      "col": 0,
+      "answer": "ツキ",
+      "display": "月",
+      "theme": "sangetsuki",
+      "clue": "題名にもある天体。最後は白く光を失う",
+      "explanation": "題名にも含まれる象徴的な語です。最後に虎が光を失った白い月を仰ぐ場面で、余韻を強めます。"
+    },
+    {
+      "number": 10,
+      "direction": "across",
+      "row": 5,
+      "col": 6,
+      "answer": "コツク",
+      "display": "刻苦",
+      "theme": "sangetsuki",
+      "clue": "「敢て…磨こうともせず」の伏せた語",
+      "explanation": "苦労して努力することです。「磨こうともせず」とともに、李徴が才能を鍛え切れなかった点を表します。"
+    },
+    {
+      "number": 13,
+      "direction": "across",
+      "row": 7,
+      "col": 1,
+      "answer": "シユンシヨウ",
+      "display": "峻峭",
+      "theme": "sangetsuki",
+      "clue": "李徴の性情。きびしくけわしいこと",
+      "explanation": "きびしく、けわしい性質を表す語です。李徴の性情を示し、人づきあいの難しさを考える手がかりになります。"
+    },
+    {
+      "number": 15,
+      "direction": "across",
+      "row": 8,
+      "col": 0,
+      "answer": "オカ",
+      "display": "丘",
+      "theme": "sangetsuki",
+      "clue": "別れの後、袁傪一行が上から振り返った所",
+      "explanation": "別れの後、袁傪の一行が振り返る場所です。丘の上という距離が、李徴との決定的な隔たりを際立てます。"
+    },
+    {
+      "number": 16,
+      "direction": "across",
+      "row": 8,
+      "col": 7,
+      "answer": "トラ",
+      "display": "虎",
+      "theme": "sangetsuki",
+      "clue": "李徴が姿を変えた獣",
+      "explanation": "李徴が変わってしまった姿です。人間の声で語る存在として描かれ、人と獣の境目が授業の重要点になります。"
+    },
+    {
+      "number": 1,
+      "direction": "down",
+      "row": 0,
+      "col": 0,
+      "answer": "ナカジマアツシ",
+      "display": "中島敦",
+      "theme": "sangetsuki",
+      "clue": "『山月記』『李陵』などの作者",
+      "explanation": "『山月記』の作者です。1909年生まれで、短い生涯に『李陵』『名人伝』『弟子』なども残しました。"
+    },
+    {
+      "number": 2,
+      "direction": "down",
+      "row": 0,
+      "col": 2,
+      "answer": "モウコ",
+      "display": "猛虎",
+      "theme": "sangetsuki",
+      "clue": "叢から躍り出た、たけだけしい獣",
+      "explanation": "たけだけしい虎を表す語です。叢から躍り出る描写に使われ、最後に見える李徴の姿を強く印象づけます。"
+    },
+    {
+      "number": 3,
+      "direction": "down",
+      "row": 0,
+      "col": 6,
+      "answer": "カリ",
+      "display": "下吏",
+      "theme": "sangetsuki",
+      "clue": "低位の役人。李徴が嫌った立場",
+      "explanation": "下級の役人のことです。李徴が大官に仕える屈辱を避け、詩家の名を選ぼうとした対比に使われます。"
+    },
+    {
+      "number": 4,
+      "direction": "down",
+      "row": 0,
+      "col": 8,
+      "answer": "ハクガク",
+      "display": "博学",
+      "theme": "sangetsuki",
+      "clue": "広く知識に通じること。冒頭の評語",
+      "explanation": "広く学問に通じていることです。冒頭の「博学才穎」は、李徴がただの奇人でなく優れた才人だったと示します。"
+    },
+    {
+      "number": 5,
+      "direction": "down",
+      "row": 1,
+      "col": 4,
+      "answer": "カンサツギヨシ",
+      "display": "監察御史",
+      "theme": "sangetsuki",
+      "clue": "袁傪の官職。不正を調べる役",
+      "explanation": "袁傪の官職で、官吏の不正を監察する役です。李徴の旧友が公務の途上にいる設定を支えています。"
+    },
+    {
+      "number": 10,
+      "direction": "down",
+      "row": 5,
+      "col": 6,
+      "answer": "コボウ",
+      "display": "虎榜",
+      "theme": "sangetsuki",
+      "clue": "科挙合格者を掲げる札",
+      "explanation": "科挙の合格者を掲示する札です。「名を虎榜に連ね」は、李徴が若くして試験に通ったことを示します。"
+    },
+    {
+      "number": 11,
+      "direction": "down",
+      "row": 5,
+      "col": 8,
+      "answer": "クサムラ",
+      "display": "叢",
+      "theme": "sangetsuki",
+      "clue": "獣の李徴が潜み、姿を見せなかった茂み",
+      "explanation": "虎となった李徴が出入りし、語る間も身を隠す場所です。姿を見せないことで、袁傪との緊張が続きます。"
+    },
+    {
+      "number": 12,
+      "direction": "down",
+      "row": 6,
+      "col": 2,
+      "answer": "ツユ",
+      "display": "露",
+      "theme": "sangetsuki",
+      "clue": "「山も樹も月も…も」の伏せた語",
+      "explanation": "「山も樹も月も露も」と並べられる自然の語です。夜明け近い場面の冷たく澄んだ空気を感じさせます。"
+    },
+    {
+      "number": 13,
+      "direction": "down",
+      "row": 7,
+      "col": 1,
+      "answer": "シカ",
+      "display": "詩家",
+      "theme": "sangetsuki",
+      "clue": "李徴が死後百年に名を遺そうとした立場",
+      "explanation": "詩人のことです。李徴は役人として屈するより、死後百年に詩家の名を残すことを望みました。"
+    },
+    {
+      "number": 14,
+      "direction": "down",
+      "row": 7,
+      "col": 5,
+      "answer": "ヨル",
+      "display": "夜",
+      "theme": "general",
+      "clue": "日がしずんで暗い時間",
+      "explanation": "天気予報の用語では、夜は18時ごろから24時ごろまでです。0時以降は「未明」などと呼び分けます。"
+    }
+  ],
+  "intro": {
+    "theme": "山月記",
+    "description": "中国古典の香り漂う変身譚から、人物や官職、地名、自然の気配まで集めました。誇りと悔恨が交差する世界を、手がかりからたどってみませんか。",
+    "imagePrompt": "A solitary tiger standing among tall grasses on a moonlit mountain slope, with a robed scholar-official’s silhouette in the distance. Include cold dew on the grass and a pale dawn beginning at the horizon, with no text or labels. Square 1:1 composition. Antique copperplate engraving style with fine line work and cross-hatching, sepia ink on aged parchment paper, muted warm tones, 19th-century book illustration. No text, no letters, no numbers, no labels, no border."
+  }
+}

@@ -20,11 +20,10 @@ export const textSchema = {
       items: {
         type: 'object',
         properties: {
-          answer: { type: 'string' },
-          display: { type: 'string' },
+          id: { type: 'integer' },
           text: { type: 'string' },
         },
-        required: ['answer', 'display', 'text'],
+        required: ['id', 'text'],
         additionalProperties: false,
       },
     },
@@ -69,12 +68,13 @@ export function buildRequest({ field, themeFile, locale, words, retry = [] }) {
     .filter(Boolean)
     .join('\n');
 
-  const lines = words.map((w) => {
+  // 単語には番号を振り、番号と文章だけを返させる（表記と読みを返させると、取り違えることがあった）
+  const lines = words.map((w, i) => {
     const note = w.note ? ` メモ: ${w.note}` : '';
     const clue = field === 'explanation' && w.clue ? ` カギ: ${w.clue}` : '';
-    return `- ${w.display}（${w.answer}、${[...w.answer].length}文字）${note}${clue}`;
+    return `${i + 1}. ${w.display}（読み: ${w.answer}、${[...w.answer].length}文字）${note}${clue}`;
   });
-  let prompt = `次の単語それぞれに${name}を1つずつ書いて、text に入れてください。answer と display は一覧のとおりに返してください。\n${lines.join('\n')}`;
+  let prompt = `次の単語それぞれに${name}を1つずつ書いてください。id には単語の番号、text には${name}を入れて、全部の単語について返してください。\n${lines.join('\n')}`;
   if (retry.length) {
     prompt += `\n\n前回の${name}には次の問題がありました。直してください。\n${retry
       .map((r) => `- ${r.display}（${r.answer}）: 「${r.text}」→ ${r.problem}`)

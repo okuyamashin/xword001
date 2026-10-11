@@ -3,7 +3,7 @@
 //   まだ空の単語だけを選ぶ → テーマごとに分ける → 依頼を作る → writer に書かせる
 //   → 自動チェック → だめなものだけ理由を添えて書き直させる（最大 maxRounds 回）
 //
-// writer は { name, write({ field, system, prompt, schema, words }) → [{answer, display, text}] }。
+// writer は { name, write({ field, system, prompt, schema, words }) → [{ id, text }] または [{ answer, display, text }] }。
 // OpenAI API（writers/openai.js）や、用意した文章（writers/file.js）を差し替えて使う。
 // ファイル操作はしない。
 
@@ -32,7 +32,13 @@ export async function addTexts({ field, puzzle, themeFiles, locale, writer, maxR
       }));
       const request = buildRequest({ field, themeFile, locale, words: targets, retry });
       const results = await writer.write({ ...request, field, words: targets });
-      const byKey = new Map(results.map((r) => [`${r.answer}|${r.display}`, r.text]));
+      // 返事は { id: 単語の番号（1から）, text }。用意した文章（file writer）は { answer, display, text }
+      const byKey = new Map(
+        results.map((r) => {
+          const t = r.id != null ? targets[r.id - 1] : r;
+          return [t ? `${t.answer}|${t.display}` : null, r.text];
+        }),
+      );
       retry = [];
       const next = [];
       for (const w of pending) {

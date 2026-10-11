@@ -21,7 +21,7 @@ test('依頼にはテーマの作り方と単語が入る', async () => {
   const themeFile = await loadThemeFile('ja', 'countries');
   const r = buildRequest({ field: 'clue', themeFile, locale: ja, words: [{ ...word, note: '朝鮮半島北部' }] });
   assert.ok(r.system.includes(themeFile.clue.style));
-  assert.ok(r.prompt.includes('北朝鮮（キタチヨウセン、7文字） メモ: 朝鮮半島北部'));
+  assert.ok(r.prompt.includes('1. 北朝鮮（読み: キタチヨウセン、7文字） メモ: 朝鮮半島北部'));
 });
 
 test('今回の単語と同じ手本は依頼に入れない', async () => {
@@ -62,11 +62,12 @@ test('サンプルのパズルはすべてのカギがチェックを通る', as
 test('OpenAI の writer: 依頼の形と応答の読み取り', async () => {
   const { createOpenAIWriter } = await import('../generator/clues/writers/openai.js');
   let sent;
+  let reply = { status: 'completed', output: [], output_text: '{"items":[{"answer":"ドア","display":"ドア","text":"出入り口の戸"}]}' };
   const client = {
     responses: {
-      async create(params) {
+      stream(params) {
         sent = params;
-        return { status: 'completed', output: [], output_text: '{"items":[{"answer":"ドア","display":"ドア","text":"出入り口の戸"}]}' };
+        return { finalResponse: async () => reply };
       },
     },
   };
@@ -78,13 +79,13 @@ test('OpenAI の writer: 依頼の形と応答の読み取り', async () => {
   assert.equal(sent.text.format.type, 'json_schema');
   assert.equal(sent.text.format.strict, true);
 
-  client.responses.create = async () => ({
+  reply = {
     status: 'completed',
     output: [{ type: 'message', content: [{ type: 'refusal', refusal: 'no' }] }],
     output_text: '',
-  });
+  };
   await assert.rejects(writer.write({ system: 's', prompt: 'p', schema: {} }), /断られた/);
-  client.responses.create = async () => ({ status: 'incomplete', incomplete_details: { reason: 'max_output_tokens' }, output: [] });
+  reply = { status: 'incomplete', incomplete_details: { reason: 'max_output_tokens' }, output: [] };
   await assert.rejects(writer.write({ system: 's', prompt: 'p', schema: {} }), /途中で終わった/);
 });
 
@@ -110,6 +111,7 @@ test('解説: 空のものだけを埋め、カギを依頼に添え、答えを
   assert.equal(requests.length, 1); // ドアは解説ずみなので呼ばない
   assert.equal(requests[0].field, 'explanation');
   assert.ok(requests[0].prompt.includes('カギ: ナイロビが首都'));
+  assert.deepEqual(requests[0].schema.properties.items.items.required, ['id', 'text']);
   assert.ok(requests[0].system.includes(countries.explanation.style));
   assert.equal(result.puzzle.words[0].explanation, 'ケニアはマラソンで有名です。');
   assert.equal(result.puzzle.words[1].explanation, 'もう書いてある');
@@ -148,4 +150,20 @@ test('同じテーマの何回目かを数える', async () => {
   assert.equal(nextRound(existing, { id: '2026-10-14-ja', date: '2026-10-14', locale: 'ja', theme: 'countries' }), 2); // 作り直しでも番号は変わらない
   assert.equal(nextRound(existing, { id: '2026-10-20-ja', date: '2026-10-20', locale: 'ja', theme: 'kamakura' }), 2);
   assert.equal(nextRound(existing, { id: '2026-10-20-ja', date: '2026-10-20', locale: 'ja', theme: 'fish' }), 1);
+});
+
+test('番号で返された文章を、正しい単語に割り当てる', async () => {
+  const themeFile = await loadThemeFile('ja', 'sangetsuki');
+  const puzzle = {
+    locale: 'ja',
+    words: [
+      { answer: 'カリ', display: '下吏', theme: 'sangetsuki', clue: null },
+      { answer: 'ツキ', display: '月', theme: 'sangetsuki', clue: null },
+    ],
+  };
+  // 順番を入れ替え、表記の欄に余計なものがついていても、番号で照合する
+  const writer = { name: 'fake', async write() { return [{ id: 2, text: '最後に虎が仰いだもの' }, { id: 1, text: '下級の役人' }]; } };
+  const result = await addClues({ puzzle, themeFiles: [themeFile], locale: ja, writer });
+  assert.equal(result.puzzle.words[0].clue, '下級の役人');
+  assert.equal(result.puzzle.words[1].clue, '最後に虎が仰いだもの');
 });

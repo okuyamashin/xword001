@@ -15,13 +15,16 @@ export function createOpenAIWriter({
     name: `openai:${model}`,
     // JSON スキーマどおりのオブジェクトを返す
     async generate({ system, prompt, schema }) {
-      const response = await client.responses.create({
+      // ストリーミングで受け取る。時間のかかる呼び出しでも途中の通信が途切れにくい
+      // （応答をまとめて待つ方式では、プロキシ経由で 502 になることがあった）
+      const stream = client.responses.stream({
         model,
         reasoning: { effort },
         instructions: system,
         input: prompt,
         text: { format: { type: 'json_schema', name: 'result', schema, strict: true } },
       });
+      const response = await stream.finalResponse();
       if (response.status === 'incomplete') {
         throw new Error(`応答が途中で終わった: ${response.incomplete_details?.reason ?? '理由不明'}`);
       }
