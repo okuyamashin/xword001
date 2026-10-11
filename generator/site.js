@@ -36,6 +36,10 @@ function fillCommon(html, { parts, site, current }) {
     .replaceAll('__SITE_NAME__', escapeHtml(site.name));
 }
 
+export function renderPrivacyHtml({ template, parts, site }) {
+  return fillCommon(template, { parts, site, current: null });
+}
+
 // image: site/images/ の中のファイル名（ジャンルの絵。なければ方眼紙。呼び出し側で決める）
 // related: 同じテーマのほかの回（このパズルを除く）
 // recent: トップページに出す、ほかの最近のクロスワード（トップページのときだけ渡す）
