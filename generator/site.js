@@ -5,10 +5,15 @@ export function inlineLocale(source) {
   return source.replace(/^export /gm, '');
 }
 
-export function renderPuzzleHtml({ template, puzzle, localeSource }) {
-  const json = JSON.stringify(puzzle).replace(/</g, '\\u003c');
+export const DEFAULT_IMAGE = 'default.svg';
+
+export function renderPuzzleHtml({ template, puzzle, localeSource, site }) {
+  // テーマの絵は site/images/ に置く。なければ方眼紙の絵
+  const data = { ...puzzle, image: `images/${puzzle.image ?? DEFAULT_IMAGE}` };
+  const json = JSON.stringify(data).replace(/</g, '\\u003c');
   return template
-    .replace('__TITLE__', `クロスワード ${puzzle.date}｜${escapeHtml(puzzle.title)}`)
+    .replace('__TITLE__', `${escapeHtml(puzzle.title)}｜${escapeHtml(site.name)} ${puzzle.date}`)
+    .replaceAll('__SITE_NAME__', escapeHtml(site.name))
     .replace('/*__LOCALE__*/', () => inlineLocale(localeSource))
     .replace('/*__PUZZLE__*/null', () => json);
 }

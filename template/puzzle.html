@@ -4,64 +4,105 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>__TITLE__</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;800&family=Noto+Sans+JP:wght@400;700&display=swap">
 <style>
+  /* デザイン: 紙と墨。色はテーマごとに --accent などを差し替えられる（puzzle.design） */
   :root {
-    --bg: #fff;
-    --fg: #222;
-    --muted: #666;
-    --line: #333;
-    --block: transparent;
-    --cell: #fff;
-    --word: #fff3b0;
-    --active: #ffd23f;
-    --wrong: #ffb3b3;
-    --revealed: #2a6fdb;
-    --accent: #2a6fdb;
+    --bg: #f5efe2;
+    --paper: #fffaf0;
+    --fg: #2b2622;
+    --muted: #7a6f63;
+    --line: #2b2622;
+    --cell: #fffaf0;
+    --word: #f3dfb4;
+    --active: #e8b65a;
+    --wrong: #f2b8a8;
+    --revealed: #1f4e79;
+    --accent: #b23a2a;
+    --chrome-bg: #2b2622;
+    --chrome-fg: #f5efe2;
+    --display-font: "Shippori Mincho B1", "Hiragino Mincho ProN", "Yu Mincho", serif;
+    --body-font: "Noto Sans JP", system-ui, -apple-system, "Hiragino Sans", sans-serif;
   }
   * { box-sizing: border-box; }
   body {
     margin: 0;
-    padding: 16px;
-    background: var(--bg);
+    background-color: var(--bg);
+    background-image: radial-gradient(rgba(0, 0, 0, .035) 1px, transparent 1px);
+    background-size: 6px 6px;
     color: var(--fg);
-    font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
-    line-height: 1.5;
+    font-family: var(--body-font);
+    line-height: 1.6;
   }
-  main { max-width: 960px; margin: 0 auto; }
-  h1 { font-size: 1.3rem; margin: 0 0 4px; }
-  .theme { color: var(--muted); margin: 0 0 12px; }
-  .layout { display: grid; gap: 16px; }
+  header.site, footer.site { background: var(--chrome-bg); color: var(--chrome-fg); }
+  .site-inner { max-width: 960px; margin: 0 auto; padding: 10px 16px; }
+  header.site .logo { font-family: var(--display-font); font-size: 1.2rem; font-weight: 800; letter-spacing: .06em; }
+  footer.site { margin-top: 32px; font-size: .85rem; }
+  main { max-width: 960px; margin: 0 auto; padding: 20px 16px; }
+
+  .hero { margin-bottom: 16px; }
+  .date { margin: 0; color: var(--muted); font-size: .9rem; letter-spacing: .08em; }
+  h1 {
+    font-family: var(--display-font);
+    font-weight: 800;
+    font-size: 1.8rem;
+    letter-spacing: .06em;
+    margin: 0 0 8px;
+    padding-bottom: 6px;
+    border-bottom: 3px double var(--fg);
+  }
+  h1::before { content: ""; display: inline-block; width: .5em; height: .5em; margin-right: .4em; vertical-align: .15em; background: var(--accent); }
+  .description { margin: 0; max-width: 40em; }
+  .layout { display: grid; gap: 20px; }
   @media (min-width: 760px) { .layout { grid-template-columns: minmax(0, 1fr) 320px; } }
 
+  /* 盤面と、最初に出すテーマの絵 */
+  .board-wrap { position: relative; width: min(100%, 520px); }
+  .cover {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 1.5px solid var(--fg);
+    background: var(--paper);
+    cursor: pointer;
+    transition: opacity .6s ease, transform .6s ease;
+  }
+  .cover.hide { opacity: 0; transform: scale(1.03); pointer-events: none; }
   .board {
     display: block;
-    width: min(100%, 520px);
+    width: 100%;
     height: auto;
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
   }
   .board .cell { cursor: pointer; }
-  .board .cell rect { fill: var(--cell); stroke: var(--line); stroke-width: 1; }
+  .board .cell rect { fill: var(--cell); stroke: var(--line); stroke-width: 1.2; }
   .board .cell.in-word rect { fill: var(--word); }
   .board .cell.active rect { fill: var(--active); }
   .board .cell.wrong rect { fill: var(--wrong); }
   .board .num { font-size: 10px; fill: var(--muted); }
-  .board .letter { font-size: 24px; fill: var(--fg); text-anchor: middle; dominant-baseline: central; }
+  .board .letter { font-family: var(--display-font); font-weight: 800; font-size: 24px; fill: var(--fg); text-anchor: middle; dominant-baseline: central; }
   .board .cell.revealed .letter { fill: var(--revealed); }
 
   .entry { margin-top: 12px; width: min(100%, 520px); }
   .current { min-height: 4.5em; margin: 0 0 8px; }
   .current .label { font-weight: bold; }
   .input-row { display: flex; gap: 8px; }
-  .input-row input { flex: 1; min-width: 0; font-size: 1.1rem; padding: 8px; }
-  button { font-size: 1rem; padding: 8px 12px; cursor: pointer; }
+  .input-row input { flex: 1; min-width: 0; font: inherit; font-size: 1.1rem; padding: 8px; border: 1.5px solid var(--fg); border-radius: 2px; background: var(--paper); color: var(--fg); }
+  button { font: inherit; font-size: 1rem; padding: 8px 12px; cursor: pointer; background: var(--paper); color: var(--fg); border: 1.5px solid var(--fg); border-radius: 2px; }
+  button[type=submit], #check { background: var(--fg); color: var(--chrome-fg); }
+  button:active { transform: translateY(1px); }
   .buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
   .message { min-height: 3em; margin: 8px 0 0; color: var(--accent); font-weight: bold; }
 
-  .clues h2 { font-size: 1rem; margin: 0 0 4px; }
+  .clues h2 { font-family: var(--display-font); font-size: 1.15rem; margin: 0 0 6px; border-bottom: 1px solid var(--fg); }
   .clues ol { list-style: none; padding: 0; margin: 0 0 16px; }
-  .clues li { padding: 4px 6px; cursor: pointer; border-radius: 4px; }
+  .clues li { padding: 4px 6px; cursor: pointer; border-radius: 2px; }
   .clues li.selected { background: var(--word); }
   .clues li.done { color: var(--muted); }
   .clues li.wrong { background: var(--wrong); color: var(--fg); }
@@ -69,7 +110,7 @@
   .clues li .ans { color: var(--revealed); margin-left: 4px; }
   .clues li .explain { display: none; margin: 4px 0 2px; font-size: 0.9rem; color: var(--fg); }
   .clues li.show-explain .explain { display: block; }
-  .note { margin: 8px 0 0; padding: 8px 10px; border-left: 4px solid var(--accent); background: var(--word); font-size: 0.95rem; }
+  .note { margin: 8px 0 0; padding: 8px 10px; border-left: 4px solid var(--accent); background: var(--paper); font-size: 0.95rem; }
   .note p { margin: 0; }
   .note p + p { margin-top: 6px; }
   .note[hidden] { display: none; }
@@ -83,12 +124,19 @@
 </style>
 </head>
 <body>
+<header class="site"><div class="site-inner"><span class="logo">__SITE_NAME__</span></div></header>
 <main id="main">
-  <h1 id="title"></h1>
-  <p class="theme" id="theme"></p>
+  <div class="hero">
+    <p class="date" id="date"></p>
+    <h1 id="title"></h1>
+    <p class="description" id="description"></p>
+  </div>
   <div class="layout">
     <section>
-      <svg class="board" id="board" role="img" aria-label="クロスワードの盤面"></svg>
+      <div class="board-wrap">
+        <svg class="board" id="board" role="img" aria-label="クロスワードの盤面"></svg>
+        <img class="cover" id="cover" alt="" hidden>
+      </div>
       <div class="entry">
         <p class="current" id="current">カギを選んでください。</p>
         <form class="input-row" id="form" autocomplete="off">
@@ -117,6 +165,7 @@
     <ul id="rules"></ul>
   </section>
 </main>
+<footer class="site"><div class="site-inner">__SITE_NAME__ ─ 毎日ひとつ、テーマのあるクロスワード。</div></footer>
 
 <script>
 // ---- 言語ごとの設定（generator/locales/<locale>.js を埋め込む） ----
@@ -381,13 +430,41 @@ function finish() {
   setMessage(usedReveal ? '全部うまりました。カギの下に解説を出しました。' : '完成！ おめでとうございます。カギの下に解説を出しました。');
 }
 
+// 最初にテーマの絵を盤面の上に出し、すぐに消して盤面を見せる
+function showCover() {
+  const cover = document.getElementById('cover');
+  const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  if (!PUZZLE.image || reduce) return cover.remove();
+  let hidden = false;
+  const hide = () => {
+    if (hidden) return;
+    hidden = true;
+    cover.classList.add('hide');
+    setTimeout(() => cover.remove(), 700);
+  };
+  cover.addEventListener('click', hide);
+  cover.src = PUZZLE.image;
+  cover.hidden = false;
+  // ページ（フォントなど）を読み終えてから 1.2 秒見せる。読み込みが遅くても 4 秒で消す
+  const pageLoaded = document.readyState === 'complete' ? Promise.resolve() : new Promise((r) => addEventListener('load', r, { once: true }));
+  Promise.all([cover.decode(), pageLoaded]).then(() => setTimeout(hide, 1200), () => cover.remove());
+  setTimeout(hide, 4000);
+}
+
 function setMessage(text) {
   document.getElementById('message').textContent = text;
 }
 
 // ---- 開始 ----
-document.getElementById('title').textContent = `${PUZZLE.date} のクロスワード`;
-document.getElementById('theme').textContent = `テーマ: ${PUZZLE.title}`;
+const [y, m, d] = PUZZLE.date.split('-').map(Number);
+document.getElementById('date').textContent = `${y}年${m}月${d}日のクロスワード`;
+document.getElementById('title').textContent = PUZZLE.title;
+document.getElementById('description').textContent = PUZZLE.description ?? '';
+// テーマの色（テーマファイルの design）
+for (const [key, value] of Object.entries(PUZZLE.design ?? {})) {
+  document.documentElement.style.setProperty(`--${key}`, value);
+}
+showCover();
 const rulesEl = document.getElementById('rules');
 for (const text of [...PUZZLE.rules, ...rules]) {
   const li = document.createElement('li');
