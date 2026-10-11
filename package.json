@@ -1,0 +1,12 @@
+{
+  "name": "xword001",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "make": "node generator/cli/make-puzzle.js",
+    "trial": "node generator/cli/trial.js",
+    "test": "node --test"
+  }
+}

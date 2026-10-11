@@ -1,0 +1,178 @@
+{
+  "id": "2026-10-12-ja",
+  "date": "2026-10-12",
+  "locale": "ja",
+  "theme": "countries",
+  "title": "世界の国と地域",
+  "rules": [
+    "国名は略称で答えてください（例: アメリカ合衆国 → アメリカ）",
+    "国ではない地域（台湾・香港など）も含みます"
+  ],
+  "size": {
+    "rows": 9,
+    "cols": 9
+  },
+  "grid": [
+    "#タイ###キ##",
+    "キ#タジキスタン#",
+    "プ#リ#タ#マ#グ",
+    "ロシア#チ#ケニア",
+    "ス###ヨ#ド#ム",
+    "#セキドウギニア#",
+    "##ユ#セ#ア##",
+    "#ポーランド#マ#",
+    "##バ##アメリカ"
+  ],
+  "words": [
+    {
+      "number": 1,
+      "direction": "across",
+      "row": 0,
+      "col": 1,
+      "answer": "タイ",
+      "display": "タイ",
+      "theme": "countries",
+      "clue": null
+    },
+    {
+      "number": 5,
+      "direction": "across",
+      "row": 1,
+      "col": 2,
+      "answer": "タジキスタン",
+      "display": "タジキスタン",
+      "theme": "countries",
+      "clue": null
+    },
+    {
+      "number": 8,
+      "direction": "across",
+      "row": 3,
+      "col": 0,
+      "answer": "ロシア",
+      "display": "ロシア",
+      "theme": "countries",
+      "clue": null
+    },
+    {
+      "number": 9,
+      "direction": "across",
+      "row": 3,
+      "col": 6,
+      "answer": "ケニア",
+      "display": "ケニア",
+      "theme": "countries",
+      "clue": null
+    },
+    {
+      "number": 10,
+      "direction": "across",
+      "row": 5,
+      "col": 1,
+      "answer": "セキドウギニア",
+      "display": "赤道ギニア",
+      "theme": "countries",
+      "clue": null
+    },
+    {
+      "number": 12,
+      "direction": "across",
+      "row": 7,
+      "col": 1,
+      "answer": "ポーランド",
+      "display": "ポーランド",
+      "theme": "countries",
+      "clue": null
+    },
+    {
+      "number": 15,
+      "direction": "across",
+      "row": 8,
+      "col": 5,
+      "answer": "アメリカ",
+      "display": "アメリカ",
+      "theme": "countries",
+      "clue": null
+    },
+    {
+      "number": 2,
+      "direction": "down",
+      "row": 0,
+      "col": 2,
+      "answer": "イタリア",
+      "display": "イタリア",
+      "theme": "countries",
+      "clue": null
+    },
+    {
+      "number": 3,
+      "direction": "down",
+      "row": 0,
+      "col": 6,
+      "answer": "キタマケドニア",
+      "display": "北マケドニア",
+      "theme": "countries",
+      "clue": null
+    },
+    {
+      "number": 4,
+      "direction": "down",
+      "row": 1,
+      "col": 0,
+      "answer": "キプロス",
+      "display": "キプロス",
+      "theme": "countries",
+      "clue": null
+    },
+    {
+      "number": 6,
+      "direction": "down",
+      "row": 1,
+      "col": 4,
+      "answer": "キタチヨウセン",
+      "display": "北朝鮮",
+      "theme": "countries",
+      "clue": null
+    },
+    {
+      "number": 7,
+      "direction": "down",
+      "row": 2,
+      "col": 8,
+      "answer": "グアム",
+      "display": "グアム",
+      "theme": "countries",
+      "clue": null
+    },
+    {
+      "number": 11,
+      "direction": "down",
+      "row": 5,
+      "col": 2,
+      "answer": "キユーバ",
+      "display": "キューバ",
+      "theme": "countries",
+      "clue": null
+    },
+    {
+      "number": 13,
+      "direction": "down",
+      "row": 7,
+      "col": 5,
+      "answer": "ドア",
+      "display": "ドア",
+      "theme": "general",
+      "clue": null
+    },
+    {
+      "number": 14,
+      "direction": "down",
+      "row": 7,
+      "col": 7,
+      "answer": "マリ",
+      "display": "マリ",
+      "theme": "countries",
+      "clue": null
+    }
+  ]
+}
