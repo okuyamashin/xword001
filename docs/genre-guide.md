@@ -291,6 +291,14 @@ npm run site                          # site/ にページを作る
 4. `main` の内容で `npm run deploy` を実行し、本番（S3 + CloudFront、`https://xword.engawa5656.com/`）に上げる。
    最初に `npm run deploy -- --dryrun` で、送られるもの・消えるものを確かめる
 
+毎日の問題は Lambda が作ります（`docs/lambda.md`）。ジャンルを足したら:
+
+- Lambda が使うのは**カギのある言葉だけ**です。カギを書いていない言葉は盤面に入りません。
+  ランダムで選ばれるのは、カギのある言葉が 30 語以上あるジャンルだけです。
+- 決まった日に出したいときは、予定表 `data/schedule/ja.json` の `days` に `"YYYY-MM-DD": "<ジャンル>"` を書いて、`npm run deploy` で上げます。
+- すぐに 1 問作りたいときは、Lambda をジャンルを指定して呼びます（`{"genre": "<ジャンル>"}`）。
+- リポジトリの `puzzles/` にはパズルを足しません（`npm run make` は手元で試す用）。
+
 ---
 
 ## 6. チェックリスト

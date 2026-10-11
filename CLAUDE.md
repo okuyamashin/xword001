@@ -8,10 +8,13 @@
 - **ジャンルを作る・直すとき: `docs/genre-guide.md` に必ず従う**（命名・ファイル形式・文字のルール・カギと解説の書き方・絵・点検・公開の全手順）
 - 仕組みの詳しい説明: `docs/design.md`
 - 本番に上げる手順と AWS の準備: `docs/deploy.md`
+- 毎日の問題づくり（Lambda）と S3 の分け方: `docs/lambda.md`
 
 ## 大事な決まり
 
 - 作るのは単語リスト（`data/words/ja/<ジャンル>.json`）とジャンルの絵だけ。パズルは単語リストから AI なしで作る。
+- 毎日の問題は Lambda が作って S3（データ用の非公開バケット）に置く。リポジトリの `puzzles/` にはパズルを足さない（`docs/lambda.md`）。
+- Lambda が使うのはカギのある言葉だけ。予定表は `data/schedule/ja.json`。
 - カギと解説は単語リストに 1 語 1 つずつ作り置きする。**Claude Code は API キーなしで直接書いてよい**（`docs/genre-guide.md` 2.6〜2.8 のルールどおりに）。
 - OpenAI の API キーが要るのは絵（`npm run theme-image`）と、AI に文章を書かせるとき（`npm run theme-texts`）だけ。
 - 答えの文字種はジャンルごとに `kana`（カタカナ）か `latin`（英字の大文字）。文字のルールは `generator/scripts/`。

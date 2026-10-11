@@ -3,6 +3,11 @@
 本番のサイトは AWS の S3 に置き、CloudFront を通して `https://xword.engawa5656.com/` で公開します。
 GitHub はプログラムと単語リストの置き場所で、GitHub Pages での公開はしません。
 
+> **これから: パズルは Lambda が毎日作って S3 に置く形に変わります（`docs/lambda.md`）。**
+> データ用の非公開バケットを分け、`npm run deploy` は単語リスト・絵・設定・予定表だけを上げるように作り替えます。
+> **作り替える前の今の `npm run deploy` を、Lambda が問題を作り始めたあとに使わないでください**
+> （リポジトリの `puzzles/` で公開用バケットを `--delete` 同期するので、Lambda が作った問題のページが消えます）。
+
 ---
 
 ## 1. ふだんの流れ

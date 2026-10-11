@@ -714,6 +714,15 @@ npm test
 - 以前は GitHub Pages（`okuyamashin.github.io/xword001/`）で公開していたが、ファイル容量などの制限があるため S3 に切り替えた。
   GitHub Pages の自動公開（`.github/workflows/pages.yml`）は削除した。
 
+### 13.6.1 毎日の問題づくり（Lambda）
+
+- パズルは Lambda が毎日 0 時（日本時間）に作って S3 に置く。GitHub から上げるのは単語リスト・絵・サイトの設定・予定表・プログラムだけ。
+- バケットは公開用（ページと絵）とデータ用（非公開。単語リスト・設定・予定表・パズルの元データ）に分ける。問題の一覧の本体はデータ用バケットの `puzzles/ja/`。
+- ジャンルは、イベントで指定 → 予定表（`data/schedule/ja.json`）のその日 → ランダム（カギのある言葉が 30 語以上のジャンルから、直前の回と同じジャンルを避けて）。
+- Lambda はカギのある言葉だけを使う。
+- 中身は `generator/daily.js`（`runDaily`）、入口は `lambda/index.js`。ページづくりは `generator/site-build.js`（`buildSitePages`）を `npm run site` と共有する。
+- 方針・仕様・これから作るもの（`npm run deploy` の作り替え、AWS の準備）は `docs/lambda.md`。
+
 ### 13.7 ページ構成とバックナンバー
 
 | ページ | 内容 |
