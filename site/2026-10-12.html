@@ -40,6 +40,11 @@
   header.site { padding: 16px 0 8px; }
   header.site .wordmark { margin: 0; font-family: var(--latin); font-weight: 600; font-size: .95rem; letter-spacing: .2em; text-transform: uppercase; }
   header.site .name { margin: 0; color: var(--muted); font-size: .9rem; letter-spacing: .12em; }
+  header.site .site-inner { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  header.site a { color: inherit; text-decoration: none; }
+  header.site nav { display: flex; gap: 16px; font-size: .9rem; letter-spacing: .12em; }
+  header.site nav a { border-bottom: 1px solid transparent; }
+  header.site nav a:hover, header.site nav a[aria-current] { border-bottom-color: var(--fg); }
   footer.site { margin-top: 40px; padding: 20px 0 28px; border-top: 1px solid var(--rule); color: var(--muted); font-size: .85rem; }
 
   .hero { text-align: center; margin: 24px 0 20px; }
@@ -59,6 +64,7 @@
   .description:empty { display: none; }
   .layout { display: grid; gap: 24px; }
   @media (min-width: 760px) { .layout { grid-template-columns: minmax(0, 1fr) 320px; } }
+  footer.site a { color: inherit; }
 
   /* 盤面と、最初に出すテーマの絵 */
   .board-wrap { position: relative; width: min(100%, 520px); margin: 0 auto; }
@@ -121,15 +127,23 @@
   .clues li .tag[hidden] { display: none; }
   .clues li .tag { display: inline-block; margin-right: 6px; padding: 0 6px; border: 1px solid var(--muted); border-radius: 999px; font-size: 0.75rem; color: var(--muted); }
 
+  .related { margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--rule); }
+  .related h2 { font-size: 1rem; letter-spacing: .2em; margin: 0 0 6px; }
+  .related ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 6px 18px; }
+  .related a { color: var(--fg); }
   .rules { margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--rule); font-size: 0.9rem; color: var(--muted); }
   .rules ul { padding-left: 1.2em; margin: 4px 0; }
 </style>
 </head>
 <body>
 <header class="site"><div class="site-inner">
-  <p class="wordmark">Yorozu Crossword</p>
-  <p class="name">よろずのクロスワードパズル</p>
+  <div>
+    <p class="wordmark"><a href="index.html">Yorozu Crossword</a></p>
+    <p class="name">よろずのクロスワードパズル</p>
+  </div>
+  <nav><a href="index.html">最新の問題</a><a href="archive.html">バックナンバー</a></nav>
 </div></header>
+
 <main id="main">
   <div class="hero">
     <p class="date" id="date"></p>
@@ -166,12 +180,14 @@
       <ol id="down"></ol>
     </section>
   </div>
+
   <section class="rules">
     <strong>答えの書き方</strong>
     <ul id="rules"></ul>
   </section>
 </main>
-<footer class="site"><div class="site-inner">よろずのクロスワードパズル ─ 毎日ひとつ、いろいろなテーマのクロスワードパズル。</div></footer>
+<footer class="site"><div class="site-inner">よろずのクロスワードパズル ─ 毎日ひとつ、いろいろなテーマのクロスワードパズル。 <a href="archive.html">バックナンバー</a></div></footer>
+
 
 <script>
 // ---- 言語ごとの設定（generator/locales/<locale>.js を埋め込む） ----
@@ -287,7 +303,7 @@ function wordsAt(r, c) {
 // ---- 保存 ----
 function save() {
   try {
-    localStorage.setItem(storageKey, JSON.stringify({ filled, revealed, shownWords }));
+    localStorage.setItem(storageKey, JSON.stringify({ filled, revealed, shownWords, solved: isSolved(), started: filled.flat().some(Boolean) }));
   } catch {}
 }
 function load() {

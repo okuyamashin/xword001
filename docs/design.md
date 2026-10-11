@@ -636,3 +636,22 @@ npm test
 - テスト用の URL: `https://okuyamashin.github.io/xword001/`
 - 本番では `engawa5656.com` のサブドメインを使う。リポジトリの Settings → Pages の Custom domain に入れ、
   DNS にそのサブドメインの CNAME（向け先 `okuyamashin.github.io`）を追加する。
+
+### 13.7 ページ構成とバックナンバー
+
+| ページ | 内容 |
+|---|---|
+| `site/<日付>.html` | パズルのページ。下に「同じテーマのほかの回」へのリンク |
+| `site/index.html` | いちばん新しいパズル |
+| `site/archive.html` | バックナンバー。新着（4問）と、テーマごとの一覧（最近出たテーマから、各テーマは新しい回から）。絵の見本・見出し・第N回・日付・紹介文を出す。この端末で解いたものに「完成」、解きかけに「途中」の印（localStorage の進み具合を読む） |
+
+- どのページにもヘッダーに「最新の問題」「バックナンバー」へのリンク。
+- 共通部分は `template/base.css`（色・文字・ヘッダー）、`template/header.html`、`template/footer.html` にまとめ、作るときにはめこむ。
+
+### 13.8 絵の形式と大きさ
+
+- 表紙の絵（PNG・JPEG）は `data/images/<パズルのID>.png` に置き、`npm run images` で WebP に変える。
+  - `<ID>.webp`: 1040px 四方（盤面の最大幅 520px の 2 倍）。品質 78
+  - `<ID>.thumb.webp`: 176px 四方（一覧の 88px の 2 倍）。品質 72
+  - 変換後、元の PNG・JPEG は消す（`--keep` で残す）。リポジトリには WebP だけを入れる。
+- 変換には sharp を使う（開発用の依存。公開のワークフローでは使わない）。
