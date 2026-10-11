@@ -34,38 +34,30 @@
   @media (min-width: 760px) { .layout { grid-template-columns: minmax(0, 1fr) 320px; } }
 
   .board {
-    display: grid;
-    grid-template-columns: repeat(var(--cols), 1fr);
+    display: block;
     width: min(100%, 520px);
-    aspect-ratio: var(--cols) / var(--rows);
+    height: auto;
     user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
   }
-  .cell {
-    position: relative;
-    border: 1px solid var(--line);
-    margin: 0 -1px -1px 0;
-    background: var(--cell);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: clamp(14px, 5vw, 26px);
-    cursor: pointer;
-  }
-  .cell.block { border-color: transparent; background: var(--block); cursor: default; }
-  .cell .num { position: absolute; top: 1px; left: 3px; font-size: clamp(8px, 2.2vw, 11px); line-height: 1; color: var(--muted); }
-  .cell.in-word { background: var(--word); }
-  .cell.active { background: var(--active); }
-  .cell.wrong { background: var(--wrong); }
-  .cell.revealed { color: var(--revealed); }
+  .board .cell { cursor: pointer; }
+  .board .cell rect { fill: var(--cell); stroke: var(--line); stroke-width: 1; }
+  .board .cell.in-word rect { fill: var(--word); }
+  .board .cell.active rect { fill: var(--active); }
+  .board .cell.wrong rect { fill: var(--wrong); }
+  .board .num { font-size: 10px; fill: var(--muted); }
+  .board .letter { font-size: 24px; fill: var(--fg); text-anchor: middle; dominant-baseline: central; }
+  .board .cell.revealed .letter { fill: var(--revealed); }
 
   .entry { margin-top: 12px; width: min(100%, 520px); }
-  .current { min-height: 3em; margin: 0 0 8px; }
+  .current { min-height: 4.5em; margin: 0 0 8px; }
   .current .label { font-weight: bold; }
   .input-row { display: flex; gap: 8px; }
   .input-row input { flex: 1; min-width: 0; font-size: 1.1rem; padding: 8px; }
   button { font-size: 1rem; padding: 8px 12px; cursor: pointer; }
   .buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-  .message { min-height: 1.5em; margin: 8px 0 0; color: var(--accent); font-weight: bold; }
+  .message { min-height: 3em; margin: 8px 0 0; color: var(--accent); font-weight: bold; }
 
   .clues h2 { font-size: 1rem; margin: 0 0 4px; }
   .clues ol { list-style: none; padding: 0; margin: 0 0 16px; }
@@ -86,7 +78,7 @@
   <p class="theme" id="theme"></p>
   <div class="layout">
     <section>
-      <div class="board" id="board"></div>
+      <svg class="board" id="board" role="img" aria-label="クロスワードの盤面"></svg>
       <div class="entry">
         <p class="current" id="current">カギを選んでください。</p>
         <form class="input-row" id="form" autocomplete="off">
@@ -163,29 +155,43 @@ function load() {
 }
 
 // ---- 描画 ----
+// 盤面は SVG。マスの大きさを座標で固定し、render() のたびにまるごと描き直す。
 const board = document.getElementById('board');
-const cellEls = emptyGrid(null);
+const CELL = 40; // 1マスの大きさ（viewBox の単位）
+const PAD = 1; // 外枠の線が切れないための余白
+const numbers = new Map(words.map((w) => [`${w.row},${w.col}`, w.number]));
 
 function buildBoard() {
-  board.style.setProperty('--rows', rows);
-  board.style.setProperty('--cols', cols);
-  const numbers = new Map(words.map((w) => [`${w.row},${w.col}`, w.number]));
+  board.setAttribute('viewBox', `${-PAD} ${-PAD} ${cols * CELL + PAD * 2} ${rows * CELL + PAD * 2}`);
+  board.addEventListener('click', (e) => {
+    const cell = e.target.closest('[data-r]');
+    if (cell) onCellClick(Number(cell.dataset.r), Number(cell.dataset.c));
+  });
+}
+
+function boardSvg({ selectedCells, isWrong }) {
+  const parts = [];
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
-      const el = document.createElement('div');
-      el.className = 'cell';
-      if (solution[r][c] === '#') {
-        el.classList.add('block');
-      } else {
-        const num = numbers.get(`${r},${c}`);
-        if (num) el.innerHTML = `<span class="num">${num}</span>`;
-        el.append(document.createElement('span'));
-        el.addEventListener('click', () => onCellClick(r, c));
-      }
-      board.append(el);
-      cellEls[r][c] = el;
+      if (solution[r][c] === '#') continue;
+      const x = c * CELL;
+      const y = r * CELL;
+      const cls = ['cell'];
+      if (selectedCells.has(`${r},${c}`)) cls.push('in-word');
+      if (activeCell?.[0] === r && activeCell?.[1] === c) cls.push('active');
+      if (isWrong(r, c)) cls.push('wrong');
+      if (revealed[r][c]) cls.push('revealed');
+      const num = numbers.get(`${r},${c}`);
+      parts.push(
+        `<g class="${cls.join(' ')}" data-r="${r}" data-c="${c}">` +
+          `<rect x="${x}" y="${y}" width="${CELL}" height="${CELL}"/>` +
+          (num ? `<text class="num" x="${x + 3}" y="${y + 10}">${num}</text>` : '') +
+          (filled[r][c] ? `<text class="letter" x="${x + CELL / 2}" y="${y + CELL / 2 + 2}">${filled[r][c]}</text>` : '') +
+          '</g>',
+      );
     }
   }
+  return parts.join('');
 }
 
 function buildClues() {
@@ -206,17 +212,7 @@ function render() {
   // 全部埋まったとき、または答え合わせを押したときは、まちがいに色をつける
   const showWrong = checkRequested || allFilled();
   const isWrong = (r, c) => showWrong && filled[r][c] && filled[r][c] !== solution[r][c];
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      if (solution[r][c] === '#') continue;
-      const el = cellEls[r][c];
-      el.lastChild.textContent = filled[r][c];
-      el.classList.toggle('in-word', selectedCells.has(`${r},${c}`));
-      el.classList.toggle('active', activeCell?.[0] === r && activeCell?.[1] === c);
-      el.classList.toggle('revealed', revealed[r][c]);
-      el.classList.toggle('wrong', isWrong(r, c));
-    }
-  }
+  board.innerHTML = boardSvg({ selectedCells, isWrong });
   for (const w of words) {
     w.li.classList.toggle('selected', w === selected);
     const complete = w.cells.every(([r, c]) => filled[r][c]);
