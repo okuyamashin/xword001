@@ -47,12 +47,15 @@ export function resolveClueSettings(themeFile, locale) {
  */
 export function buildClueRequest({ themeFile, locale, words, retry = [] }) {
   const s = resolveClueSettings(themeFile, locale);
+  // 今回の単語が手本に入っていると、手本をそのまま写されるので外す
+  const asked = new Set(words.map((w) => `${w.answer}|${w.display}`));
+  const examples = s.examples.filter((e) => !asked.has(`${e.answer}|${e.display}`));
   const system = [
     ...s.instructions,
     `1つのカギは${s.maxLength}文字以内にする。`,
     `今回のテーマは「${themeFile.title}」。`,
     s.style && `このテーマのカギの作り方: ${s.style}`,
-    s.examples.length && `例:\n${s.examples.map((e) => `- ${e.display}（${e.answer}）→ ${e.clue}`).join('\n')}`,
+    examples.length && `例:\n${examples.map((e) => `- ${e.display}（${e.answer}）→ ${e.clue}`).join('\n')}`,
   ]
     .filter(Boolean)
     .join('\n');

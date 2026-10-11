@@ -245,6 +245,10 @@
 - AI は OpenAI を使う。writer は Responses API で、JSON の形を指定して（Structured Outputs, `strict: true`）カギを受け取る。
   モデルは `--model` か環境変数 `OPENAI_MODEL` で指定する（省略時は `gpt-5.5`）。
 - 断られた応答（refusal）や、途中で切れた応答（incomplete）はエラーにする。
+- 今回の単語が `clue.examples` にも入っているときは、その手本を依頼から外す（手本をそのまま写されるため）。
+- `npm run clues` は `NODE_USE_ENV_PROXY=1` を付けて動かす。Node.js 22.21 以上の fetch が `HTTPS_PROXY` を使うようになる
+  （Claude Code のクラウド環境ではこれがないと api.openai.com に届かない。プロキシのない環境では影響しない）。
+- 動作確認（2026-10-11, gpt-5.5）: 国名テーマ14語を1回の呼び出しで生成し、14語とも自動チェックを通った（約23秒）。
 - 答えの漏れは、カギを `normalize()` してから探す。ひらがなや小さい文字で書かれていても見つかる。
 - 未実装: 「カギだけを見せて解かせ、正解するか」を確かめるチェック（5.2）。
 

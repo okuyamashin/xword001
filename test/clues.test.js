@@ -24,6 +24,14 @@ test('依頼にはテーマの作り方と単語が入る', async () => {
   assert.ok(r.prompt.includes('北朝鮮（キタチヨウセン、7文字） メモ: 朝鮮半島北部'));
 });
 
+test('今回の単語と同じ手本は依頼に入れない', async () => {
+  const themeFile = await loadThemeFile('ja', 'countries');
+  const kenya = { answer: 'ケニア', display: 'ケニア' };
+  const r = buildClueRequest({ themeFile, locale: ja, words: [kenya] });
+  assert.ok(!r.system.includes('ナイロビ'));
+  assert.ok(r.system.includes('マチュピチュ'));
+});
+
 test('チェックに落ちたカギは理由を添えて書き直させる', async () => {
   const themeFile = await loadThemeFile('ja', 'countries');
   const puzzle = { locale: 'ja', words: [{ ...word, theme: 'countries', clue: null }] };
