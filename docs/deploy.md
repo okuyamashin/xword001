@@ -36,7 +36,9 @@ S3_BUCKET=<バケット名> CLOUDFRONT_DISTRIBUTION_ID=<ディストリビュー
 | `--bucket` / `--distribution` | 環境変数の代わりに指定する |
 
 - AWS CLI（`aws`）が必要です。認証は AWS CLI のふつうの方法（`AWS_PROFILE`、SSO、環境変数など）で行います。
-- `site/` はリポジトリに入れません（`.gitignore`）。毎回作り直します。
+- 作ったページ（`site/`）はリポジトリに入れています。`main` の `site/` をそのまま S3 に置くこともできます（S3 の画面からアップロードするなど）。
+  その場合も、WebP の種類（`image/webp`）と、キャッシュの設定に気をつけてください。
+- 単語リストやパズルを変えたら、`npm run site` で `site/` を作り直してからコミットします。
 
 ---
 

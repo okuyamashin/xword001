@@ -1,0 +1,2498 @@
+{
+  "locale": "ja",
+  "theme": "general",
+  "title": "一般",
+  "subtitle": "Everyday Words",
+  "description": "テーマに関係なく使える、身のまわりの言葉。",
+  "rules": [],
+  "words": [
+    {
+      "answer": "ミミ",
+      "display": "耳",
+      "level": 1
+    },
+    {
+      "answer": "クチ",
+      "display": "口",
+      "level": 1
+    },
+    {
+      "answer": "ハナ",
+      "display": "鼻",
+      "level": 1
+    },
+    {
+      "answer": "アシ",
+      "display": "足",
+      "level": 1
+    },
+    {
+      "answer": "アタマ",
+      "display": "頭",
+      "level": 1
+    },
+    {
+      "answer": "カオ",
+      "display": "顔",
+      "level": 1
+    },
+    {
+      "answer": "クビ",
+      "display": "首",
+      "level": 1
+    },
+    {
+      "answer": "カタ",
+      "display": "肩",
+      "level": 1
+    },
+    {
+      "answer": "ウデ",
+      "display": "腕",
+      "level": 1
+    },
+    {
+      "answer": "ユビ",
+      "display": "指",
+      "level": 1
+    },
+    {
+      "answer": "ツメ",
+      "display": "爪",
+      "level": 1
+    },
+    {
+      "answer": "カミ",
+      "display": "髪",
+      "level": 1
+    },
+    {
+      "answer": "ムネ",
+      "display": "胸",
+      "level": 1
+    },
+    {
+      "answer": "コシ",
+      "display": "腰",
+      "level": 1
+    },
+    {
+      "answer": "ヒザ",
+      "display": "膝",
+      "level": 1
+    },
+    {
+      "answer": "セナカ",
+      "display": "背中",
+      "level": 1
+    },
+    {
+      "answer": "オナカ",
+      "display": "お腹",
+      "level": 1
+    },
+    {
+      "answer": "ココロ",
+      "display": "心",
+      "level": 1
+    },
+    {
+      "answer": "コエ",
+      "display": "声",
+      "level": 1
+    },
+    {
+      "answer": "ノド",
+      "display": "喉",
+      "level": 1
+    },
+    {
+      "answer": "ホオ",
+      "display": "頬",
+      "level": 1
+    },
+    {
+      "answer": "マユ",
+      "display": "眉",
+      "level": 1
+    },
+    {
+      "answer": "クチビル",
+      "display": "唇",
+      "level": 1
+    },
+    {
+      "answer": "シタ",
+      "display": "舌",
+      "level": 1
+    },
+    {
+      "answer": "ヒタイ",
+      "display": "額",
+      "level": 1
+    },
+    {
+      "answer": "カカト",
+      "display": "踵",
+      "level": 2
+    },
+    {
+      "answer": "アセ",
+      "display": "汗",
+      "level": 1
+    },
+    {
+      "answer": "ナミダ",
+      "display": "涙",
+      "level": 1
+    },
+    {
+      "answer": "イキ",
+      "display": "息",
+      "level": 1
+    },
+    {
+      "answer": "ホネ",
+      "display": "骨",
+      "level": 1
+    },
+    {
+      "answer": "ハダ",
+      "display": "肌",
+      "level": 1
+    },
+    {
+      "answer": "ネツ",
+      "display": "熱",
+      "level": 1
+    },
+    {
+      "answer": "セキ",
+      "display": "咳",
+      "level": 1
+    },
+    {
+      "answer": "クスリ",
+      "display": "薬",
+      "level": 1
+    },
+    {
+      "answer": "ヤマ",
+      "display": "山",
+      "level": 1
+    },
+    {
+      "answer": "カワ",
+      "display": "川",
+      "level": 1
+    },
+    {
+      "answer": "ウミ",
+      "display": "海",
+      "level": 1
+    },
+    {
+      "answer": "ソラ",
+      "display": "空",
+      "level": 1
+    },
+    {
+      "answer": "アメ",
+      "display": "雨",
+      "level": 1
+    },
+    {
+      "answer": "ユキ",
+      "display": "雪",
+      "level": 1
+    },
+    {
+      "answer": "カゼ",
+      "display": "風",
+      "level": 1
+    },
+    {
+      "answer": "モリ",
+      "display": "森",
+      "level": 1
+    },
+    {
+      "answer": "ハヤシ",
+      "display": "林",
+      "level": 1
+    },
+    {
+      "answer": "イシ",
+      "display": "石",
+      "level": 1
+    },
+    {
+      "answer": "イワ",
+      "display": "岩",
+      "level": 1
+    },
+    {
+      "answer": "スナ",
+      "display": "砂",
+      "level": 1
+    },
+    {
+      "answer": "ホシ",
+      "display": "星",
+      "level": 1
+    },
+    {
+      "answer": "ツキ",
+      "display": "月",
+      "level": 1
+    },
+    {
+      "answer": "イケ",
+      "display": "池",
+      "level": 1
+    },
+    {
+      "answer": "ミズウミ",
+      "display": "湖",
+      "level": 1
+    },
+    {
+      "answer": "ヌマ",
+      "display": "沼",
+      "level": 1
+    },
+    {
+      "answer": "タキ",
+      "display": "滝",
+      "level": 1
+    },
+    {
+      "answer": "タニ",
+      "display": "谷",
+      "level": 1
+    },
+    {
+      "answer": "オカ",
+      "display": "丘",
+      "level": 1
+    },
+    {
+      "answer": "サカ",
+      "display": "坂",
+      "level": 1
+    },
+    {
+      "answer": "シマ",
+      "display": "島",
+      "level": 1
+    },
+    {
+      "answer": "ハマ",
+      "display": "浜",
+      "level": 1
+    },
+    {
+      "answer": "ナミ",
+      "display": "波",
+      "level": 1
+    },
+    {
+      "answer": "シオ",
+      "display": "潮",
+      "level": 1
+    },
+    {
+      "answer": "クモ",
+      "display": "雲",
+      "level": 1
+    },
+    {
+      "answer": "カミナリ",
+      "display": "雷",
+      "level": 1
+    },
+    {
+      "answer": "キリ",
+      "display": "霧",
+      "level": 1
+    },
+    {
+      "answer": "ツユ",
+      "display": "露",
+      "level": 1
+    },
+    {
+      "answer": "ニジ",
+      "display": "虹",
+      "level": 1
+    },
+    {
+      "answer": "アラシ",
+      "display": "嵐",
+      "level": 1
+    },
+    {
+      "answer": "タイフウ",
+      "display": "台風",
+      "level": 1
+    },
+    {
+      "answer": "ジシン",
+      "display": "地震",
+      "level": 1
+    },
+    {
+      "answer": "ホノオ",
+      "display": "炎",
+      "level": 1
+    },
+    {
+      "answer": "ケムリ",
+      "display": "煙",
+      "level": 1
+    },
+    {
+      "answer": "ハイ",
+      "display": "灰",
+      "level": 1
+    },
+    {
+      "answer": "ツチ",
+      "display": "土",
+      "level": 1
+    },
+    {
+      "answer": "ドロ",
+      "display": "泥",
+      "level": 1
+    },
+    {
+      "answer": "クサ",
+      "display": "草",
+      "level": 1
+    },
+    {
+      "answer": "エダ",
+      "display": "枝",
+      "level": 1
+    },
+    {
+      "answer": "タネ",
+      "display": "種",
+      "level": 1
+    },
+    {
+      "answer": "ハレ",
+      "display": "晴れ",
+      "level": 1
+    },
+    {
+      "answer": "クモリ",
+      "display": "曇り",
+      "level": 1
+    },
+    {
+      "answer": "ヒカリ",
+      "display": "光",
+      "level": 1
+    },
+    {
+      "answer": "カゲ",
+      "display": "影",
+      "level": 1
+    },
+    {
+      "answer": "タイヨウ",
+      "display": "太陽",
+      "level": 1
+    },
+    {
+      "answer": "チキユウ",
+      "display": "地球",
+      "level": 1
+    },
+    {
+      "answer": "ウチユウ",
+      "display": "宇宙",
+      "level": 1
+    },
+    {
+      "answer": "シゼン",
+      "display": "自然",
+      "level": 1
+    },
+    {
+      "answer": "キセツ",
+      "display": "季節",
+      "level": 1
+    },
+    {
+      "answer": "ケシキ",
+      "display": "景色",
+      "level": 1
+    },
+    {
+      "answer": "ハル",
+      "display": "春",
+      "level": 1
+    },
+    {
+      "answer": "ナツ",
+      "display": "夏",
+      "level": 1
+    },
+    {
+      "answer": "アキ",
+      "display": "秋",
+      "level": 1
+    },
+    {
+      "answer": "フユ",
+      "display": "冬",
+      "level": 1
+    },
+    {
+      "answer": "アサ",
+      "display": "朝",
+      "level": 1
+    },
+    {
+      "answer": "ヒル",
+      "display": "昼",
+      "level": 1
+    },
+    {
+      "answer": "ヨル",
+      "display": "夜",
+      "level": 1,
+      "clue": "日がしずんで暗い時間",
+      "explanation": "天気予報の用語では、夜は18時ごろから24時ごろまでです。0時以降は「未明」などと呼び分けます。"
+    },
+    {
+      "answer": "キヨウ",
+      "display": "今日",
+      "level": 1
+    },
+    {
+      "answer": "アシタ",
+      "display": "明日",
+      "level": 1
+    },
+    {
+      "answer": "キノウ",
+      "display": "昨日",
+      "level": 1
+    },
+    {
+      "answer": "マイニチ",
+      "display": "毎日",
+      "level": 1
+    },
+    {
+      "answer": "ジカン",
+      "display": "時間",
+      "level": 1
+    },
+    {
+      "answer": "シユウマツ",
+      "display": "週末",
+      "level": 1
+    },
+    {
+      "answer": "シヨウガツ",
+      "display": "正月",
+      "level": 1
+    },
+    {
+      "answer": "マツリ",
+      "display": "祭り",
+      "level": 1
+    },
+    {
+      "answer": "ミライ",
+      "display": "未来",
+      "level": 1
+    },
+    {
+      "answer": "カコ",
+      "display": "過去",
+      "level": 1
+    },
+    {
+      "answer": "レキシ",
+      "display": "歴史",
+      "level": 1
+    },
+    {
+      "answer": "ハナ",
+      "display": "花",
+      "level": 1
+    },
+    {
+      "answer": "タケ",
+      "display": "竹",
+      "level": 1
+    },
+    {
+      "answer": "マツ",
+      "display": "松",
+      "level": 1
+    },
+    {
+      "answer": "ウメ",
+      "display": "梅",
+      "level": 1
+    },
+    {
+      "answer": "サクラ",
+      "display": "桜",
+      "level": 1
+    },
+    {
+      "answer": "キク",
+      "display": "菊",
+      "level": 1
+    },
+    {
+      "answer": "フジ",
+      "display": "藤",
+      "level": 1
+    },
+    {
+      "answer": "スギ",
+      "display": "杉",
+      "level": 1
+    },
+    {
+      "answer": "イネ",
+      "display": "稲",
+      "level": 1
+    },
+    {
+      "answer": "コケ",
+      "display": "苔",
+      "level": 2
+    },
+    {
+      "answer": "バラ",
+      "display": "薔薇",
+      "level": 1
+    },
+    {
+      "answer": "ユリ",
+      "display": "百合",
+      "level": 1
+    },
+    {
+      "answer": "ツバキ",
+      "display": "椿",
+      "level": 1
+    },
+    {
+      "answer": "モミジ",
+      "display": "紅葉",
+      "level": 1
+    },
+    {
+      "answer": "アサガオ",
+      "display": "朝顔",
+      "level": 1
+    },
+    {
+      "answer": "ヒマワリ",
+      "display": "向日葵",
+      "level": 1
+    },
+    {
+      "answer": "タンポポ",
+      "display": "蒲公英",
+      "level": 1
+    },
+    {
+      "answer": "イヌ",
+      "display": "犬",
+      "level": 1
+    },
+    {
+      "answer": "ネコ",
+      "display": "猫",
+      "level": 1
+    },
+    {
+      "answer": "ウシ",
+      "display": "牛",
+      "level": 1
+    },
+    {
+      "answer": "ウマ",
+      "display": "馬",
+      "level": 1
+    },
+    {
+      "answer": "ブタ",
+      "display": "豚",
+      "level": 1
+    },
+    {
+      "answer": "ヒツジ",
+      "display": "羊",
+      "level": 1
+    },
+    {
+      "answer": "ヤギ",
+      "display": "山羊",
+      "level": 1
+    },
+    {
+      "answer": "シカ",
+      "display": "鹿",
+      "level": 1
+    },
+    {
+      "answer": "クマ",
+      "display": "熊",
+      "level": 1
+    },
+    {
+      "answer": "サル",
+      "display": "猿",
+      "level": 1
+    },
+    {
+      "answer": "キツネ",
+      "display": "狐",
+      "level": 1
+    },
+    {
+      "answer": "タヌキ",
+      "display": "狸",
+      "level": 1
+    },
+    {
+      "answer": "ウサギ",
+      "display": "兎",
+      "level": 1
+    },
+    {
+      "answer": "ネズミ",
+      "display": "鼠",
+      "level": 1
+    },
+    {
+      "answer": "トラ",
+      "display": "虎",
+      "level": 1
+    },
+    {
+      "answer": "ゾウ",
+      "display": "象",
+      "level": 1
+    },
+    {
+      "answer": "トリ",
+      "display": "鳥",
+      "level": 1
+    },
+    {
+      "answer": "ニワトリ",
+      "display": "鶏",
+      "level": 1
+    },
+    {
+      "answer": "ハト",
+      "display": "鳩",
+      "level": 1
+    },
+    {
+      "answer": "タカ",
+      "display": "鷹",
+      "level": 1
+    },
+    {
+      "answer": "ワシ",
+      "display": "鷲",
+      "level": 1
+    },
+    {
+      "answer": "ツル",
+      "display": "鶴",
+      "level": 1
+    },
+    {
+      "answer": "カメ",
+      "display": "亀",
+      "level": 1
+    },
+    {
+      "answer": "ヘビ",
+      "display": "蛇",
+      "level": 1
+    },
+    {
+      "answer": "カエル",
+      "display": "蛙",
+      "level": 1
+    },
+    {
+      "answer": "カニ",
+      "display": "蟹",
+      "level": 1
+    },
+    {
+      "answer": "エビ",
+      "display": "海老",
+      "level": 1
+    },
+    {
+      "answer": "タコ",
+      "display": "蛸",
+      "level": 1
+    },
+    {
+      "answer": "イカ",
+      "display": "烏賊",
+      "level": 1
+    },
+    {
+      "answer": "クジラ",
+      "display": "鯨",
+      "level": 1
+    },
+    {
+      "answer": "ハチ",
+      "display": "蜂",
+      "level": 1
+    },
+    {
+      "answer": "チヨウ",
+      "display": "蝶",
+      "level": 1
+    },
+    {
+      "answer": "アリ",
+      "display": "蟻",
+      "level": 1
+    },
+    {
+      "answer": "セミ",
+      "display": "蝉",
+      "level": 1
+    },
+    {
+      "answer": "カモ",
+      "display": "鴨",
+      "level": 1
+    },
+    {
+      "answer": "スズメ",
+      "display": "雀",
+      "level": 1
+    },
+    {
+      "answer": "ツバメ",
+      "display": "燕",
+      "level": 1
+    },
+    {
+      "answer": "カラス",
+      "display": "烏",
+      "level": 1
+    },
+    {
+      "answer": "オオカミ",
+      "display": "狼",
+      "level": 1
+    },
+    {
+      "answer": "ハネ",
+      "display": "羽",
+      "level": 1
+    },
+    {
+      "answer": "ツノ",
+      "display": "角",
+      "level": 1
+    },
+    {
+      "answer": "タマゴ",
+      "display": "卵",
+      "level": 1
+    },
+    {
+      "answer": "キリン",
+      "display": "キリン",
+      "level": 1
+    },
+    {
+      "answer": "ライオン",
+      "display": "ライオン",
+      "level": 1
+    },
+    {
+      "answer": "パンダ",
+      "display": "パンダ",
+      "level": 1
+    },
+    {
+      "answer": "ゴリラ",
+      "display": "ゴリラ",
+      "level": 1
+    },
+    {
+      "answer": "ラクダ",
+      "display": "ラクダ",
+      "level": 1
+    },
+    {
+      "answer": "イルカ",
+      "display": "イルカ",
+      "level": 1
+    },
+    {
+      "answer": "ペンギン",
+      "display": "ペンギン",
+      "level": 1
+    },
+    {
+      "answer": "コアラ",
+      "display": "コアラ",
+      "level": 1
+    },
+    {
+      "answer": "コメ",
+      "display": "米",
+      "level": 1
+    },
+    {
+      "answer": "ムギ",
+      "display": "麦",
+      "level": 1
+    },
+    {
+      "answer": "マメ",
+      "display": "豆",
+      "level": 1
+    },
+    {
+      "answer": "イモ",
+      "display": "芋",
+      "level": 1
+    },
+    {
+      "answer": "シオ",
+      "display": "塩",
+      "level": 1
+    },
+    {
+      "answer": "サトウ",
+      "display": "砂糖",
+      "level": 1
+    },
+    {
+      "answer": "ミソ",
+      "display": "味噌",
+      "level": 1
+    },
+    {
+      "answer": "シヨウユ",
+      "display": "醤油",
+      "level": 1
+    },
+    {
+      "answer": "アブラ",
+      "display": "油",
+      "level": 1
+    },
+    {
+      "answer": "ニク",
+      "display": "肉",
+      "level": 1
+    },
+    {
+      "answer": "サカナ",
+      "display": "魚",
+      "level": 1
+    },
+    {
+      "answer": "カイ",
+      "display": "貝",
+      "level": 1
+    },
+    {
+      "answer": "サケ",
+      "display": "酒",
+      "level": 1
+    },
+    {
+      "answer": "チヤ",
+      "display": "茶",
+      "level": 1
+    },
+    {
+      "answer": "ミズ",
+      "display": "水",
+      "level": 1
+    },
+    {
+      "answer": "コオリ",
+      "display": "氷",
+      "level": 1
+    },
+    {
+      "answer": "メシ",
+      "display": "飯",
+      "level": 1
+    },
+    {
+      "answer": "モチ",
+      "display": "餅",
+      "level": 1
+    },
+    {
+      "answer": "ソバ",
+      "display": "蕎麦",
+      "level": 1
+    },
+    {
+      "answer": "ウドン",
+      "display": "うどん",
+      "level": 1
+    },
+    {
+      "answer": "スシ",
+      "display": "寿司",
+      "level": 1
+    },
+    {
+      "answer": "テンプラ",
+      "display": "天ぷら",
+      "level": 1
+    },
+    {
+      "answer": "トウフ",
+      "display": "豆腐",
+      "level": 1
+    },
+    {
+      "answer": "ナツトウ",
+      "display": "納豆",
+      "level": 1
+    },
+    {
+      "answer": "ゴマ",
+      "display": "胡麻",
+      "level": 1
+    },
+    {
+      "answer": "カキ",
+      "display": "柿",
+      "level": 1
+    },
+    {
+      "answer": "ナシ",
+      "display": "梨",
+      "level": 1
+    },
+    {
+      "answer": "モモ",
+      "display": "桃",
+      "level": 1
+    },
+    {
+      "answer": "クリ",
+      "display": "栗",
+      "level": 1
+    },
+    {
+      "answer": "イチゴ",
+      "display": "苺",
+      "level": 1
+    },
+    {
+      "answer": "ミカン",
+      "display": "蜜柑",
+      "level": 1
+    },
+    {
+      "answer": "リンゴ",
+      "display": "林檎",
+      "level": 1
+    },
+    {
+      "answer": "ブドウ",
+      "display": "葡萄",
+      "level": 1
+    },
+    {
+      "answer": "スイカ",
+      "display": "西瓜",
+      "level": 1
+    },
+    {
+      "answer": "ダイコン",
+      "display": "大根",
+      "level": 1
+    },
+    {
+      "answer": "ニンジン",
+      "display": "人参",
+      "level": 1
+    },
+    {
+      "answer": "ナス",
+      "display": "茄子",
+      "level": 1
+    },
+    {
+      "answer": "ネギ",
+      "display": "葱",
+      "level": 1
+    },
+    {
+      "answer": "キユウリ",
+      "display": "胡瓜",
+      "level": 1
+    },
+    {
+      "answer": "カボチヤ",
+      "display": "南瓜",
+      "level": 1
+    },
+    {
+      "answer": "パン",
+      "display": "パン",
+      "level": 1
+    },
+    {
+      "answer": "ケーキ",
+      "display": "ケーキ",
+      "level": 1
+    },
+    {
+      "answer": "ジユース",
+      "display": "ジュース",
+      "level": 1
+    },
+    {
+      "answer": "コーヒー",
+      "display": "コーヒー",
+      "level": 1
+    },
+    {
+      "answer": "ミルク",
+      "display": "ミルク",
+      "level": 1
+    },
+    {
+      "answer": "バター",
+      "display": "バター",
+      "level": 1
+    },
+    {
+      "answer": "チーズ",
+      "display": "チーズ",
+      "level": 1
+    },
+    {
+      "answer": "ハム",
+      "display": "ハム",
+      "level": 1
+    },
+    {
+      "answer": "ピザ",
+      "display": "ピザ",
+      "level": 1
+    },
+    {
+      "answer": "カレー",
+      "display": "カレー",
+      "level": 1
+    },
+    {
+      "answer": "トマト",
+      "display": "トマト",
+      "level": 1
+    },
+    {
+      "answer": "レモン",
+      "display": "レモン",
+      "level": 1
+    },
+    {
+      "answer": "メロン",
+      "display": "メロン",
+      "level": 1
+    },
+    {
+      "answer": "バナナ",
+      "display": "バナナ",
+      "level": 1
+    },
+    {
+      "answer": "ガム",
+      "display": "ガム",
+      "level": 1
+    },
+    {
+      "answer": "アイス",
+      "display": "アイス",
+      "level": 1
+    },
+    {
+      "answer": "ラーメン",
+      "display": "ラーメン",
+      "level": 1
+    },
+    {
+      "answer": "サラダ",
+      "display": "サラダ",
+      "level": 1
+    },
+    {
+      "answer": "スープ",
+      "display": "スープ",
+      "level": 1
+    },
+    {
+      "answer": "イエ",
+      "display": "家",
+      "level": 1
+    },
+    {
+      "answer": "マド",
+      "display": "窓",
+      "level": 1
+    },
+    {
+      "answer": "ユカ",
+      "display": "床",
+      "level": 1
+    },
+    {
+      "answer": "カベ",
+      "display": "壁",
+      "level": 1
+    },
+    {
+      "answer": "ヤネ",
+      "display": "屋根",
+      "level": 1
+    },
+    {
+      "answer": "ニワ",
+      "display": "庭",
+      "level": 1
+    },
+    {
+      "answer": "モン",
+      "display": "門",
+      "level": 1
+    },
+    {
+      "answer": "ハシ",
+      "display": "箸",
+      "level": 1
+    },
+    {
+      "answer": "ツクエ",
+      "display": "机",
+      "level": 1
+    },
+    {
+      "answer": "イス",
+      "display": "椅子",
+      "level": 1
+    },
+    {
+      "answer": "ハコ",
+      "display": "箱",
+      "level": 1
+    },
+    {
+      "answer": "カギ",
+      "display": "鍵",
+      "level": 1
+    },
+    {
+      "answer": "カサ",
+      "display": "傘",
+      "level": 1
+    },
+    {
+      "answer": "クツ",
+      "display": "靴",
+      "level": 1
+    },
+    {
+      "answer": "ボウシ",
+      "display": "帽子",
+      "level": 1
+    },
+    {
+      "answer": "フク",
+      "display": "服",
+      "level": 1
+    },
+    {
+      "answer": "カバン",
+      "display": "鞄",
+      "level": 1
+    },
+    {
+      "answer": "サイフ",
+      "display": "財布",
+      "level": 1
+    },
+    {
+      "answer": "トケイ",
+      "display": "時計",
+      "level": 1
+    },
+    {
+      "answer": "カガミ",
+      "display": "鏡",
+      "level": 1
+    },
+    {
+      "answer": "サラ",
+      "display": "皿",
+      "level": 1
+    },
+    {
+      "answer": "ナベ",
+      "display": "鍋",
+      "level": 1
+    },
+    {
+      "answer": "カマ",
+      "display": "釜",
+      "level": 1
+    },
+    {
+      "answer": "ビン",
+      "display": "瓶",
+      "level": 1
+    },
+    {
+      "answer": "カン",
+      "display": "缶",
+      "level": 1
+    },
+    {
+      "answer": "フクロ",
+      "display": "袋",
+      "level": 1
+    },
+    {
+      "answer": "イト",
+      "display": "糸",
+      "level": 1
+    },
+    {
+      "answer": "ハリ",
+      "display": "針",
+      "level": 1
+    },
+    {
+      "answer": "ヌノ",
+      "display": "布",
+      "level": 1
+    },
+    {
+      "answer": "ヒモ",
+      "display": "紐",
+      "level": 1
+    },
+    {
+      "answer": "アミ",
+      "display": "網",
+      "level": 1
+    },
+    {
+      "answer": "ハタ",
+      "display": "旗",
+      "level": 1
+    },
+    {
+      "answer": "スズ",
+      "display": "鈴",
+      "level": 1
+    },
+    {
+      "answer": "フエ",
+      "display": "笛",
+      "level": 1
+    },
+    {
+      "answer": "タイコ",
+      "display": "太鼓",
+      "level": 1
+    },
+    {
+      "answer": "フトン",
+      "display": "布団",
+      "level": 1
+    },
+    {
+      "answer": "マクラ",
+      "display": "枕",
+      "level": 1
+    },
+    {
+      "answer": "タタミ",
+      "display": "畳",
+      "level": 1
+    },
+    {
+      "answer": "シヨウジ",
+      "display": "障子",
+      "level": 1
+    },
+    {
+      "answer": "フスマ",
+      "display": "襖",
+      "level": 2
+    },
+    {
+      "answer": "コタツ",
+      "display": "炬燵",
+      "level": 1
+    },
+    {
+      "answer": "キモノ",
+      "display": "着物",
+      "level": 1
+    },
+    {
+      "answer": "ユカタ",
+      "display": "浴衣",
+      "level": 1
+    },
+    {
+      "answer": "オビ",
+      "display": "帯",
+      "level": 1
+    },
+    {
+      "answer": "ゲタ",
+      "display": "下駄",
+      "level": 1
+    },
+    {
+      "answer": "センス",
+      "display": "扇子",
+      "level": 1
+    },
+    {
+      "answer": "ウチワ",
+      "display": "団扇",
+      "level": 1
+    },
+    {
+      "answer": "チヤワン",
+      "display": "茶碗",
+      "level": 1
+    },
+    {
+      "answer": "キユウス",
+      "display": "急須",
+      "level": 2
+    },
+    {
+      "answer": "ホウチヨウ",
+      "display": "包丁",
+      "level": 1
+    },
+    {
+      "answer": "レイゾウコ",
+      "display": "冷蔵庫",
+      "level": 1
+    },
+    {
+      "answer": "フロ",
+      "display": "風呂",
+      "level": 1
+    },
+    {
+      "answer": "セツケン",
+      "display": "石鹸",
+      "level": 1
+    },
+    {
+      "answer": "テガミ",
+      "display": "手紙",
+      "level": 1
+    },
+    {
+      "answer": "キツテ",
+      "display": "切手",
+      "level": 1
+    },
+    {
+      "answer": "シヤシン",
+      "display": "写真",
+      "level": 1
+    },
+    {
+      "answer": "チズ",
+      "display": "地図",
+      "level": 1
+    },
+    {
+      "answer": "デンワ",
+      "display": "電話",
+      "level": 1
+    },
+    {
+      "answer": "ホン",
+      "display": "本",
+      "level": 1
+    },
+    {
+      "answer": "エホン",
+      "display": "絵本",
+      "level": 1
+    },
+    {
+      "answer": "ペン",
+      "display": "ペン",
+      "level": 1
+    },
+    {
+      "answer": "ノート",
+      "display": "ノート",
+      "level": 1
+    },
+    {
+      "answer": "テレビ",
+      "display": "テレビ",
+      "level": 1
+    },
+    {
+      "answer": "ラジオ",
+      "display": "ラジオ",
+      "level": 1
+    },
+    {
+      "answer": "カメラ",
+      "display": "カメラ",
+      "level": 1
+    },
+    {
+      "answer": "ピアノ",
+      "display": "ピアノ",
+      "level": 1
+    },
+    {
+      "answer": "ギター",
+      "display": "ギター",
+      "level": 1
+    },
+    {
+      "answer": "ドア",
+      "display": "ドア",
+      "level": 1,
+      "clue": "部屋や家の出入り口にある開け閉めする板",
+      "explanation": "ドアは英語のdoorから来た外来語です。回転ドアは英語でrevolving doorといいます。"
+    },
+    {
+      "answer": "ベツド",
+      "display": "ベッド",
+      "level": 1
+    },
+    {
+      "answer": "テーブル",
+      "display": "テーブル",
+      "level": 1
+    },
+    {
+      "answer": "カツプ",
+      "display": "カップ",
+      "level": 1
+    },
+    {
+      "answer": "コツプ",
+      "display": "コップ",
+      "level": 1
+    },
+    {
+      "answer": "グラス",
+      "display": "グラス",
+      "level": 1
+    },
+    {
+      "answer": "ナイフ",
+      "display": "ナイフ",
+      "level": 1
+    },
+    {
+      "answer": "スプーン",
+      "display": "スプーン",
+      "level": 1
+    },
+    {
+      "answer": "ボタン",
+      "display": "ボタン",
+      "level": 1
+    },
+    {
+      "answer": "ポケツト",
+      "display": "ポケット",
+      "level": 1
+    },
+    {
+      "answer": "リボン",
+      "display": "リボン",
+      "level": 1
+    },
+    {
+      "answer": "マスク",
+      "display": "マスク",
+      "level": 1
+    },
+    {
+      "answer": "タオル",
+      "display": "タオル",
+      "level": 1
+    },
+    {
+      "answer": "カーテン",
+      "display": "カーテン",
+      "level": 1
+    },
+    {
+      "answer": "ランプ",
+      "display": "ランプ",
+      "level": 1
+    },
+    {
+      "answer": "ベル",
+      "display": "ベル",
+      "level": 1
+    },
+    {
+      "answer": "シヤツ",
+      "display": "シャツ",
+      "level": 1
+    },
+    {
+      "answer": "ズボン",
+      "display": "ズボン",
+      "level": 1
+    },
+    {
+      "answer": "スカート",
+      "display": "スカート",
+      "level": 1
+    },
+    {
+      "answer": "コート",
+      "display": "コート",
+      "level": 1
+    },
+    {
+      "answer": "セーター",
+      "display": "セーター",
+      "level": 1
+    },
+    {
+      "answer": "マフラー",
+      "display": "マフラー",
+      "level": 1
+    },
+    {
+      "answer": "ネクタイ",
+      "display": "ネクタイ",
+      "level": 1
+    },
+    {
+      "answer": "パソコン",
+      "display": "パソコン",
+      "level": 1
+    },
+    {
+      "answer": "ミチ",
+      "display": "道",
+      "level": 1
+    },
+    {
+      "answer": "ハシ",
+      "display": "橋",
+      "level": 1
+    },
+    {
+      "answer": "マチ",
+      "display": "町",
+      "level": 1
+    },
+    {
+      "answer": "ムラ",
+      "display": "村",
+      "level": 1
+    },
+    {
+      "answer": "エキ",
+      "display": "駅",
+      "level": 1
+    },
+    {
+      "answer": "ミセ",
+      "display": "店",
+      "level": 1
+    },
+    {
+      "answer": "ミナト",
+      "display": "港",
+      "level": 1
+    },
+    {
+      "answer": "ハタケ",
+      "display": "畑",
+      "level": 1
+    },
+    {
+      "answer": "タンボ",
+      "display": "田んぼ",
+      "level": 1
+    },
+    {
+      "answer": "ボクジヨウ",
+      "display": "牧場",
+      "level": 1
+    },
+    {
+      "answer": "イチバ",
+      "display": "市場",
+      "level": 1
+    },
+    {
+      "answer": "テラ",
+      "display": "寺",
+      "level": 1
+    },
+    {
+      "answer": "ジンジヤ",
+      "display": "神社",
+      "level": 1
+    },
+    {
+      "answer": "シロ",
+      "display": "城",
+      "level": 1
+    },
+    {
+      "answer": "トウ",
+      "display": "塔",
+      "level": 1
+    },
+    {
+      "answer": "ガツコウ",
+      "display": "学校",
+      "level": 1
+    },
+    {
+      "answer": "ビヨウイン",
+      "display": "病院",
+      "level": 1
+    },
+    {
+      "answer": "コウエン",
+      "display": "公園",
+      "level": 1
+    },
+    {
+      "answer": "トシヨカン",
+      "display": "図書館",
+      "level": 1
+    },
+    {
+      "answer": "ギンコウ",
+      "display": "銀行",
+      "level": 1
+    },
+    {
+      "answer": "カイシヤ",
+      "display": "会社",
+      "level": 1
+    },
+    {
+      "answer": "クウコウ",
+      "display": "空港",
+      "level": 1
+    },
+    {
+      "answer": "クルマ",
+      "display": "車",
+      "level": 1
+    },
+    {
+      "answer": "フネ",
+      "display": "船",
+      "level": 1
+    },
+    {
+      "answer": "デンシヤ",
+      "display": "電車",
+      "level": 1
+    },
+    {
+      "answer": "ジテンシヤ",
+      "display": "自転車",
+      "level": 1
+    },
+    {
+      "answer": "ヒコウキ",
+      "display": "飛行機",
+      "level": 1
+    },
+    {
+      "answer": "キツプ",
+      "display": "切符",
+      "level": 1
+    },
+    {
+      "answer": "バス",
+      "display": "バス",
+      "level": 1
+    },
+    {
+      "answer": "タクシー",
+      "display": "タクシー",
+      "level": 1
+    },
+    {
+      "answer": "トラツク",
+      "display": "トラック",
+      "level": 1
+    },
+    {
+      "answer": "バイク",
+      "display": "バイク",
+      "level": 1
+    },
+    {
+      "answer": "ボート",
+      "display": "ボート",
+      "level": 1
+    },
+    {
+      "answer": "ヨツト",
+      "display": "ヨット",
+      "level": 1
+    },
+    {
+      "answer": "ホテル",
+      "display": "ホテル",
+      "level": 1
+    },
+    {
+      "answer": "ビル",
+      "display": "ビル",
+      "level": 1
+    },
+    {
+      "answer": "チチ",
+      "display": "父",
+      "level": 1
+    },
+    {
+      "answer": "ハハ",
+      "display": "母",
+      "level": 1
+    },
+    {
+      "answer": "アニ",
+      "display": "兄",
+      "level": 1
+    },
+    {
+      "answer": "アネ",
+      "display": "姉",
+      "level": 1
+    },
+    {
+      "answer": "オトウト",
+      "display": "弟",
+      "level": 1
+    },
+    {
+      "answer": "イモウト",
+      "display": "妹",
+      "level": 1
+    },
+    {
+      "answer": "マゴ",
+      "display": "孫",
+      "level": 1
+    },
+    {
+      "answer": "トモ",
+      "display": "友",
+      "level": 1
+    },
+    {
+      "answer": "キヤク",
+      "display": "客",
+      "level": 1
+    },
+    {
+      "answer": "オウ",
+      "display": "王",
+      "level": 1
+    },
+    {
+      "answer": "ヒメ",
+      "display": "姫",
+      "level": 1
+    },
+    {
+      "answer": "イシヤ",
+      "display": "医者",
+      "level": 1
+    },
+    {
+      "answer": "センセイ",
+      "display": "先生",
+      "level": 1
+    },
+    {
+      "answer": "セイト",
+      "display": "生徒",
+      "level": 1
+    },
+    {
+      "answer": "リヨウシ",
+      "display": "漁師",
+      "level": 1
+    },
+    {
+      "answer": "ニンジヤ",
+      "display": "忍者",
+      "level": 1
+    },
+    {
+      "answer": "サムライ",
+      "display": "侍",
+      "level": 1
+    },
+    {
+      "answer": "オニ",
+      "display": "鬼",
+      "level": 1
+    },
+    {
+      "answer": "リユウ",
+      "display": "龍",
+      "level": 1,
+      "clue": "東洋の伝説に出る、空を飛ぶ蛇のような生き物",
+      "explanation": "十二支では「辰」と書きます。十二支の動物で唯一、実在しない生き物です。"
+    },
+    {
+      "answer": "ホトケ",
+      "display": "仏",
+      "level": 1
+    },
+    {
+      "answer": "ウタ",
+      "display": "歌",
+      "level": 1
+    },
+    {
+      "answer": "ユメ",
+      "display": "夢",
+      "level": 1
+    },
+    {
+      "answer": "モジ",
+      "display": "文字",
+      "level": 1,
+      "clue": "ことばを書き表すしるし",
+      "explanation": "漢字、かな、アルファベットなど、文字体系は世界に多数あります。Unicodeには絵文字も登録されています。"
+    },
+    {
+      "answer": "コトバ",
+      "display": "言葉",
+      "level": 1
+    },
+    {
+      "answer": "ナマエ",
+      "display": "名前",
+      "level": 1
+    },
+    {
+      "answer": "シユクダイ",
+      "display": "宿題",
+      "level": 1
+    },
+    {
+      "answer": "ベンキヨウ",
+      "display": "勉強",
+      "level": 1
+    },
+    {
+      "answer": "サンスウ",
+      "display": "算数",
+      "level": 1
+    },
+    {
+      "answer": "コクゴ",
+      "display": "国語",
+      "level": 1
+    },
+    {
+      "answer": "リカ",
+      "display": "理科",
+      "level": 1
+    },
+    {
+      "answer": "シヤカイ",
+      "display": "社会",
+      "level": 1
+    },
+    {
+      "answer": "オンガク",
+      "display": "音楽",
+      "level": 1
+    },
+    {
+      "answer": "タイイク",
+      "display": "体育",
+      "level": 1
+    },
+    {
+      "answer": "ウンドウ",
+      "display": "運動",
+      "level": 1
+    },
+    {
+      "answer": "ヤキユウ",
+      "display": "野球",
+      "level": 1
+    },
+    {
+      "answer": "スモウ",
+      "display": "相撲",
+      "level": 1
+    },
+    {
+      "answer": "ジユウドウ",
+      "display": "柔道",
+      "level": 1
+    },
+    {
+      "answer": "ケンドウ",
+      "display": "剣道",
+      "level": 1
+    },
+    {
+      "answer": "シヨウギ",
+      "display": "将棋",
+      "level": 1
+    },
+    {
+      "answer": "イゴ",
+      "display": "囲碁",
+      "level": 1
+    },
+    {
+      "answer": "マンガ",
+      "display": "漫画",
+      "level": 1
+    },
+    {
+      "answer": "タビ",
+      "display": "旅",
+      "level": 1
+    },
+    {
+      "answer": "リヨコウ",
+      "display": "旅行",
+      "level": 1
+    },
+    {
+      "answer": "ミヤゲ",
+      "display": "土産",
+      "level": 1
+    },
+    {
+      "answer": "シゴト",
+      "display": "仕事",
+      "level": 1
+    },
+    {
+      "answer": "リヨウリ",
+      "display": "料理",
+      "level": 1
+    },
+    {
+      "answer": "ソウジ",
+      "display": "掃除",
+      "level": 1
+    },
+    {
+      "answer": "センタク",
+      "display": "洗濯",
+      "level": 1
+    },
+    {
+      "answer": "カイモノ",
+      "display": "買い物",
+      "level": 1
+    },
+    {
+      "answer": "ボール",
+      "display": "ボール",
+      "level": 1
+    },
+    {
+      "answer": "ゴルフ",
+      "display": "ゴルフ",
+      "level": 1
+    },
+    {
+      "answer": "テニス",
+      "display": "テニス",
+      "level": 1
+    },
+    {
+      "answer": "サツカー",
+      "display": "サッカー",
+      "level": 1
+    },
+    {
+      "answer": "スキー",
+      "display": "スキー",
+      "level": 1
+    },
+    {
+      "answer": "プール",
+      "display": "プール",
+      "level": 1
+    },
+    {
+      "answer": "ゲーム",
+      "display": "ゲーム",
+      "level": 1
+    },
+    {
+      "answer": "ドラマ",
+      "display": "ドラマ",
+      "level": 1
+    },
+    {
+      "answer": "アニメ",
+      "display": "アニメ",
+      "level": 1
+    },
+    {
+      "answer": "ニユース",
+      "display": "ニュース",
+      "level": 1
+    },
+    {
+      "answer": "テスト",
+      "display": "テスト",
+      "level": 1
+    },
+    {
+      "answer": "メモ",
+      "display": "メモ",
+      "level": 1
+    },
+    {
+      "answer": "ページ",
+      "display": "ページ",
+      "level": 1
+    },
+    {
+      "answer": "チーム",
+      "display": "チーム",
+      "level": 1
+    },
+    {
+      "answer": "ゴール",
+      "display": "ゴール",
+      "level": 1
+    },
+    {
+      "answer": "リズム",
+      "display": "リズム",
+      "level": 1
+    },
+    {
+      "answer": "イロ",
+      "display": "色",
+      "level": 1
+    },
+    {
+      "answer": "アカ",
+      "display": "赤",
+      "level": 1
+    },
+    {
+      "answer": "アオ",
+      "display": "青",
+      "level": 1
+    },
+    {
+      "answer": "シロ",
+      "display": "白",
+      "level": 1
+    },
+    {
+      "answer": "クロ",
+      "display": "黒",
+      "level": 1
+    },
+    {
+      "answer": "ミドリ",
+      "display": "緑",
+      "level": 1
+    },
+    {
+      "answer": "キイロ",
+      "display": "黄色",
+      "level": 1
+    },
+    {
+      "answer": "キン",
+      "display": "金",
+      "level": 1
+    },
+    {
+      "answer": "ギン",
+      "display": "銀",
+      "level": 1
+    },
+    {
+      "answer": "テツ",
+      "display": "鉄",
+      "level": 1
+    },
+    {
+      "answer": "オト",
+      "display": "音",
+      "level": 1
+    },
+    {
+      "answer": "カタチ",
+      "display": "形",
+      "level": 1
+    },
+    {
+      "answer": "カズ",
+      "display": "数",
+      "level": 1
+    },
+    {
+      "answer": "セン",
+      "display": "線",
+      "level": 1
+    },
+    {
+      "answer": "テン",
+      "display": "点",
+      "level": 1
+    },
+    {
+      "answer": "マル",
+      "display": "丸",
+      "level": 1
+    },
+    {
+      "answer": "カド",
+      "display": "角",
+      "level": 1
+    },
+    {
+      "answer": "キタ",
+      "display": "北",
+      "level": 1
+    },
+    {
+      "answer": "ミナミ",
+      "display": "南",
+      "level": 1
+    },
+    {
+      "answer": "ヒガシ",
+      "display": "東",
+      "level": 1
+    },
+    {
+      "answer": "ニシ",
+      "display": "西",
+      "level": 1
+    },
+    {
+      "answer": "ミギ",
+      "display": "右",
+      "level": 1
+    },
+    {
+      "answer": "ヒダリ",
+      "display": "左",
+      "level": 1
+    },
+    {
+      "answer": "ウエ",
+      "display": "上",
+      "level": 1
+    },
+    {
+      "answer": "シタ",
+      "display": "下",
+      "level": 1
+    },
+    {
+      "answer": "マエ",
+      "display": "前",
+      "level": 1
+    },
+    {
+      "answer": "ウシロ",
+      "display": "後ろ",
+      "level": 1
+    },
+    {
+      "answer": "ナカ",
+      "display": "中",
+      "level": 1
+    },
+    {
+      "answer": "ソト",
+      "display": "外",
+      "level": 1
+    },
+    {
+      "answer": "ヨコ",
+      "display": "横",
+      "level": 1
+    },
+    {
+      "answer": "タテ",
+      "display": "縦",
+      "level": 1
+    },
+    {
+      "answer": "トナリ",
+      "display": "隣",
+      "level": 1
+    },
+    {
+      "answer": "ハシ",
+      "display": "端",
+      "level": 1
+    },
+    {
+      "answer": "ソコ",
+      "display": "底",
+      "level": 1
+    },
+    {
+      "answer": "オク",
+      "display": "奥",
+      "level": 1
+    },
+    {
+      "answer": "サン",
+      "display": "三",
+      "level": 1
+    },
+    {
+      "answer": "ロク",
+      "display": "六",
+      "level": 1
+    },
+    {
+      "answer": "ナナ",
+      "display": "七",
+      "level": 1
+    },
+    {
+      "answer": "ハチ",
+      "display": "八",
+      "level": 1
+    },
+    {
+      "answer": "キユウ",
+      "display": "九",
+      "level": 1
+    },
+    {
+      "answer": "ジユウ",
+      "display": "十",
+      "level": 1
+    },
+    {
+      "answer": "ヒヤク",
+      "display": "百",
+      "level": 1
+    },
+    {
+      "answer": "セン",
+      "display": "千",
+      "level": 1
+    },
+    {
+      "answer": "マン",
+      "display": "万",
+      "level": 1
+    },
+    {
+      "answer": "チカラ",
+      "display": "力",
+      "level": 1
+    },
+    {
+      "answer": "イノチ",
+      "display": "命",
+      "level": 1
+    },
+    {
+      "answer": "アイ",
+      "display": "愛",
+      "level": 1
+    },
+    {
+      "answer": "コイ",
+      "display": "恋",
+      "level": 1
+    },
+    {
+      "answer": "イミ",
+      "display": "意味",
+      "level": 1
+    },
+    {
+      "answer": "リユウ",
+      "display": "理由",
+      "level": 1
+    },
+    {
+      "answer": "コタエ",
+      "display": "答え",
+      "level": 1
+    },
+    {
+      "answer": "モンダイ",
+      "display": "問題",
+      "level": 1
+    },
+    {
+      "answer": "シツモン",
+      "display": "質問",
+      "level": 1
+    },
+    {
+      "answer": "ヤクソク",
+      "display": "約束",
+      "level": 1
+    },
+    {
+      "answer": "ヒミツ",
+      "display": "秘密",
+      "level": 1
+    },
+    {
+      "answer": "ジユウ",
+      "display": "自由",
+      "level": 1
+    },
+    {
+      "answer": "ヘイワ",
+      "display": "平和",
+      "level": 1
+    },
+    {
+      "answer": "ゲンキ",
+      "display": "元気",
+      "level": 1
+    },
+    {
+      "answer": "ビヨウキ",
+      "display": "病気",
+      "level": 1
+    },
+    {
+      "answer": "テンキ",
+      "display": "天気",
+      "level": 1
+    },
+    {
+      "answer": "クウキ",
+      "display": "空気",
+      "level": 1
+    },
+    {
+      "answer": "デンキ",
+      "display": "電気",
+      "level": 1
+    },
+    {
+      "answer": "ユウキ",
+      "display": "勇気",
+      "level": 1
+    },
+    {
+      "answer": "ニンキ",
+      "display": "人気",
+      "level": 1
+    },
+    {
+      "answer": "セカイ",
+      "display": "世界",
+      "level": 1
+    },
+    {
+      "answer": "ブンカ",
+      "display": "文化",
+      "level": 1
+    },
+    {
+      "answer": "オカネ",
+      "display": "お金",
+      "level": 1
+    },
+    {
+      "answer": "ネダン",
+      "display": "値段",
+      "level": 1
+    },
+    {
+      "answer": "タカラ",
+      "display": "宝",
+      "level": 1
+    },
+    {
+      "answer": "タマ",
+      "display": "玉",
+      "level": 1
+    },
+    {
+      "answer": "カジ",
+      "display": "火事",
+      "level": 1
+    },
+    {
+      "answer": "カタナ",
+      "display": "刀",
+      "level": 1
+    },
+    {
+      "answer": "ユミ",
+      "display": "弓",
+      "level": 1
+    },
+    {
+      "answer": "ヨロイ",
+      "display": "鎧",
+      "level": 2
+    },
+    {
+      "answer": "カブト",
+      "display": "兜",
+      "level": 2
+    }
+  ]
+}

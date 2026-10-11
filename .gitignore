@@ -5,5 +5,3 @@ data/images/*.png
 data/images/*.jpg
 data/images/*.jpeg
 
-# 作ったページは入れない（npm run site で作り直せる。本番は npm run deploy で S3 に上げる）
-site/

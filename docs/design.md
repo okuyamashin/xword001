@@ -590,7 +590,7 @@ xword001/
 │   └── themes/      日付ごとのテーマ設定
 ├── puzzles/         生成したクロスワード（日付ごとの JSON）
 ├── template/        HTML テンプレート（puzzle.html）
-├── site/            生成された HTML（リポジトリには入れない。npm run deploy で S3 に上げる）
+├── site/            生成された HTML（リポジトリに入れる。npm run deploy で S3 に上げる）
 └── .github/workflows/daily.yml   毎日のビルド
 ```
 
@@ -710,7 +710,7 @@ npm test
 - `npm run deploy`: `site/` を作り直し、S3 に同期（消えたファイルは消す）、CloudFront のキャッシュを消す。
   キャッシュは絵 1 週間、ページと JSON 5 分。
 - 流れ: 作業ブランチで作る → 点検・動作確認 → `main` に入れる → `main` の内容で `npm run deploy`。
-- `site/` はリポジトリに入れない（毎回作り直す）。
+- 作ったページ（`site/`）もリポジトリに入れる（`main` の `site/` をそのまま S3 に置けるように）。
 - 以前は GitHub Pages（`okuyamashin.github.io/xword001/`）で公開していたが、ファイル容量などの制限があるため S3 に切り替えた。
   GitHub Pages の自動公開（`.github/workflows/pages.yml`）は削除した。
 

@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>山月記のクロスワードパズル 第1回｜よろずのクロスワードパズル</title>
+<meta name="description" content="中島敦の名作「山月記」。詩人として名を残そうとして、虎になってしまった李徴の物語から、人物・地名・印象的な言葉を集めました。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Shippori+Mincho:wght@500;700;800&display=swap">
+<style>
+  /* デザイン: 羊皮紙と銅版画。色はテーマごとに --accent などを差し替えられる（puzzle.design） */
+  :root {
+    --bg: #ddd1bc;
+    --paper: #f4ede0;
+    --fg: #2e2721;
+    --muted: #6b5f52;
+    --rule: #b6a68b;
+    --line: #3a3129;
+    --cell: #f4ede0;
+    --word: #e7d5ad;
+    --active: #d2b072;
+    --wrong: #e9b4a2;
+    --revealed: #2f4f6f;
+    --accent: #8c6a32;
+    --serif: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+    --latin: "Cormorant Garamond", "Times New Roman", serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--serif);
+    font-weight: 500;
+    line-height: 1.8;
+    letter-spacing: .03em;
+  }
+  .site-inner, main { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+  header.site { padding: 16px 0 8px; }
+  header.site .wordmark { margin: 0; font-family: var(--latin); font-weight: 600; font-size: .95rem; letter-spacing: .2em; text-transform: uppercase; }
+  header.site .name { margin: 0; color: var(--muted); font-size: .9rem; letter-spacing: .12em; }
+  header.site .site-inner { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  header.site a { color: inherit; text-decoration: none; }
+  header.site nav { display: flex; gap: 16px; font-size: .9rem; letter-spacing: .12em; }
+  header.site nav a { border-bottom: 1px solid transparent; }
+  header.site nav a:hover, header.site nav a[aria-current] { border-bottom-color: var(--fg); }
+  footer.site { margin-top: 40px; padding: 20px 0 28px; border-top: 1px solid var(--rule); color: var(--muted); font-size: .85rem; }
+
+  .hero { text-align: center; margin: 24px 0 20px; }
+  .date { margin: 0 0 4px; color: var(--muted); font-size: .85rem; letter-spacing: .12em; }
+  h1 { font-weight: 800; font-size: clamp(1.35rem, 5vw, 1.9rem); letter-spacing: .12em; line-height: 1.5; margin: 0; }
+  h1 .round { display: block; margin-top: 2px; font-size: .62em; letter-spacing: .3em; color: var(--accent); }
+  .subtitle { margin: 6px 0 0; font-family: var(--latin); font-size: 1.05rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .description {
+    max-width: 44em;
+    margin: 20px auto 0;
+    padding: 14px 18px;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    text-align: left;
+    line-height: 2;
+  }
+  .description:empty { display: none; }
+  .layout { display: grid; gap: 24px; }
+  @media (min-width: 760px) { .layout { grid-template-columns: minmax(0, 1fr) 320px; } }
+  footer.site a { color: inherit; }
+
+  /* 盤面と、最初に出すテーマの絵 */
+  .board-wrap { position: relative; width: min(100%, 520px); margin: 0 auto; }
+  .cover {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: var(--paper);
+    box-shadow: 0 6px 18px rgba(46, 39, 33, .25);
+    cursor: pointer;
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .cover.hide { opacity: 0; transform: scale(1.03); pointer-events: none; }
+  .board {
+    display: block;
+    width: 100%;
+    height: auto;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+  }
+  .board .cell { cursor: pointer; }
+  .board .cell rect { fill: var(--cell); stroke: var(--line); stroke-width: 1; }
+  .board .cell.in-word rect { fill: var(--word); }
+  .board .cell.active rect { fill: var(--active); }
+  .board .cell.wrong rect { fill: var(--wrong); }
+  .board .num { font-size: 10px; fill: var(--muted); }
+  .board .letter { font-family: var(--serif); font-weight: 700; font-size: 24px; fill: var(--fg); text-anchor: middle; dominant-baseline: central; }
+  .board .cell.revealed .letter { fill: var(--revealed); }
+
+  .entry { margin: 14px auto 0; width: min(100%, 520px); }
+  .current { min-height: 4.5em; margin: 0 0 8px; }
+  .current .label { font-weight: bold; }
+  .input-row { display: flex; gap: 8px; }
+  .input-row input { flex: 1; min-width: 0; font: inherit; font-size: 1.1rem; padding: 8px; border: 1px solid var(--line); border-radius: 2px; background: var(--paper); color: var(--fg); }
+  button { font: inherit; font-size: .95rem; padding: 7px 14px; cursor: pointer; background: transparent; color: var(--fg); border: 1px solid var(--line); border-radius: 2px; letter-spacing: .08em; }
+  button[type=submit] { background: var(--fg); color: var(--paper); }
+  button:active { transform: translateY(1px); }
+  .buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .message { min-height: 3em; margin: 8px 0 0; color: var(--accent); font-weight: bold; }
+
+  .clues h2 { font-size: 1.1rem; letter-spacing: .2em; margin: 0 0 6px; padding-bottom: 2px; border-bottom: 1px solid var(--rule); }
+  .clues ol { list-style: none; padding: 0; margin: 0 0 16px; }
+  .clues li { padding: 4px 6px; cursor: pointer; border-radius: 2px; }
+  .clues li.selected { background: var(--word); }
+  .clues li.done { color: var(--muted); }
+  .clues li.wrong { background: var(--wrong); color: var(--fg); }
+  .clues li .n { font-weight: bold; margin-right: 4px; }
+  .note { margin: 8px 0 0; padding: 10px 14px; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); background: rgba(244, 237, 224, .55); font-size: 0.95rem; }
+  .note p { margin: 0; }
+  .note p + p { margin-top: 6px; }
+  .note[hidden] { display: none; }
+  /* カギの下の「答え」「解説」。カギと区別するため、縦線で区切り、見出しの札をつける */
+  .detail { display: none; margin: 6px 0 4px 1.4em; padding: 2px 0 2px 12px; border-left: 2px solid var(--rule); cursor: default; }
+  .clues li.show-explain .detail { display: block; }
+  .detail .row { margin: 0; display: flex; gap: 10px; align-items: baseline; }
+  .detail .row + .row { margin-top: 4px; }
+  .detail .lbl { flex: none; padding: 0 6px; border: 1px solid var(--muted); font-size: .7rem; letter-spacing: .15em; line-height: 1.7; color: var(--muted); }
+  .detail .ans { font-weight: 700; color: var(--revealed); }
+  .detail .reading { margin-left: 2px; font-size: .8em; font-weight: 500; color: var(--muted); }
+  .detail .tag { margin-left: 8px; padding: 0 8px; border: 1px dashed var(--muted); border-radius: 999px; font-size: .7rem; font-weight: 500; color: var(--muted); }
+  .detail .tag[hidden] { display: none; }
+  .detail .body { font-size: .9rem; line-height: 1.8; color: var(--fg); }
+  .note .item + .item { margin-top: 10px; }
+  .note .head { margin: 0 0 4px; font-weight: 700; color: var(--accent); letter-spacing: .1em; }
+  .note .detail { display: block; margin-left: 0; }
+
+  .related { margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--rule); }
+  .related h2 { font-size: 1rem; letter-spacing: .2em; margin: 0 0 6px; }
+  .related ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 6px 18px; }
+  .related a { color: var(--fg); }
+  .recent { margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--rule); }
+  .recent h2 { font-size: 1.1rem; letter-spacing: .2em; margin: 0 0 8px; }
+  .recent ul { list-style: none; padding: 0; margin: 0; }
+  .recent li { padding: 8px 0; border-bottom: 1px dotted var(--rule); }
+  .recent a { color: var(--fg); text-decoration: none; display: block; }
+  .recent a:hover .title { text-decoration: underline; }
+  .recent .date { display: block; font-size: .8rem; letter-spacing: .1em; color: var(--muted); }
+  .recent .title { font-weight: 700; }
+  .recent .round { margin-left: 6px; font-size: .85em; letter-spacing: .2em; color: var(--accent); }
+  .recent .more { margin: 10px 0 0; text-align: right; }
+  .recent .more a { display: inline; border-bottom: 1px solid var(--fg); }
+  .rules { margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--rule); font-size: 0.9rem; color: var(--muted); }
+  .rules ul { padding-left: 1.2em; margin: 4px 0; }
+</style>
+</head>
+<body>
+<header class="site"><div class="site-inner">
+  <div>
+    <p class="wordmark"><a href="index.html">Yorozu Crossword</a></p>
+    <p class="name">よろずのクロスワードパズル</p>
+  </div>
+  <nav><a href="index.html">最新の問題</a><a href="archive.html">バックナンバー</a><a href="words.html">単語帳</a></nav>
+</div></header>
+
+<main id="main">
+  <div class="hero">
+    <p class="date" id="date"></p>
+    <h1 id="title"></h1>
+    <p class="subtitle" id="subtitle"></p>
+    <p class="description" id="description"></p>
+  </div>
+  <div class="layout">
+    <section>
+      <div class="board-wrap">
+        <svg class="board" id="board" role="img" aria-label="クロスワードの盤面"></svg>
+        <img class="cover" id="cover" alt="" hidden>
+      </div>
+      <div class="entry">
+        <p class="current" id="current">カギを選んでください。</p>
+        <form class="input-row" id="form" autocomplete="off">
+          <input id="answer" type="text" inputmode="text" placeholder="答えを入力" aria-label="答え">
+          <button type="submit">入れる</button>
+        </form>
+        <div class="buttons">
+          <button type="button" id="check">答え合わせ</button>
+          <button type="button" id="reveal-word">この答えを見る</button>
+          <button type="button" id="reveal-all">全部の答えを見る</button>
+          <button type="button" id="reset">リセット</button>
+        </div>
+        <p class="message" id="message" role="status"></p>
+        <div class="note" id="note" hidden></div>
+      </div>
+    </section>
+    <section class="clues">
+      <h2 id="across-label"></h2>
+      <ol id="across"></ol>
+      <h2 id="down-label"></h2>
+      <ol id="down"></ol>
+    </section>
+  </div>
+
+  <section class="related">
+    <h2>単語帳</h2>
+    <ul><li><a href="words-sangetsuki.html">山月記の単語帳</a>（このジャンルの言葉とカギ・解説の一覧）</li></ul>
+  </section>
+
+  <section class="rules">
+    <strong>答えの書き方</strong>
+    <ul id="rules"></ul>
+  </section>
+</main>
+<footer class="site"><div class="site-inner">よろずのクロスワードパズル ─ 毎日ひとつ、いろいろなテーマのクロスワードパズル。 <a href="archive.html">バックナンバー</a> <a href="words.html">単語帳</a></div></footer>
+
+
+<script>
+// ---- 言語の設定と文字種のルール（generator/locales/<locale>.js と generator/scripts/<script>.js を埋め込む） ----
+// 日本語の言語設定（画面の文言、カギと解説の標準の指示）。
+// 答えの文字のルールは文字種ごとに generator/scripts/ にある。
+// このファイルはブラウザでもそのまま動かす（パズルのページに埋め込む）。import を使わないこと。
+
+const locale = 'ja';
+
+const labels = { across: 'ヨコ', down: 'タテ' };
+
+// ヒント生成の標準設定（テーマファイルの clue で上書きできる）
+const clueDefaults = {
+  maxLength: 40,
+  instructions: [
+    'クロスワードパズルのカギ（ヒント）を日本語で書く。',
+    '1つのカギは短い1〜2文で書く。です・ます調にしない（「〜の国」「〜するもの」のような体言止めか常体）。',
+    '答えの言葉そのもの、答えの漢字、答えの一部をカギに含めない。',
+    'カギだけを読んで、答えが1つに絞れるようにする。',
+    '事実として確かなことだけを書く。自信がないことは書かない。',
+  ],
+};
+
+// 解説生成の標準設定（テーマファイルの explanation で上書きできる）
+// 解説は、完成したとき・全部の答えを見たときに表示する
+const explanationDefaults = {
+  maxLength: 120,
+  instructions: [
+    'クロスワードパズルを解き終えた人が読む、答えの言葉の短い解説を日本語で書く。',
+    '2〜3文で、です・ます調で書く。',
+    '「へえ」と思える豆知識を1つ入れる。カギと同じ内容をくり返さない。',
+    '事実として確かなことだけを書く。自信がないことは書かない。',
+  ],
+};
+
+// 解説の欄で、テーマ外の「つなぎの言葉」につける印
+const fillerLabel = 'つなぎの言葉';
+
+// 文字種: かな（カタカナ）。答えのマスに入る文字のルール
+// このファイルはブラウザでもそのまま動かす（パズルのページに埋め込む）。import を使わないこと。
+
+const SMALL = Object.fromEntries(
+  [...'ァィゥェォッャュョヮヵヶ'].map((c, i) => [c, 'アイウエオツヤユヨワカケ'[i]]),
+);
+const VU = [['ヴァ', 'バ'], ['ヴィ', 'ビ'], ['ヴェ', 'ベ'], ['ヴォ', 'ボ'], ['ヴ', 'ブ']];
+
+const script = 'kana';
+
+// AI への依頼などで、answer を何と呼ぶか
+const answerLabel = '読み';
+
+// つなぎの言葉に使う汎用リスト
+const fillerTheme = 'general';
+
+const inputPlaceholder = '答えを入力（ひらがな・カタカナ）';
+const inputHint = 'ひらがなかカタカナで入力してください。';
+
+// 答えの書き方（ページの「答えの書き方」に出す）
+const rules = [
+  '答えはカタカナで、1マスに1文字入ります（ひらがなで入力してもかまいません）',
+  '小さい文字は大きい文字で入れます（例: シャツ → シヤツ）',
+  '濁点・半濁点のついた文字は1文字です（例: ガ は1マス）',
+  '「ヴ」は使わず、バ行で表します（例: ヴァイオリン → バイオリン）',
+  '長音「ー」は1文字です',
+];
+
+// 入力やリストの文字列を、マスに入る形にそろえる
+function normalize(text) {
+  let s = [...text.normalize('NFKC')]
+    .map((c) => (c >= 'ぁ' && c <= 'ゖ' ? String.fromCodePoint(c.codePointAt(0) + 0x60) : c))
+    .join('');
+  for (const [from, to] of VU) s = s.replaceAll(from, to);
+  s = [...s].map((c) => SMALL[c] ?? c).join('');
+  return s.replace(/[・\s]/g, '');
+}
+
+function isValidAnswer(answer) {
+  return /^[ア-ンー]+$/.test(answer) && !/[ァィゥェォッャュョヮヵヶヴ]/.test(answer);
+}
+
+// カギに答えが漏れていないかを調べる（ひらがな・小さい文字で書いてあっても見つける）
+function leaksAnswer(clue, word) {
+  const text = normalize(clue);
+  if (text.includes(word.answer)) return `答え「${word.answer}」が含まれている`;
+  if (word.display && clue.includes(word.display)) return `答えの表記「${word.display}」が含まれている`;
+  return null;
+}
+
+// 単語帳の見出し（五十音の行）
+const GYOU = [
+  ['ア', 'アイウエオ'], ['カ', 'カキクケコガギグゲゴ'], ['サ', 'サシスセソザジズゼゾ'], ['タ', 'タチツテトダヂヅデド'],
+  ['ナ', 'ナニヌネノ'], ['ハ', 'ハヒフヘホバビブベボパピプペポ'], ['マ', 'マミムメモ'], ['ヤ', 'ヤユヨ'],
+  ['ラ', 'ラリルレロ'], ['ワ', 'ワヲン'],
+];
+const groups = GYOU.map(([g]) => g);
+function groupOf(answer) {
+  return GYOU.find(([, chars]) => chars.includes(answer[0]))?.[0] ?? 'ワ';
+}
+function groupTitle(group) {
+  return `${group}行`;
+}
+
+
+// ---- パズル ----
+const PUZZLE = {"id":"00003-sangetsuki-001","serial":3,"genre":"sangetsuki","round":1,"date":"2026-10-11","locale":"ja","theme":"sangetsuki","title":"山月記","subtitle":"Sangetsuki — The Moon over the Mountain","description":"中島敦の名作「山月記」。詩人として名を残そうとして、虎になってしまった李徴の物語から、人物・地名・印象的な言葉を集めました。","image":"images/sangetsuki.webp","design":{"accent":"#3d4a63"},"rules":["作中の言葉は、読みをカタカナで答えてください（例: 李徴 → リチョウ）","本文は青空文庫などで読めます"],"size":{"rows":9,"cols":9},"grid":["ナ#モジ##カ#ハ","カ#ウ#カクリヤク","ジンコデン###ガ","マ###サ#シサク","ア#アカツキ###","ツキ##ギ#コツク","シ#ツ#ヨ#ボ#サ","#シユンシヨウ#ム","オカ###ル#トラ"],"words":[{"number":2,"direction":"across","row":0,"col":2,"answer":"モジ","display":"文字","theme":"general","clue":"ことばを書き表すしるし","explanation":"漢字、かな、アルファベットなど、文字体系は世界に多数あります。Unicodeには絵文字も登録されています。"},{"number":5,"direction":"across","row":1,"col":4,"answer":"カクリヤク","display":"虢略","theme":"sangetsuki","clue":"退官後の李徴が創作にふけった故郷","explanation":"李徴が官を退いた後、故山として帰った地名です。ここで世俗を離れ、詩作にふける生活へ移ります。"},{"number":6,"direction":"across","row":2,"col":0,"answer":"ジンコデン","display":"人虎伝","theme":"sangetsuki","clue":"唐代の怪異小説。『山月記』のもと","explanation":"『山月記』のもとになった唐代の伝奇小説です。題名からも、人が虎になる設定の源流がうかがえます。"},{"number":7,"direction":"across","row":3,"col":6,"answer":"シサク","display":"詩作","theme":"sangetsuki","clue":"李徴が退官後、ひたすらふけった営み","explanation":"李徴が官を退いた後に打ち込んだ、詩を作ることです。彼の望みが官途より詩名に向いたことを示します。"},{"number":8,"direction":"across","row":4,"col":2,"answer":"アカツキ","display":"暁","theme":"sangetsuki","clue":"李徴との別れのころ近づいた夜明け","explanation":"李徴と袁傪の別れが近づくころの夜明けを指します。再会が夜中に始まり、暁で終わる構成が印象的です。"},{"number":9,"direction":"across","row":5,"col":0,"answer":"ツキ","display":"月","theme":"sangetsuki","clue":"題名にもある天体。最後は白く光を失う","explanation":"題名にも含まれる象徴的な語です。最後に虎が光を失った白い月を仰ぐ場面で、余韻を強めます。"},{"number":10,"direction":"across","row":5,"col":6,"answer":"コツク","display":"刻苦","theme":"sangetsuki","clue":"「敢て…磨こうともせず」の伏せた語","explanation":"苦労して努力することです。「磨こうともせず」とともに、李徴が才能を鍛え切れなかった点を表します。"},{"number":13,"direction":"across","row":7,"col":1,"answer":"シユンシヨウ","display":"峻峭","theme":"sangetsuki","clue":"李徴の性情。きびしくけわしいこと","explanation":"きびしく、けわしい性質を表す語です。李徴の性情を示し、人づきあいの難しさを考える手がかりになります。"},{"number":15,"direction":"across","row":8,"col":0,"answer":"オカ","display":"丘","theme":"sangetsuki","clue":"別れの後、袁傪一行が上から振り返った所","explanation":"別れの後、袁傪の一行が振り返る場所です。丘の上という距離が、李徴との決定的な隔たりを際立てます。"},{"number":16,"direction":"across","row":8,"col":7,"answer":"トラ","display":"虎","theme":"sangetsuki","clue":"李徴が姿を変えた獣","explanation":"李徴が変わってしまった姿です。人間の声で語る存在として描かれ、人と獣の境目が授業の重要点になります。"},{"number":1,"direction":"down","row":0,"col":0,"answer":"ナカジマアツシ","display":"中島敦","theme":"sangetsuki","clue":"『山月記』『李陵』などの作者","explanation":"『山月記』の作者です。1909年生まれで、短い生涯に『李陵』『名人伝』『弟子』なども残しました。"},{"number":2,"direction":"down","row":0,"col":2,"answer":"モウコ","display":"猛虎","theme":"sangetsuki","clue":"叢から躍り出た、たけだけしい獣","explanation":"たけだけしい虎を表す語です。叢から躍り出る描写に使われ、最後に見える李徴の姿を強く印象づけます。"},{"number":3,"direction":"down","row":0,"col":6,"answer":"カリ","display":"下吏","theme":"sangetsuki","clue":"低位の役人。李徴が嫌った立場","explanation":"下級の役人のことです。李徴が大官に仕える屈辱を避け、詩家の名を選ぼうとした対比に使われます。"},{"number":4,"direction":"down","row":0,"col":8,"answer":"ハクガク","display":"博学","theme":"sangetsuki","clue":"広く知識に通じること。冒頭の評語","explanation":"広く学問に通じていることです。冒頭の「博学才穎」は、李徴がただの奇人でなく優れた才人だったと示します。"},{"number":5,"direction":"down","row":1,"col":4,"answer":"カンサツギヨシ","display":"監察御史","theme":"sangetsuki","clue":"袁傪の官職。不正を調べる役","explanation":"袁傪の官職で、官吏の不正を監察する役です。李徴の旧友が公務の途上にいる設定を支えています。"},{"number":10,"direction":"down","row":5,"col":6,"answer":"コボウ","display":"虎榜","theme":"sangetsuki","clue":"科挙合格者を掲げる札","explanation":"科挙の合格者を掲示する札です。「名を虎榜に連ね」は、李徴が若くして試験に通ったことを示します。"},{"number":11,"direction":"down","row":5,"col":8,"answer":"クサムラ","display":"叢","theme":"sangetsuki","clue":"獣の李徴が潜み、姿を見せなかった茂み","explanation":"虎となった李徴が出入りし、語る間も身を隠す場所です。姿を見せないことで、袁傪との緊張が続きます。"},{"number":12,"direction":"down","row":6,"col":2,"answer":"ツユ","display":"露","theme":"sangetsuki","clue":"「山も樹も月も…も」の伏せた語","explanation":"「山も樹も月も露も」と並べられる自然の語です。夜明け近い場面の冷たく澄んだ空気を感じさせます。"},{"number":13,"direction":"down","row":7,"col":1,"answer":"シカ","display":"詩家","theme":"sangetsuki","clue":"李徴が死後百年に名を遺そうとした立場","explanation":"詩人のことです。李徴は役人として屈するより、死後百年に詩家の名を残すことを望みました。"},{"number":14,"direction":"down","row":7,"col":5,"answer":"ヨル","display":"夜","theme":"general","clue":"日がしずんで暗い時間","explanation":"天気予報の用語では、夜は18時ごろから24時ごろまでです。0時以降は「未明」などと呼び分けます。"}]};
+
+// ---- 状態 ----
+const { rows, cols } = PUZZLE.size;
+const solution = PUZZLE.grid.map((row) => [...row]);
+const words = PUZZLE.words.map((w, i) => ({ ...w, index: i, cells: cellsOf(w) }));
+const storageKey = `xword:${PUZZLE.id}`;
+let filled = emptyGrid();
+let revealed = emptyGrid(false);
+let shownWords = []; // 答えを見た単語の index
+let selected = null;
+let activeCell = null;
+let checkRequested = false; // 「答え合わせ」を押した直後だけ true（次の入力で戻す）
+
+function emptyGrid(value = '') {
+  return Array.from({ length: rows }, () => Array(cols).fill(value));
+}
+function cellsOf(w) {
+  const [dr, dc] = w.direction === 'across' ? [0, 1] : [1, 0];
+  return [...w.answer].map((_, i) => [w.row + dr * i, w.col + dc * i]);
+}
+function wordsAt(r, c) {
+  return words.filter((w) => w.cells.some(([wr, wc]) => wr === r && wc === c));
+}
+
+// ---- 保存 ----
+function save() {
+  try {
+    localStorage.setItem(storageKey, JSON.stringify({ filled, revealed, shownWords, solved: isSolved(), started: filled.flat().some(Boolean) }));
+  } catch {}
+}
+function load() {
+  try {
+    const data = JSON.parse(localStorage.getItem(storageKey) ?? 'null');
+    if (data?.filled?.length === rows) {
+      filled = data.filled;
+      revealed = data.revealed;
+      shownWords = data.shownWords ?? [];
+    }
+  } catch {}
+}
+
+// ---- 描画 ----
+// 盤面は SVG。マスの大きさを座標で固定し、render() のたびにまるごと描き直す。
+const board = document.getElementById('board');
+const CELL = 40; // 1マスの大きさ（viewBox の単位）
+const PAD = 1; // 外枠の線が切れないための余白
+const numbers = new Map(words.map((w) => [`${w.row},${w.col}`, w.number]));
+const mainThemes = PUZZLE.theme.split('+');
+
+function buildBoard() {
+  board.setAttribute('viewBox', `${-PAD} ${-PAD} ${cols * CELL + PAD * 2} ${rows * CELL + PAD * 2}`);
+  board.addEventListener('click', (e) => {
+    const cell = e.target.closest('[data-r]');
+    if (cell) onCellClick(Number(cell.dataset.r), Number(cell.dataset.c));
+  });
+}
+
+function boardSvg({ selectedCells, isWrong }) {
+  const parts = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      if (solution[r][c] === '#') continue;
+      const x = c * CELL;
+      const y = r * CELL;
+      const cls = ['cell'];
+      if (selectedCells.has(`${r},${c}`)) cls.push('in-word');
+      if (activeCell?.[0] === r && activeCell?.[1] === c) cls.push('active');
+      if (isWrong(r, c)) cls.push('wrong');
+      if (revealed[r][c]) cls.push('revealed');
+      const num = numbers.get(`${r},${c}`);
+      parts.push(
+        `<g class="${cls.join(' ')}" data-r="${r}" data-c="${c}">` +
+          `<rect x="${x}" y="${y}" width="${CELL}" height="${CELL}"/>` +
+          (num ? `<text class="num" x="${x + 3}" y="${y + 10}">${num}</text>` : '') +
+          (filled[r][c] ? `<text class="letter" x="${x + CELL / 2}" y="${y + CELL / 2 + 2}">${filled[r][c]}</text>` : '') +
+          '</g>',
+      );
+    }
+  }
+  return parts.join('');
+}
+
+function buildClues() {
+  document.getElementById('across-label').textContent = labels.across;
+  document.getElementById('down-label').textContent = labels.down;
+  for (const w of words) {
+    const li = document.createElement('li');
+    li.innerHTML = `<span class="n">${w.number}</span><span class="text"></span>`;
+    li.querySelector('.text').textContent = w.clue ?? '（カギなし）';
+    li.append(detailOf(w));
+    li.addEventListener('click', () => select(w));
+    document.getElementById(w.direction).append(li);
+    w.li = li;
+  }
+}
+
+function render() {
+  const selectedCells = new Set(selected?.cells.map(([r, c]) => `${r},${c}`));
+  // 全部埋まったとき、または答え合わせを押したときは、まちがいに色をつける
+  const showWrong = checkRequested || allFilled();
+  const isWrong = (r, c) => showWrong && filled[r][c] && filled[r][c] !== solution[r][c];
+  board.innerHTML = boardSvg({ selectedCells, isWrong });
+  // 正解した単語・答えを見た単語は、解説を出す（完成時・全部の答えを見たときは全部）
+  const explained = isSolved() || words.every((w) => shownWords.includes(w.index));
+  for (const w of words) {
+    w.li.classList.toggle('selected', w === selected);
+    const complete = w.cells.every(([r, c]) => filled[r][c]);
+    w.li.classList.toggle('done', complete);
+    w.li.classList.toggle('wrong', w.cells.some(([r, c]) => isWrong(r, c)));
+    const shown = explained || isCorrect(w) || shownWords.includes(w.index);
+    w.li.classList.toggle('show-explain', shown);
+  }
+  const current = document.getElementById('current');
+  if (selected) {
+    current.innerHTML = '<span class="label"></span> <span class="text"></span>';
+    current.querySelector('.label').textContent = `${labels[selected.direction]}${selected.number}（${selected.cells.length}文字）`;
+    current.querySelector('.text').textContent = selected.clue ?? '';
+  }
+}
+
+// ---- 操作 ----
+function select(w, cell = null) {
+  selected = w;
+  activeCell = cell ?? w.cells[0];
+  if (!allFilled()) setMessage('');
+  render();
+  const input = document.getElementById('answer');
+  input.value = w.cells.map(([r, c]) => filled[r][c] || '').join('');
+  input.focus();
+  input.select();
+}
+
+function onCellClick(r, c) {
+  const candidates = wordsAt(r, c);
+  if (!candidates.length) return;
+  // 同じマスをもう一度押したら、タテとヨコを切り替える
+  const sameCell = activeCell?.[0] === r && activeCell?.[1] === c;
+  let next = candidates[0];
+  if (sameCell && selected && candidates.length > 1) {
+    next = candidates.find((w) => w !== selected) ?? next;
+  } else if (selected && candidates.includes(selected)) {
+    next = selected;
+  }
+  select(next, [r, c]);
+}
+
+function enter(text) {
+  if (!selected) return setMessage('先にカギを選んでください。');
+  const letters = [...normalize(text)];
+  // 入力はあるのに、マスに入る文字が 1 つもない（アルファベットの問題にかなを入れた、など）
+  if (text.trim() && !letters.length) return setMessage(`入力した文字はマスに入りません。${inputHint}`);
+  const invalid = letters.filter((ch) => !isValidAnswer(ch));
+  if (invalid.length) return setMessage(`使えない文字があります: ${[...new Set(invalid)].join(' ')}`);
+  const target = selected;
+  const correctBefore = new Set(words.filter(isCorrect));
+  const len = selected.cells.length;
+  selected.cells.forEach(([r, c], i) => {
+    if (revealed[r][c]) return;
+    if (i < letters.length) filled[r][c] = letters[i];
+  });
+  checkRequested = false;
+  save();
+  render();
+  // 正解なら、入力した場所の近くにも解説を出す。
+  // 交差で一緒に正解になった単語も並べる（入力した単語を先頭に）
+  const newlyCorrect = words.filter((w) => isCorrect(w) && (w === target || !correctBefore.has(w)));
+  newlyCorrect.sort((a, b) => (a === target ? -1 : b === target ? 1 : 0));
+  if (newlyCorrect.length) showNote(newlyCorrect, '正解！');
+  else hideNote();
+  if (allFilled()) return judge();
+  if (letters.length !== len) {
+    setMessage(`${len}文字の答えです（${letters.length}文字入力されました）。`);
+  } else {
+    setMessage('');
+    selectNextEmpty();
+  }
+}
+
+function selectNextEmpty() {
+  const start = selected ? selected.index + 1 : 0;
+  for (let k = 0; k < words.length; k++) {
+    const w = words[(start + k) % words.length];
+    if (w.cells.some(([r, c]) => !filled[r][c])) return select(w);
+  }
+}
+
+function allFilled() {
+  return solution.every((row, r) => row.every((ch, c) => ch === '#' || filled[r][c]));
+}
+
+function wrongWords() {
+  return words.filter((w) => w.cells.some(([r, c]) => filled[r][c] && filled[r][c] !== solution[r][c]));
+}
+
+// 全部埋まったときの判定
+function judge() {
+  if (isSolved()) return finish();
+  setMessage(`間違いがあります（${wrongWords().length}語）。赤いカギを見直してください。`);
+}
+
+function check() {
+  checkRequested = true;
+  render();
+  if (allFilled()) return judge();
+  const n = wrongWords().length;
+  setMessage(n ? `間違いがあります（${n}語）。赤いカギを見直してください。` : 'いまのところ、間違いはありません。');
+}
+
+function reveal(targets) {
+  for (const w of targets) if (!shownWords.includes(w.index)) shownWords.push(w.index);
+  const cells = targets.flatMap((w) => w.cells);
+  for (const [r, c] of cells) {
+    if (filled[r][c] !== solution[r][c]) revealed[r][c] = true;
+    filled[r][c] = solution[r][c];
+  }
+  save();
+  render();
+}
+
+function isCorrect(w) {
+  return w.cells.every(([r, c]) => filled[r][c] === solution[r][c]);
+}
+
+// 「答え」と「解説」のまとまり（カギの一覧と、入力欄の下の両方で使う）
+function detailOf(w) {
+  const div = document.createElement('div');
+  div.className = 'detail';
+  div.innerHTML =
+    '<p class="row"><span class="lbl">答え</span><span><span class="ans"></span><span class="reading"></span><span class="tag" hidden></span></span></p>' +
+    '<p class="row"><span class="lbl">解説</span><span class="body"></span></p>';
+  div.querySelector('.ans').textContent = w.display;
+  // 表記とマスの文字がちがう答え（漢字の語、C# など）には、マスに入れた文字を添える
+  if (normalize(w.display) !== w.answer) div.querySelector('.reading').textContent = `（${w.answer}）`;
+  // テーマ外の「つなぎの言葉」には印をつける
+  if (!mainThemes.includes(w.theme)) {
+    const tag = div.querySelector('.tag');
+    tag.textContent = fillerLabel;
+    tag.hidden = false;
+  }
+  div.querySelector('.body').textContent = w.explanation ?? '';
+  if (!w.explanation) div.lastChild.remove();
+  // 解説を読んでいるときに押しても、カギの選択（キーボードが開く）にならないようにする
+  div.addEventListener('click', (e) => e.stopPropagation());
+  return div;
+}
+
+function showNote(targets, label) {
+  const note = document.getElementById('note');
+  note.replaceChildren(
+    ...targets.map((w) => {
+      const item = document.createElement('div');
+      item.className = 'item';
+      const head = document.createElement('p');
+      head.className = 'head';
+      head.textContent = `${label}　${labels[w.direction]}${w.number}`;
+      item.append(head, detailOf(w));
+      return item;
+    }),
+  );
+  note.hidden = false;
+}
+
+function hideNote() {
+  document.getElementById('note').hidden = true;
+}
+
+function isSolved() {
+  return solution.every((row, r) => row.every((ch, c) => ch === '#' || filled[r][c] === ch));
+}
+
+function finish() {
+  const usedReveal = shownWords.length > 0;
+  setMessage(usedReveal ? '全部うまりました。カギの下に解説を出しました。' : '完成！ おめでとうございます。カギの下に解説を出しました。');
+}
+
+// 最初にテーマの絵を盤面の上に出し、すぐに消して盤面を見せる
+function showCover() {
+  const cover = document.getElementById('cover');
+  const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  if (!PUZZLE.image || reduce) return cover.remove();
+  let hidden = false;
+  const hide = () => {
+    if (hidden) return;
+    hidden = true;
+    cover.classList.add('hide');
+    setTimeout(() => cover.remove(), 700);
+  };
+  cover.addEventListener('click', hide);
+  cover.src = PUZZLE.image;
+  cover.hidden = false;
+  // ページ（フォントなど）を読み終えてから 1.2 秒見せる。読み込みが遅くても 4 秒で消す
+  const pageLoaded = document.readyState === 'complete' ? Promise.resolve() : new Promise((r) => addEventListener('load', r, { once: true }));
+  Promise.all([cover.decode(), pageLoaded]).then(() => setTimeout(hide, 1200), () => cover.remove());
+  setTimeout(hide, 4000);
+}
+
+function setMessage(text) {
+  document.getElementById('message').textContent = text;
+}
+
+// ---- 開始 ----
+const [y, m, d] = PUZZLE.date.split('-').map(Number);
+document.getElementById('date').textContent = `No.${String(PUZZLE.serial).padStart(5, '0')}　${y}年${m}月${d}日`;
+document.getElementById('title').textContent = `${PUZZLE.title}のクロスワードパズル`;
+const roundEl = document.createElement('span');
+roundEl.className = 'round';
+roundEl.textContent = `第${PUZZLE.round ?? 1}回`;
+document.getElementById('title').append(roundEl);
+document.getElementById('subtitle').textContent = PUZZLE.subtitle ?? '';
+document.getElementById('description').textContent = PUZZLE.description ?? '';
+// テーマの色（テーマファイルの design）
+for (const [key, value] of Object.entries(PUZZLE.design ?? {})) {
+  document.documentElement.style.setProperty(`--${key}`, value);
+}
+showCover();
+const rulesEl = document.getElementById('rules');
+for (const text of [...PUZZLE.rules, ...rules]) {
+  const li = document.createElement('li');
+  li.textContent = text;
+  rulesEl.append(li);
+}
+document.getElementById('answer').placeholder = inputPlaceholder;
+if (script === 'latin') document.getElementById('answer').setAttribute('autocapitalize', 'characters');
+document.getElementById('form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  enter(document.getElementById('answer').value);
+});
+document.getElementById('check').addEventListener('click', check);
+document.getElementById('reveal-word').addEventListener('click', () => {
+  if (!selected) return setMessage('先にカギを選んでください。');
+  reveal([selected]);
+  document.getElementById('answer').value = selected.answer;
+  showNote([selected], '答えを表示');
+  if (allFilled()) judge();
+  else setMessage('');
+});
+document.getElementById('reveal-all').addEventListener('click', () => {
+  if (!confirm('全部の答えを表示しますか？')) return;
+  reveal(words);
+  hideNote();
+  setMessage('全部の答えを表示しました。カギの下に解説を出しました。');
+});
+document.getElementById('reset').addEventListener('click', () => {
+  if (!confirm('入力をすべて消しますか？')) return;
+  filled = emptyGrid();
+  revealed = emptyGrid(false);
+  shownWords = [];
+  checkRequested = false;
+  save();
+  setMessage('');
+  hideNote();
+  render();
+});
+
+buildBoard();
+buildClues();
+load();
+render();
+if (allFilled()) judge();
+</script>
+</body>
+</html>

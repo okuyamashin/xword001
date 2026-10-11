@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>世界の国と地域の単語帳｜よろずのクロスワードパズル</title>
+<meta name="description" content="世界の国と地域の名前を集めました。首都や名物、歴史をヒントに、国名をカタカナで埋めていきましょう。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Shippori+Mincho:wght@500;700;800&display=swap">
+<style>
+  /* デザイン: 羊皮紙と銅版画。色はテーマごとに --accent などを差し替えられる（puzzle.design） */
+  :root {
+    --bg: #ddd1bc;
+    --paper: #f4ede0;
+    --fg: #2e2721;
+    --muted: #6b5f52;
+    --rule: #b6a68b;
+    --line: #3a3129;
+    --cell: #f4ede0;
+    --word: #e7d5ad;
+    --active: #d2b072;
+    --wrong: #e9b4a2;
+    --revealed: #2f4f6f;
+    --accent: #8c6a32;
+    --serif: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+    --latin: "Cormorant Garamond", "Times New Roman", serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--serif);
+    font-weight: 500;
+    line-height: 1.8;
+    letter-spacing: .03em;
+  }
+  .site-inner, main { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+  header.site { padding: 16px 0 8px; }
+  header.site .wordmark { margin: 0; font-family: var(--latin); font-weight: 600; font-size: .95rem; letter-spacing: .2em; text-transform: uppercase; }
+  header.site .name { margin: 0; color: var(--muted); font-size: .9rem; letter-spacing: .12em; }
+  header.site .site-inner { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  header.site a { color: inherit; text-decoration: none; }
+  header.site nav { display: flex; gap: 16px; font-size: .9rem; letter-spacing: .12em; }
+  header.site nav a { border-bottom: 1px solid transparent; }
+  header.site nav a:hover, header.site nav a[aria-current] { border-bottom-color: var(--fg); }
+  footer.site { margin-top: 40px; padding: 20px 0 28px; border-top: 1px solid var(--rule); color: var(--muted); font-size: .85rem; }
+
+  .hero { text-align: center; margin: 24px 0 20px; }
+  .date { margin: 0 0 4px; color: var(--muted); font-size: .85rem; letter-spacing: .12em; }
+  h1 { font-weight: 800; font-size: clamp(1.35rem, 5vw, 1.9rem); letter-spacing: .12em; line-height: 1.5; margin: 0; }
+  h1 .round { display: block; margin-top: 2px; font-size: .62em; letter-spacing: .3em; color: var(--accent); }
+  .subtitle { margin: 6px 0 0; font-family: var(--latin); font-size: 1.05rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .description {
+    max-width: 44em;
+    margin: 20px auto 0;
+    padding: 14px 18px;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    text-align: left;
+    line-height: 2;
+  }
+  .description:empty { display: none; }
+  .layout { display: grid; gap: 24px; }
+  @media (min-width: 760px) { .layout { grid-template-columns: minmax(0, 1fr) 320px; } }
+  footer.site a { color: inherit; }
+
+  .book-head { display: flex; gap: 16px; align-items: center; justify-content: center; flex-wrap: wrap; margin-top: 16px; }
+  .book-head img { width: 120px; height: 120px; object-fit: cover; box-shadow: 0 4px 12px rgba(46, 39, 33, .25); }
+  .facts { margin: 0; padding: 0; list-style: none; font-size: .9rem; line-height: 2; }
+  .facts a { color: var(--fg); }
+  .tools { position: sticky; top: 0; z-index: 1; margin: 20px 0 8px; padding: 10px 0; background: var(--bg); border-bottom: 1px solid var(--rule); }
+  .tools input { width: 100%; font: inherit; font-size: 1rem; padding: 8px 10px; border: 1px solid var(--line); border-radius: 2px; background: var(--paper); color: var(--fg); }
+  .tools .count { margin: 6px 0 0; font-size: .8rem; color: var(--muted); }
+  .kana { display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 6px 0 0; font-size: .9rem; }
+  .kana a { color: var(--fg); text-decoration: none; border-bottom: 1px solid var(--rule); }
+  h2.gyou { font-size: 1.1rem; letter-spacing: .2em; margin: 28px 0 8px; padding-bottom: 2px; border-bottom: 1px solid var(--rule); scroll-margin-top: 110px; }
+  .entries { list-style: none; padding: 0; margin: 0; }
+  .entry { padding: 12px 0; border-bottom: 1px dotted var(--rule); }
+  .entry .word { margin: 0; font-size: 1.15rem; font-weight: 700; }
+  .entry .reading { margin-left: 8px; font-size: .85rem; font-weight: 500; color: var(--muted); }
+  .entry .level { margin-left: 8px; padding: 0 6px; border: 1px solid var(--muted); font-size: .7rem; letter-spacing: .1em; color: var(--muted); vertical-align: .15em; }
+  .entry .row { margin: 4px 0 0; display: flex; gap: 10px; align-items: baseline; }
+  .entry .lbl { flex: none; padding: 0 6px; border: 1px solid var(--muted); font-size: .7rem; letter-spacing: .15em; line-height: 1.7; color: var(--muted); }
+  .entry .text { font-size: .92rem; line-height: 1.8; }
+  .entry[hidden], h2.gyou[hidden] { display: none; }
+</style>
+</head>
+<body>
+<header class="site"><div class="site-inner">
+  <div>
+    <p class="wordmark"><a href="index.html">Yorozu Crossword</a></p>
+    <p class="name">よろずのクロスワードパズル</p>
+  </div>
+  <nav><a href="index.html">最新の問題</a><a href="archive.html">バックナンバー</a><a href="words.html">単語帳</a></nav>
+</div></header>
+
+<main>
+  <div class="hero">
+    <h1>世界の国と地域の単語帳</h1>
+    <p class="subtitle">Countries and Regions</p>
+    <p class="description">世界の国と地域の名前を集めました。首都や名物、歴史をヒントに、国名をカタカナで埋めていきましょう。</p>
+    <div class="book-head">
+      <img src="images/countries.thumb.webp" alt="" width="120" height="120">
+      <ul class="facts">
+        <li>217 語</li>
+        <li>パズル: <a href="00001-countries-001.html">第1回</a></li>
+        <li><a href="words-countries.json" download>単語リスト（JSON）をダウンロード</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="tools">
+    <input id="filter" type="search" placeholder="ことば・読み・カギ・解説で絞り込む" aria-label="絞り込み">
+    <p class="count" id="count"></p>
+    <nav class="kana"><a href="#gyou-ア">ア</a><a href="#gyou-カ">カ</a><a href="#gyou-サ">サ</a><a href="#gyou-タ">タ</a><a href="#gyou-ナ">ナ</a><a href="#gyou-ハ">ハ</a><a href="#gyou-マ">マ</a><a href="#gyou-ヤ">ヤ</a><a href="#gyou-ラ">ラ</a></nav>
+  </div>
+  <section class="group">
+    <h2 class="gyou" id="gyou-ア">ア行</h2>
+    <ul class="entries">
+      <li class="entry"><p class="word">アイスランド<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">アイルランド<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">アゼルバイジャン<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">アフガニスタン<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">アメリカ<span class="level">やさしい</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">首都はワシントンD.C.の北米の国</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">50の州と首都ワシントンD.C.からなる連邦国家です。星条旗の星の数は州の数と同じ50個です。</span></p></li>
+      <li class="entry"><p class="word">アラブ首長国連邦<span class="reading">アラブシユチヨウコクレンポウ</span><span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">アルジェリア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">アルゼンチン<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">アルバ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">アルバニア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">アルメニア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">アンゴラ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">アンティグア・バーブーダ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">アンドラ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">イエメン<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">イギリス<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">イスラエル<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">イタリア<span class="level">やさしい</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">ローマを首都とする長靴形の半島の国</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">国内にバチカン市国とサンマリノという独立国を囲んでいます。世界遺産の登録数が特に多い国です。</span></p></li>
+      <li class="entry"><p class="word">イラク<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">イラン<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">イングランド<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">インド<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">インドネシア<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ウェールズ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ウガンダ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ウクライナ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ウズベキスタン<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ウルグアイ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">エクアドル<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">エジプト<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">エストニア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">エスワティニ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">エチオピア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">エリトリア<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">エルサルバドル<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">オーストラリア<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">オーストリア<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">オマーン<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">オランダ<span class="level">やさしい</span></p></li>
+    </ul>
+  </section>
+  <section class="group">
+    <h2 class="gyou" id="gyou-カ">カ行</h2>
+    <ul class="entries">
+      <li class="entry"><p class="word">ガーナ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">カーボベルデ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ガイアナ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">カザフスタン<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">カタール<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">カナダ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ガボン<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">カメルーン<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">韓国<span class="reading">カンコク</span><span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ガンビア<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">カンボジア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">北アイルランド<span class="reading">キタアイルランド</span><span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">北朝鮮<span class="reading">キタチヨウセン</span><span class="level">やさしい</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">首都は平壌。日本は国家承認せず</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">正式名称は朝鮮民主主義人民共和国です。国連には1991年に韓国と同時に加盟しました。</span></p></li>
+      <li class="entry"><p class="word">北マケドニア<span class="reading">キタマケドニア</span><span class="level">むずかしい</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">首都はスコピエ。バルカン半島の内陸国</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">ギリシャとの国名をめぐる対立を解決するため、2019年に「マケドニア」から国名を改めました。オフリド湖は世界遺産です。</span></p></li>
+      <li class="entry"><p class="word">ギニア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ギニアビサウ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">キプロス<span class="level">ふつう</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">首都はニコシア、地中海東部の島国</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">欧州連合に加盟していますが、地理的には西アジアに近い島です。銅の英語名copperはこの島名に由来します。</span></p></li>
+      <li class="entry"><p class="word">キューバ<span class="level">やさしい</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">首都はハバナ。カリブ海の島国</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">カリブ海最大の島国で、砂糖や葉巻で知られます。音楽ではソンやルンバが世界に広まりました。</span></p></li>
+      <li class="entry"><p class="word">キュラソー<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ギリシャ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">キリバス<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">キルギス<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">グアテマラ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">グアム<span class="level">やさしい</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">ハガニアを主都とする太平洋の米国準州</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">アメリカの準州で、住民は米国市民です。ただし大統領選挙の本選には投票できません。</span></p></li>
+      <li class="entry"><p class="word">クウェート<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">クック諸島<span class="reading">クツクシヨトウ</span><span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">グリーンランド<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">グレナダ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">クロアチア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ケイマン諸島<span class="reading">ケイマンシヨトウ</span><span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ケニア<span class="level">やさしい</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">ナイロビを首都とする東アフリカの国</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">赤道が国土を通り、サバンナや高地など多様な自然があります。スワヒリ語と英語が公用語です。</span></p></li>
+      <li class="entry"><p class="word">コートジボワール<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">コスタリカ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">コソボ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">コモロ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">コロンビア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">コンゴ共和国<span class="reading">コンゴキヨウワコク</span><span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">コンゴ民主共和国<span class="reading">コンゴミンシユキヨウワコク</span><span class="level">ふつう</span></p></li>
+    </ul>
+  </section>
+  <section class="group">
+    <h2 class="gyou" id="gyou-サ">サ行</h2>
+    <ul class="entries">
+      <li class="entry"><p class="word">サウジアラビア<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">サモア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">サントメ・プリンシペ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ザンビア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">サンマリノ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">シエラレオネ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ジブチ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ジブラルタル<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ジャマイカ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ジョージア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">シリア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">シンガポール<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ジンバブエ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">スイス<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">スウェーデン<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">スーダン<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">スコットランド<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">スペイン<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">スリナム<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">スリランカ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">スロバキア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">スロベニア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">セーシェル<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">赤道ギニア<span class="reading">セキドウギニア</span><span class="level">むずかしい</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">首都はマラボ。公用語はスペイン語</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">大陸部と島々からなり、ビオコ島に主要都市マラボがあります。アフリカでスペイン語が公用語の珍しい国です。</span></p></li>
+      <li class="entry"><p class="word">セネガル<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">セルビア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">セントクリストファー・ネービス<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">セントビンセント及びグレナディーン諸島<span class="reading">セントビンセントオヨビグレナデイーンシヨトウ</span><span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">セントルシア<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ソマリア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ソロモン諸島<span class="reading">ソロモンシヨトウ</span><span class="level">ふつう</span></p></li>
+    </ul>
+  </section>
+  <section class="group">
+    <h2 class="gyou" id="gyou-タ">タ行</h2>
+    <ul class="entries">
+      <li class="entry"><p class="word">タイ<span class="level">やさしい</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">首都はバンコクの東南アジアの国</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">国土は南北に長く、熱帯の気候が広がります。仏教寺院が多く、国民の多くが上座部仏教を信仰しています。</span></p></li>
+      <li class="entry"><p class="word">台湾<span class="reading">タイワン</span><span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">タジキスタン<span class="level">むずかしい</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">首都はドゥシャンベの中央アジアの国</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">国土の9割以上が山地で、パミール高原の一部があります。国名は「タジク人の国」という意味です。</span></p></li>
+      <li class="entry"><p class="word">タヒチ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">タンザニア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">チェコ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">チャド<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">中央アフリカ<span class="reading">チユウオウアフリカ</span><span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">中国<span class="reading">チユウゴク</span><span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">チュニジア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">チリ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ツバル<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">デンマーク<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ドイツ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">トーゴ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ドミニカ共和国<span class="reading">ドミニカキヨウワコク</span><span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ドミニカ国<span class="reading">ドミニカコク</span><span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">トリニダード・トバゴ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">トルクメニスタン<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">トルコ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">トンガ<span class="level">ふつう</span></p></li>
+    </ul>
+  </section>
+  <section class="group">
+    <h2 class="gyou" id="gyou-ナ">ナ行</h2>
+    <ul class="entries">
+      <li class="entry"><p class="word">ナイジェリア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ナウル<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ナミビア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ニウエ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ニカラグア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ニジェール<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">西サハラ<span class="reading">ニシサハラ</span><span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">日本<span class="reading">ニホン</span><span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ニューカレドニア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ニュージーランド<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ネパール<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ノルウェー<span class="level">やさしい</span></p></li>
+    </ul>
+  </section>
+  <section class="group">
+    <h2 class="gyou" id="gyou-ハ">ハ行</h2>
+    <ul class="entries">
+      <li class="entry"><p class="word">バーレーン<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ハイチ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">パキスタン<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">バチカン<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">パナマ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">バヌアツ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">バハマ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">パプアニューギニア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">バミューダ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">パラオ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">パラグアイ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">バルバドス<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">パレスチナ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ハンガリー<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">バングラデシュ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">東ティモール<span class="reading">ヒガシテイモール</span><span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">フィジー<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">フィリピン<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">フィンランド<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ブータン<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">プエルトリコ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">フェロー諸島<span class="reading">フエローシヨトウ</span><span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ブラジル<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">フランス<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ブルガリア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ブルキナファソ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ブルネイ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ブルンジ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ベトナム<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ベナン<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ベネズエラ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ベラルーシ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ベリーズ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ペルー<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ベルギー<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ポーランド<span class="level">やさしい</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">首都はワルシャワの中欧の国</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">バルト海に面し、琥珀の産地として古くから知られます。作曲家ショパンの生地としても有名です。</span></p></li>
+      <li class="entry"><p class="word">ボスニア・ヘルツェゴビナ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ボツワナ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ボリビア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ポルトガル<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">香港<span class="reading">ホンコン</span><span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ホンジュラス<span class="level">ふつう</span></p></li>
+    </ul>
+  </section>
+  <section class="group">
+    <h2 class="gyou" id="gyou-マ">マ行</h2>
+    <ul class="entries">
+      <li class="entry"><p class="word">マーシャル諸島<span class="reading">マーシヤルシヨトウ</span><span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">マカオ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">マダガスカル<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">マラウイ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">マリ<span class="level">ふつう</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">首都はバマコの西アフリカ内陸国</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">ニジェール川が国土を流れ、古都トンブクトゥは交易と学問の中心でした。サハラ砂漠の南縁に位置します。</span></p></li>
+      <li class="entry"><p class="word">マルタ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">マレーシア<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ミクロネシア<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">南アフリカ<span class="reading">ミナミアフリカ</span><span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">南スーダン<span class="reading">ミナミスーダン</span><span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ミャンマー<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">メキシコ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">モーリシャス<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">モーリタニア<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">モザンビーク<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">モナコ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">モルディブ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">モルドバ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">モロッコ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">モンゴル<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">モンテネグロ<span class="level">ふつう</span></p></li>
+    </ul>
+  </section>
+  <section class="group">
+    <h2 class="gyou" id="gyou-ヤ">ヤ行</h2>
+    <ul class="entries">
+      <li class="entry"><p class="word">ヨルダン<span class="level">ふつう</span></p></li>
+    </ul>
+  </section>
+  <section class="group">
+    <h2 class="gyou" id="gyou-ラ">ラ行</h2>
+    <ul class="entries">
+      <li class="entry"><p class="word">ラオス<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ラトビア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">リトアニア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">リビア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">リヒテンシュタイン<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">リベリア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ルーマニア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ルクセンブルク<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ルワンダ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">レソト<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">レバノン<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ロシア<span class="level">やさしい</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">モスクワが首都の世界最大面積の国</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">ヨーロッパとアジアにまたがり、11の時間帯があります。シベリア鉄道は世界最長級の鉄道路線として知られます。</span></p></li>
+    </ul>
+  </section>
+</main>
+<footer class="site"><div class="site-inner">よろずのクロスワードパズル ─ 毎日ひとつ、いろいろなテーマのクロスワードパズル。 <a href="archive.html">バックナンバー</a> <a href="words.html">単語帳</a></div></footer>
+
+<script>
+// 絞り込み（ひらがなで入れてもカタカナの読みに当たり、英字は大文字・小文字を区別しない）
+const toKata = (s) => s.normalize('NFKC').replace(/[ぁ-ゖ]/g, (c) => String.fromCharCode(c.charCodeAt(0) + 0x60)).toUpperCase();
+const entries = [...document.querySelectorAll('.entry')];
+const groups = [...document.querySelectorAll('section.group')];
+const count = document.getElementById('count');
+function apply() {
+  const q = toKata(document.getElementById('filter').value.trim());
+  let shown = 0;
+  for (const e of entries) {
+    const hit = !q || toKata(e.textContent).includes(q);
+    e.hidden = !hit;
+    if (hit) shown++;
+  }
+  for (const g of groups) g.querySelector('h2').hidden = !g.querySelector('.entry:not([hidden])');
+  count.textContent = q ? `${shown} / ${entries.length} 語` : `${entries.length} 語`;
+}
+document.getElementById('filter').addEventListener('input', apply);
+apply();
+</script>
+</body>
+</html>
