@@ -1,6 +1,7 @@
 {
   "locale": "ja",
   "theme": "general",
+  "filler": true,
   "title": "一般",
   "subtitle": "Everyday Words",
   "description": "テーマに関係なく使える、身のまわりの言葉。",

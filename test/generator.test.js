@@ -56,3 +56,18 @@ test('パズルを作るとき、単語リストのカギと解説を書き写�
   }
   assert.equal(puzzle.description, themeFiles[0].description);
 });
+
+test('すべての単語リストが点検を通る（山月記はカギと解説までそろっている）', async () => {
+  const { readdir, readFile } = await import('node:fs/promises');
+  const { checkTheme } = await import('../generator/lib/theme-check.js');
+  const ja = await import('../generator/locales/ja.js');
+  const dir = new URL('../data/words/ja/', import.meta.url);
+  const site = JSON.parse(await readFile(new URL('../data/site/ja.json', import.meta.url), 'utf8'));
+  const imageFiles = await readdir(new URL('../data/images/', import.meta.url));
+  for (const fileName of await readdir(dir)) {
+    const doc = JSON.parse(await readFile(new URL(fileName, dir), 'utf8'));
+    const strict = doc.theme === 'sangetsuki';
+    const { errors } = checkTheme(doc, { locale: ja, site, imageFiles, fileName, strict });
+    assert.deepEqual(errors, [], fileName);
+  }
+});

@@ -2,13 +2,15 @@
 
 多言語対応クロスワードパズルの自動生成サイト（1日1問の静的サイト）。最初は日本語版。
 
-設計: [docs/design.md](docs/design.md)
+- ジャンルの作り方: [docs/genre-guide.md](docs/genre-guide.md)
+- 設計: [docs/design.md](docs/design.md)
 
 ## 使い方（Node.js 20 以上）
 
 ```
 npm run theme-image -- --theme sangetsuki             # ジャンルの絵を作る（OpenAI）
 npm run theme-texts -- --theme sangetsuki             # 各語のカギと解説を作り置きする（OpenAI）
+npm run check-theme -- --theme sangetsuki --strict    # 単語リストを点検する
 npm run make -- --theme countries                      # puzzles/00004-countries-002.json のように次の番号で作る
 npm run trial -- --theme countries --days 30           # 何日分か組んで集計する
 npm run texts -- --puzzle puzzles/00001-countries-001.json   # 作り置きのない語だけ、その場でカギと解説をつける（予備）
