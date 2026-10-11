@@ -77,6 +77,18 @@ test('Lambda: dryRun は保存も公開もしない。パズルがなくても 1
   await assert.rejects(runDaily({ store, sources, locale: ja, genre: 'nothing', date: '2026-10-12' }), /単語リストがありません/);
 });
 
+test('Lambda: rebuild は新しい問題を作らず、今あるパズルでページを作り直す', async () => {
+  const { store, invalidations, sources } = await setup();
+  const before = store.data.objects.size;
+  const r = await runDaily({ store, sources, locale: ja, rebuild: true, date: '2026-10-11' });
+  assert.equal(r.rebuilt, true);
+  assert.equal(store.data.objects.size, before);
+  assert.match(store.site.objects.get('index.html'), /プログラミング言語のクロスワードパズル 第1回/);
+  assert.deepEqual(invalidations, [['/*']]);
+  const empty = await setup({ puzzles: false });
+  await assert.rejects(runDaily({ store: empty.store, sources: empty.sources, locale: ja, rebuild: true }), /1 問もない/);
+});
+
 test('ランダムのジャンル選び・今日の日付・ファイルの種類', () => {
   const themes = [
     { theme: 'a', words: Array(40).fill({ clue: 'x' }) },

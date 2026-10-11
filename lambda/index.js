@@ -12,6 +12,7 @@
 //   { "date": "2026-10-12" }         作った日（省略時はサイトのタイムゾーンで今日）
 //   { "force": true }                ジャンルを指定しないときでも、その日の問題がすでにあっても作る
 //   { "dryRun": true }               作るだけで、保存も公開もしない（盤面を返す）
+//   { "rebuild": true }              新しい問題は作らず、今あるパズルでページだけ作り直す
 // ジャンルを指定しないときは、予定表のその日のジャンル、なければランダム。
 // その日の問題がすでにあれば何もしない（スケジューラーの再実行で 2 問できないように）。
 
@@ -78,6 +79,7 @@ export async function handler(event = {}) {
     genre: event.genre,
     force: Boolean(event.force),
     dryRun: Boolean(event.dryRun),
+    rebuild: Boolean(event.rebuild),
   });
   console.log(JSON.stringify(result));
   return result;

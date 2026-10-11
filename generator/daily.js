@@ -36,10 +36,11 @@ const hasClue = (w) => Boolean(w.clue);
  * @param {string} [options.genre]       ジャンル（例: sangetsuki）。省略時は予定表かランダム
  * @param {boolean} [options.force]      ジャンルを指定しないときでも、その日の問題がすでにあっても作る
  * @param {boolean} [options.dryRun]     作るだけで、保存も公開もしない
+ * @param {boolean} [options.rebuild]    新しい問題は作らず、今あるパズルでページだけ作り直す
  * @param {() => number} [options.random]
  * @param {Date} [options.now]
  */
-export async function runDaily({ store, sources, locale, date, genre, force = false, dryRun = false, random = Math.random, now = new Date() }) {
+export async function runDaily({ store, sources, locale, date, genre, force = false, dryRun = false, rebuild = false, random = Math.random, now = new Date() }) {
   const loc = locale.locale;
   const getJson = async (key) => {
     const text = await store.data.get(key);
@@ -53,6 +54,12 @@ export async function runDaily({ store, sources, locale, date, genre, force = fa
   const themes = await loadAll(store, `words/${loc}/`, getJson);
   const puzzles = (await loadAll(store, `puzzles/${loc}/`, getJson)).filter((p) => p.locale === loc);
   if (!themes.length) throw new Error(`単語リスト words/${loc}/ がありません（npm run deploy で上げる）`);
+
+  // 新しい問題は作らない。単語リストを上げたあとに、今あるパズルでページだけ作り直す。
+  if (rebuild) {
+    const published = await publishSite({ store, sources, locale, site, puzzles, themes });
+    return { rebuilt: true, date, ...published };
+  }
 
   // ジャンルを決める
   let source = 'event';
@@ -87,14 +94,20 @@ export async function runDaily({ store, sources, locale, date, genre, force = fa
   // 保存（同じ ID がすでにあれば失敗する。同時に 2 つ動いたときの番号のぶつかりを防ぐ）
   await store.data.put(`puzzles/${loc}/${puzzle.id}.json`, `${JSON.stringify(puzzle, null, 2)}\n`, { ifNoneMatch: true });
 
-  // ページを作り直して公開する
+  const published = await publishSite({ store, sources, locale, site, puzzles: [...puzzles, puzzle], themes });
+  return { ...result, ...published };
+}
+
+// 今あるパズルで公開ページを作り直す。パズルが 1 問もなければ止め、空のサイトで上書きしない。
+async function publishSite({ store, sources, locale, site, puzzles, themes }) {
+  if (!puzzles.length) throw new Error('パズルが 1 問もないので、ページは作り直しません');
   const images = (await store.site.list('images/')).map((k) => k.slice('images/'.length));
-  const { files, warnings } = buildSitePages({ locale, site, sources, puzzles: [...puzzles, puzzle], themes, images });
+  const { files, warnings } = buildSitePages({ locale, site, sources, puzzles, themes, images });
   for (const { name, body } of files) {
     await store.site.put(name, body, { contentType: contentTypeOf(name), cacheControl: PAGE_CACHE });
   }
   await store.invalidate(['/*']);
-  return { ...result, pages: files.length, warnings };
+  return { pages: files.length, warnings };
 }
 
 // ページと JSON のキャッシュ（npm run deploy と同じ）

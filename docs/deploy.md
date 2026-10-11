@@ -3,47 +3,46 @@
 本番のサイトは AWS の S3 に置き、CloudFront を通して `https://xword.engawa5656.com/` で公開します。
 GitHub はプログラムと単語リストの置き場所で、GitHub Pages での公開はしません。
 
-> **これから: パズルは Lambda が毎日作って S3 に置く形に変わります（`docs/lambda.md`）。**
-> データ用の非公開バケットを分け、`npm run deploy` は単語リスト・絵・設定・予定表だけを上げるように作り替えます。
-> **作り替える前の今の `npm run deploy` を、Lambda が問題を作り始めたあとに使わないでください**
-> （リポジトリの `puzzles/` で公開用バケットを `--delete` 同期するので、Lambda が作った問題のページが消えます）。
+パズルは Lambda が毎日作って S3 に置きます（`docs/lambda.md`）。
+`npm run deploy` が上げるのは、ジャンルの単語リストと絵です。Lambda が読むサイトの設定と予定表も一緒に上げます。
+公開ページとパズルの JSON は Lambda が書きます。手元の `puzzles/` で公開バケットを `--delete` 同期すると、Lambda が作った問題が消えるので、その同期はしません。
 
 ---
 
 ## 1. ふだんの流れ
 
 ```
-1. 作業ブランチで単語リストを作る・直す        docs/genre-guide.md の手順どおり
+1. 作業ブランチで単語リストや絵を作る・直す    docs/genre-guide.md の手順どおり
 2. 点検・動作確認                            npm run check-theme -- --theme <ジャンル> --strict
                                             npm test
-                                            npm run site（site/*.html をブラウザで開いて確かめる）
+                                            npm run site（site/*.html をブラウザで開いて確かめる。これは手元だけ）
 3. main に入れる                             持ち主が確認してから
 4. 本番に上げる                              main の内容で npm run deploy
 ```
 
 ```
-S3_BUCKET=<バケット名> CLOUDFRONT_DISTRIBUTION_ID=<ディストリビューション ID> npm run deploy
+npm run deploy -- --bucket xword-engawa5656 --data-bucket xword-data-engawa5656 --distribution EPMSPX74FLDVH --function xword-daily
 ```
 
 `npm run deploy` がすること:
 
-1. `site/` を作り直す（`npm run site` と同じ）
-2. 絵（`site/images/`）を S3 に同期する。キャッシュは 1 週間（`Cache-Control: public, max-age=604800`）。WebP は種類（`image/webp`）を明示する
-3. ページ・JSON・`sitemap.xml` を S3 に同期する。キャッシュは 5 分（`public, max-age=300`）。
-   `robots.txt`・`llms.txt` は日本語が化けないように `text/plain; charset=utf-8` を明示する
-4. 手元にないファイルは S3 からも消す（`--delete`）
-5. CloudFront のキャッシュを消す（`/*` の invalidation）
+1. 単語リストをデータ用バケットの `words/ja/` に同期する（無くなったジャンルのファイルはそこから消す）
+2. サイトの設定と予定表をデータ用バケットの `site/ja.json`・`schedule/ja.json` に置く
+3. 絵（WebP・SVG）を公開用バケットの `images/` に同期する。キャッシュは 1 週間。WebP は `image/webp`
+4. リポジトリの `puzzles/*.json` を、データ用バケットに同じキーが無いときだけ足す（上書きしない。最初の 4 問用）
+5. Lambda に `{"rebuild":true}` を渡す。Lambda がデータ用バケットのパズルを読んで、公開ページ・サイトマップを作り直し、CloudFront のキャッシュを消す
 
 | オプション | 内容 |
 |---|---|
-| `--dryrun` | 何が送られ、何が消えるかを表示するだけ（S3 は変わらない）。**最初は必ずこれで確かめる** |
+| `--dryrun` | 何が送られるかを表示するだけ（S3 は変わらない）。**最初は必ずこれで確かめる** |
 | `--print` | 使うコマンドを表示するだけ |
-| `--no-build` | `site/` を作り直さない |
-| `--bucket` / `--distribution` | 環境変数の代わりに指定する |
+| `--no-rebuild` | Lambda にページの作り直しを頼まない |
+| `--update-code` | Lambda のプログラム（zip）も更新する |
+| `--bucket` / `--data-bucket` / `--distribution` / `--function` | 環境変数の代わりに指定する |
 
 - AWS CLI（`aws`）が必要です。認証は AWS CLI のふつうの方法（`AWS_PROFILE`、SSO、環境変数など）で行います。
-- 作ったページ（`site/`）はリポジトリに入れません（`.gitignore`）。本番のページは S3 にだけあり、`npm run deploy` が `main` の単語リスト・パズル・絵から作り直して上げます。
-- 手で S3 に置く場合は、`npm run site` で作った `site/` を上げます。WebP の種類（`image/webp`）と、キャッシュの設定に気をつけてください。
+- 作ったページ（`site/`）はリポジトリに入れません（`.gitignore`）。本番のページは S3 にだけあり、作り直すのは Lambda です。
+- すぐに 1 問作りたいときは、Lambda を `{"genre":"<ジャンル>"}` で呼びます。`npm run deploy` は問題を作りません。
 
 ---
 
@@ -51,7 +50,7 @@ S3_BUCKET=<バケット名> CLOUDFRONT_DISTRIBUTION_ID=<ディストリビュー
 
 ### 2.1 S3 バケット
 
-- 名前の例: `xword-engawa5656-com`（リージョンはどこでもよい。例: 東京 `ap-northeast-1`）
+- 公開用は `xword-engawa5656`、データ用（非公開）は `xword-data-engawa5656`。リージョンは東京 `ap-northeast-1`。
 - **パブリックアクセスはすべてブロック**したままにする（公開は CloudFront から）。
 - 静的ウェブサイトホスティングは使わない。
 
@@ -92,21 +91,29 @@ OAC を作ると、S3 のバケットポリシーの例が表示されるので�
     {
       "Effect": "Allow",
       "Action": ["s3:ListBucket"],
-      "Resource": "arn:aws:s3:::<バケット名>"
+      "Resource": [
+        "arn:aws:s3:::xword-engawa5656",
+        "arn:aws:s3:::xword-data-engawa5656"
+      ]
     },
     {
       "Effect": "Allow",
       "Action": ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"],
-      "Resource": "arn:aws:s3:::<バケット名>/*"
+      "Resource": [
+        "arn:aws:s3:::xword-engawa5656/*",
+        "arn:aws:s3:::xword-data-engawa5656/*"
+      ]
     },
     {
       "Effect": "Allow",
-      "Action": ["cloudfront:CreateInvalidation"],
-      "Resource": "arn:aws:cloudfront::<アカウント ID>:distribution/<ディストリビューション ID>"
+      "Action": ["lambda:InvokeFunction", "lambda:UpdateFunctionCode", "lambda:GetFunction"],
+      "Resource": "arn:aws:lambda:ap-northeast-1:868118155022:function:xword-daily"
     }
   ]
 }
 ```
+
+ページのキャッシュを消すのは Lambda です（`cloudfront:CreateInvalidation` は Lambda の実行ロールに付けます）。
 
 ---
 

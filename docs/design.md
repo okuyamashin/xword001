@@ -590,7 +590,7 @@ xword001/
 │   └── themes/      日付ごとのテーマ設定
 ├── puzzles/         生成したクロスワード（日付ごとの JSON）
 ├── template/        HTML テンプレート（puzzle.html）
-├── site/            生成された HTML（リポジトリに入れない。npm run deploy で S3 に上げる）
+├── site/            生成された HTML（リポジトリに入れない。本番のページは Lambda が S3 に置く）
 └── .github/workflows/daily.yml   毎日のビルド
 ```
 
@@ -707,10 +707,9 @@ npm test
 
 - 本番は `https://xword.engawa5656.com/`。S3 に置き、CloudFront（HTTPS・独自ドメイン・キャッシュ）を通して公開する。
   手順と AWS の準備は `docs/deploy.md`。
-- `npm run deploy`: `site/` を作り直し、S3 に同期（消えたファイルは消す）、CloudFront のキャッシュを消す。
-  キャッシュは絵 1 週間、ページと JSON 5 分。`robots.txt`・`llms.txt` は `text/plain; charset=utf-8` で送る（日本語が化けないように）。
+- `npm run deploy`: 単語リスト・絵・サイトの設定・予定表を上げ、Lambda にページの作り直しを頼む。公開バケットを手元のパズルで `--delete` 同期しない。
 - 流れ: 作業ブランチで作る → 点検・動作確認 → `main` に入れる → `main` の内容で `npm run deploy`。
-- 作ったページ（`site/`）はリポジトリに入れない。本番のページは S3 にだけ置き、`npm run deploy` が毎回作り直して上げる。
+- 作ったページ（`site/`）はリポジトリに入れない。本番のページは S3 にだけ置き、作り直すのは Lambda。
 - 以前は GitHub Pages（`okuyamashin.github.io/xword001/`）で公開していたが、ファイル容量などの制限があるため S3 に切り替えた。
   GitHub Pages の自動公開（`.github/workflows/pages.yml`）は削除した。
 
@@ -721,7 +720,7 @@ npm test
 - ジャンルは、イベントで指定 → 予定表（`data/schedule/ja.json`）のその日 → ランダム（カギのある言葉が 30 語以上のジャンルから、直前の回と同じジャンルを避けて）。
 - Lambda はカギのある言葉だけを使う。
 - 中身は `generator/daily.js`（`runDaily`）、入口は `lambda/index.js`。ページづくりは `generator/site-build.js`（`buildSitePages`）を `npm run site` と共有する。
-- 方針・仕様・これから作るもの（`npm run deploy` の作り替え、AWS の準備）は `docs/lambda.md`。
+- 方針と仕様は `docs/lambda.md`。
 
 ### 13.7 ページ構成とバックナンバー
 

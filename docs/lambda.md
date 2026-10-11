@@ -1,8 +1,8 @@
 # 毎日の問題づくり（Lambda）と S3 の分け方
 
 ここに書くのは、パズルを Lambda で作るようにするための**方針と仕様**です。
-AWS 側（バケット・Lambda・スケジュール・権限）と `npm run deploy` の作り替えは、この文書にそって作ります（Cursor で作る予定）。
-Lambda の中身（パズルを作ってページを作り直す処理）は、リポジトリにすでにあります（「4. できているもの」）。
+Lambda の中身と `npm run deploy` はリポジトリにあります（「4. できているもの」）。
+AWS の名前は、公開用バケット `xword-engawa5656`、データ用バケット `xword-data-engawa5656`、関数 `xword-daily`、CloudFront `EPMSPX74FLDVH` です。
 
 ---
 
@@ -97,6 +97,7 @@ Lambda を呼ぶときのイベントで決まる。
 | `{"date": "2026-10-12"}` | 作った日（省略時はタイムゾーンで今日） |
 | `{"force": true}` | 自動でも、その日の問題があっても作る |
 | `{"dryRun": true}` | 作るだけで、保存も公開もしない（盤面を返す。試すとき用） |
+| `{"rebuild": true}` | 新しい問題は作らず、今あるパズルでページだけ作り直す |
 
 手で 1 問作る例:
 
@@ -139,37 +140,33 @@ Lambda がすること:
 
 ---
 
-## 5. これから作るもの
+## 5. `npm run deploy` と AWS
 
-### 5.1 `npm run deploy` の作り替え
+手元でパズルを落としてページを作り、公開バケットへ `--delete` で同期する手順は使いません。
+落としたあとに Lambda が 1 問足すと、トップとサイトマップがその 1 問を欠いたまま上書きされ、HTML だけ残る、というずれが起きるためです。
+ページの作り直しは Lambda の `{"rebuild":true}` に任せます。パズルが 1 問もなければ Lambda は止め、空のサイトでは上書きしません。
 
-いまの `npm run deploy` は、リポジトリの `puzzles/` からページを作り、公開用バケットを `--delete` で同期する。
-**このまま使うと、Lambda が作った問題のページが消え、トップ・バックナンバー・サイトマップが古い一覧で上書きされる。**
-Lambda を動かす前に、次のように作り替える。
+### 5.1 `npm run deploy`
 
-1. 単語リスト・サイトの設定・予定表を**データ用バケット**に上げる
-   （`data/words/` → `words/`、`data/site/` → `site/`、`data/schedule/` → `schedule/`。`--delete` してよい）
-2. 絵を公開用バケットの `images/` に上げる（今と同じ）
-3. **パズルはデータ用バケットから読む**（`puzzles/ja/` を手元の作業用の場所に落とす。リポジトリの `puzzles/` は使わない）。
-   1 問もなければ止める（間違って全部のページを消さないように）
-4. `node generator/cli/build-site.js --puzzles <落とした場所>` でページを作り、公開用バケットに上げる。
-   **パズルのページ（`[0-9][0-9][0-9][0-9][0-9]-*.html`）は `--delete` で消さない**（落としたあとに Lambda が足した回を消さないため）
-5. CloudFront のキャッシュを消す
-6. （オプション）Lambda のプログラムを zip にして更新する（`aws lambda update-function-code`）
-7. 最初の 1 回だけ: リポジトリの `puzzles/*.json`（今の 4 問）をデータ用バケットの `puzzles/ja/` に上げるオプション（上書きしない）
+1. 単語リスト・サイトの設定・予定表をデータ用バケットに上げる（単語リストの prefix だけ `--delete` してよい）
+2. 絵を公開用バケットの `images/` に上げる
+3. リポジトリの `puzzles/*.json` は、データ用バケットに同じキーが無いときだけ足す（上書きしない）
+4. Lambda に `{"rebuild":true}` を渡す。データ用バケットのパズルを読んで公開ページを作り直し、CloudFront のキャッシュを消す
+5. `--update-code` のときだけ、プログラムの zip で Lambda を更新する
 
-単語リストを直したときは、`npm run deploy` で単語帳のページがすぐ新しくなる。パズルのページは、作ったときのカギと解説のまま（パズルの JSON に書き写してあるため）。
+単語リストを直したあとの `npm run deploy` で、単語帳のページは新しくなります。すでに作ったパズルのページのカギと解説は、作ったときの JSON のままです。
 
-### 5.2 AWS
+### 5.2 AWS（作ってあるもの）
 
-- データ用バケット（非公開、バージョニング有効）
-- Lambda 関数（3.）と実行ロール（3.1）
-- EventBridge Scheduler（毎日 0 時 `Asia/Tokyo`、イベント `{}`）
-- `npm run deploy` を動かす人の権限に、データ用バケットの読み書きと `lambda:UpdateFunctionCode` を足す
+- データ用バケット `xword-data-engawa5656`（非公開、バージョニング有効）
+- Lambda 関数 `xword-daily`（Node.js 22、512MB、60 秒、予約済み同時実行数 1）と実行ロール `xword-daily-role`
+- EventBridge Scheduler `xword-daily`（毎日 0 時 `Asia/Tokyo`、イベント `{}`、有効）
+- `npm run deploy` を動かす人の権限に、データ用バケットの読み書きと `lambda:UpdateFunctionCode`・`lambda:InvokeFunction` を足す
 
 ### 5.3 最初の切り替えの順番
 
 1. データ用バケットを作る
-2. 作り替えた `npm run deploy` で、単語リストなどと、今の 4 問を上げる
-3. Lambda を作り、`{"dryRun": true}` で試す → `{"genre": "..."}` で 1 問作って、サイトで確かめる
-4. スケジュールを有効にする
+2. `--no-rebuild` で単語リスト・絵・今の 4 問を上げる
+3. Lambda を作り、`{"dryRun": true}` で試す
+4. `{"rebuild": true}` で、今の問題のページを作り直して確かめる
+5. スケジュールを有効にする（有効にしたその夜の 0 時から、1 日 1 問作る）
