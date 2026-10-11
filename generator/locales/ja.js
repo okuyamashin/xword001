@@ -43,6 +43,21 @@ export const clueDefaults = {
   ],
 };
 
+// 解説生成の標準設定（テーマファイルの explanation で上書きできる）
+// 解説は、完成したとき・全部の答えを見たときに表示する
+export const explanationDefaults = {
+  maxLength: 120,
+  instructions: [
+    'クロスワードパズルを解き終えた人が読む、答えの言葉の短い解説を日本語で書く。',
+    '2〜3文で、です・ます調で書く。',
+    '「へえ」と思える豆知識を1つ入れる。カギと同じ内容をくり返さない。',
+    '事実として確かなことだけを書く。自信がないことは書かない。',
+  ],
+};
+
+// 解説の欄で、テーマ外の「つなぎの言葉」につける印
+export const fillerLabel = 'つなぎの言葉';
+
 // カギに答えが漏れていないかを調べる
 export function leaksAnswer(clue, word) {
   const text = normalize(clue);

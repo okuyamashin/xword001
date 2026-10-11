@@ -1,15 +1,15 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import * as ja from '../generator/locales/ja.js';
-import { addClues } from '../generator/clues/index.js';
-import { buildClueRequest } from '../generator/clues/request.js';
-import { checkClue } from '../generator/clues/checks.js';
+import { addClues, addExplanations } from '../generator/clues/index.js';
+import { buildRequest } from '../generator/clues/request.js';
+import { checkClue, checkExplanation } from '../generator/clues/checks.js';
 import { loadThemeFile } from '../generator/lib/words.js';
 
 const word = { answer: 'キタチヨウセン', display: '北朝鮮' };
 
 test('カギのチェック: 答えの漏れ・長さ・空', () => {
-  const check = (clue) => checkClue({ word, clue, maxLength: 40, locale: ja });
+  const check = (text) => checkClue({ word, text, maxLength: 40, locale: ja });
   assert.equal(check('首都はピョンヤン。日本と国交のない東アジアの地域'), null);
   assert.match(check('北朝鮮の首都はピョンヤン'), /表記/);
   assert.match(check('きたちょうせんと読む'), /答え/); // ひらがな・小さい文字でも見つける
@@ -19,7 +19,7 @@ test('カギのチェック: 答えの漏れ・長さ・空', () => {
 
 test('依頼にはテーマの作り方と単語が入る', async () => {
   const themeFile = await loadThemeFile('ja', 'countries');
-  const r = buildClueRequest({ themeFile, locale: ja, words: [{ ...word, note: '朝鮮半島北部' }] });
+  const r = buildRequest({ field: 'clue', themeFile, locale: ja, words: [{ ...word, note: '朝鮮半島北部' }] });
   assert.ok(r.system.includes(themeFile.clue.style));
   assert.ok(r.prompt.includes('北朝鮮（キタチヨウセン、7文字） メモ: 朝鮮半島北部'));
 });
@@ -27,7 +27,7 @@ test('依頼にはテーマの作り方と単語が入る', async () => {
 test('今回の単語と同じ手本は依頼に入れない', async () => {
   const themeFile = await loadThemeFile('ja', 'countries');
   const kenya = { answer: 'ケニア', display: 'ケニア' };
-  const r = buildClueRequest({ themeFile, locale: ja, words: [kenya] });
+  const r = buildRequest({ field: 'clue', themeFile, locale: ja, words: [kenya] });
   assert.ok(!r.system.includes('ナイロビ'));
   assert.ok(r.system.includes('マチュピチュ'));
 });
@@ -40,8 +40,8 @@ test('チェックに落ちたカギは理由を添えて書き直させる', as
     name: 'fake',
     async write({ prompt, words }) {
       prompts.push(prompt);
-      const clue = prompts.length === 1 ? '北朝鮮のこと' : '首都はピョンヤン';
-      return words.map((w) => ({ answer: w.answer, display: w.display, clue }));
+      const text = prompts.length === 1 ? '北朝鮮のこと' : '首都はピョンヤン';
+      return words.map((w) => ({ answer: w.answer, display: w.display, text }));
     },
   };
   const result = await addClues({ puzzle, themeFiles: [themeFile], locale: ja, writer });
@@ -55,7 +55,7 @@ test('サンプルのパズルはすべてのカギがチェックを通る', as
   const { readFile } = await import('node:fs/promises');
   const puzzle = JSON.parse(await readFile(new URL('../puzzles/2026-10-12-ja.json', import.meta.url), 'utf8'));
   for (const w of puzzle.words) {
-    assert.equal(checkClue({ word: w, clue: w.clue, maxLength: 40, locale: ja }), null, w.display);
+    assert.equal(checkClue({ word: w, text: w.clue, maxLength: 40, locale: ja }), null, w.display);
   }
 });
 
@@ -66,13 +66,13 @@ test('OpenAI の writer: 依頼の形と応答の読み取り', async () => {
     responses: {
       async create(params) {
         sent = params;
-        return { status: 'completed', output: [], output_text: '{"clues":[{"answer":"ドア","display":"ドア","clue":"出入り口の戸"}]}' };
+        return { status: 'completed', output: [], output_text: '{"items":[{"answer":"ドア","display":"ドア","text":"出入り口の戸"}]}' };
       },
     },
   };
   const writer = createOpenAIWriter({ client, model: 'test-model' });
   const clues = await writer.write({ system: 's', prompt: 'p', schema: { type: 'object' } });
-  assert.deepEqual(clues, [{ answer: 'ドア', display: 'ドア', clue: '出入り口の戸' }]);
+  assert.deepEqual(clues, [{ answer: 'ドア', display: 'ドア', text: '出入り口の戸' }]);
   assert.equal(sent.model, 'test-model');
   assert.equal(sent.instructions, 's');
   assert.equal(sent.text.format.type, 'json_schema');
@@ -86,4 +86,32 @@ test('OpenAI の writer: 依頼の形と応答の読み取り', async () => {
   await assert.rejects(writer.write({ system: 's', prompt: 'p', schema: {} }), /断られた/);
   client.responses.create = async () => ({ status: 'incomplete', incomplete_details: { reason: 'max_output_tokens' }, output: [] });
   await assert.rejects(writer.write({ system: 's', prompt: 'p', schema: {} }), /途中で終わった/);
+});
+
+test('解説: 空のものだけを埋め、カギを依頼に添え、答えを含んでよい', async () => {
+  const countries = await loadThemeFile('ja', 'countries');
+  const general = await loadThemeFile('ja', 'general');
+  const puzzle = {
+    locale: 'ja',
+    words: [
+      { answer: 'ケニア', display: 'ケニア', theme: 'countries', clue: 'ナイロビが首都', explanation: null },
+      { answer: 'ドア', display: 'ドア', theme: 'general', clue: '出入り口の戸', explanation: 'もう書いてある' },
+    ],
+  };
+  const requests = [];
+  const writer = {
+    name: 'fake',
+    async write(req) {
+      requests.push(req);
+      return req.words.map((w) => ({ answer: w.answer, display: w.display, text: 'ケニアはマラソンで有名です。' }));
+    },
+  };
+  const result = await addExplanations({ puzzle, themeFiles: [countries, general], locale: ja, writer });
+  assert.equal(requests.length, 1); // ドアは解説ずみなので呼ばない
+  assert.equal(requests[0].field, 'explanation');
+  assert.ok(requests[0].prompt.includes('カギ: ナイロビが首都'));
+  assert.ok(requests[0].system.includes(countries.explanation.style));
+  assert.equal(result.puzzle.words[0].explanation, 'ケニアはマラソンで有名です。');
+  assert.equal(result.puzzle.words[1].explanation, 'もう書いてある');
+  assert.equal(checkExplanation({ text: 'あ'.repeat(121), maxLength: 120 }) !== null, true);
 });

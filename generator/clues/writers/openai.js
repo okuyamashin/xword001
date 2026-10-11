@@ -1,4 +1,4 @@
-// OpenAI API（Responses API）でカギを書く。
+// OpenAI API（Responses API）でカギや解説を書く。
 // 認証: 環境変数 OPENAI_API_KEY。クラウド環境のネットワークシークレットで
 // api.openai.com にキーが付く場合は、未設定でもよい（仮の値で送り、プロキシが本物を付ける）。
 
@@ -19,7 +19,7 @@ export function createOpenAIWriter({
         reasoning: { effort },
         instructions: system,
         input: prompt,
-        text: { format: { type: 'json_schema', name: 'clues', schema, strict: true } },
+        text: { format: { type: 'json_schema', name: 'items', schema, strict: true } },
       });
       if (response.status === 'incomplete') {
         throw new Error(`応答が途中で終わった: ${response.incomplete_details?.reason ?? '理由不明'}`);
@@ -29,7 +29,7 @@ export function createOpenAIWriter({
         .find((part) => part.type === 'refusal');
       if (refusal) throw new Error(`カギの生成を断られた: ${refusal.refusal}`);
       if (!response.output_text) throw new Error('応答にテキストがない');
-      return JSON.parse(response.output_text).clues;
+      return JSON.parse(response.output_text).items;
     },
   };
 }

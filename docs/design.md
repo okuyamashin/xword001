@@ -228,7 +228,9 @@
 
 ### 5.4 標準の仕組み（実装済み）
 
-カギ作りは、どのテーマでも同じ流れで行う。テーマごとの違いはテーマファイルの `clue` にだけ書く。
+単語ごとに AI に文章を書かせる工程は、カギ（`clue`）と解説（`explanation`）の2つ。どちらも同じ部品・同じ流れで動き、
+まだ空の単語だけを埋める（途中で止まっても、もう一度動かせば続きから埋まる）。
+テーマごとの違いはテーマファイルの `clue` / `explanation` にだけ書く。
 
 ```
 テーマごとに単語を分ける
@@ -244,13 +246,14 @@
 | テーマの指示 | テーマファイルの `clue.style` と `clue.examples` |
 | 単語の一覧 | 表記・読み・文字数・`note`（ヒント作りの手がかり） |
 | writer | 書き手の差し替え口。`openai`（OpenAI API）と `file`（用意したカギを使う）がある |
-| 自動チェック | 空でない／最大文字数以内／答え（読み・表記）を含まない／他の単語と同じカギでない |
+| 自動チェック | カギ: 空でない／最大文字数以内／答え（読み・表記）を含まない／他の単語と同じカギでない。解説: 空でない／最大文字数以内（答えを見たあとに読むので、答えを含んでよい） |
+| 解説の依頼 | 単語の一覧にその単語のカギも添え、カギと同じ内容をくり返さないようにさせる |
 
 - AI は OpenAI を使う。writer は Responses API で、JSON の形を指定して（Structured Outputs, `strict: true`）カギを受け取る。
   モデルは `--model` か環境変数 `OPENAI_MODEL` で指定する（省略時は `gpt-5.5`）。
 - 断られた応答（refusal）や、途中で切れた応答（incomplete）はエラーにする。
 - 今回の単語が `clue.examples` にも入っているときは、その手本を依頼から外す（手本をそのまま写されるため）。
-- `npm run clues` は `NODE_USE_ENV_PROXY=1` を付けて動かす。Node.js 22.21 以上の fetch が `HTTPS_PROXY` を使うようになる
+- `npm run texts` は `NODE_USE_ENV_PROXY=1` を付けて動かす。Node.js 22.21 以上の fetch が `HTTPS_PROXY` を使うようになる
   （Claude Code のクラウド環境ではこれがないと api.openai.com に届かない。プロキシのない環境では影響しない）。
 - 動作確認（2026-10-11, gpt-5.5）: 国名テーマ14語を1回の呼び出しで生成し、14語とも自動チェックを通った（約23秒）。
 - 答えの漏れは、カギを `normalize()` してから探す。ひらがなや小さい文字で書かれていても見つかる。
@@ -259,9 +262,21 @@
 使い方:
 
 ```
-npm run clues -- --puzzle puzzles/2026-10-12-ja.json                      # OpenAI API で書く（要 OPENAI_API_KEY）
-npm run clues -- --puzzle puzzles/2026-10-12-ja.json --drafts clues.json  # 用意したカギを使う
+npm run texts -- --puzzle puzzles/2026-10-12-ja.json                       # カギ → 解説の順に OpenAI で書く
+npm run texts -- --puzzle puzzles/2026-10-12-ja.json --only explanation    # 解説だけ
+npm run texts -- --puzzle puzzles/2026-10-12-ja.json --drafts texts.json   # 用意した文章を使う
 ```
+
+### 5.5 解説（実装済み）
+
+完成したとき、または「全部の答えを見る」を押したときに、各カギの下に答えの解説を出す。
+
+- 国名などテーマの語: その国を知るきっかけになる話（位置・言語・名物・歴史など）。
+- テーマ外の「つなぎの言葉」（汎用リストから補った語）: 解説の頭に「つなぎの言葉」の印をつけ、本文は軽い豆知識にする。
+  謝ったり断ったりはしない（印で伝わるため）。書き方は `general.json` の `explanation.style` で変えられる。
+- 解説も AI が書くので、事実の誤りが混じる。2026-10-12 の問題では15語中2語に誤りがあり、手で直した
+  （ハワイが「米国で唯一コーヒーを商業栽培」→ 誤り、北マケドニアの旧国名の説明 → 不正確）。
+  解説の事実確認の仕組み（別の呼び出しで確かめる、メモにある事実だけを使わせる、など）は今後の課題。
 
 ---
 
@@ -354,6 +369,8 @@ data/words/ja/
 | `clue.style` | ○ | このテーマのカギの作り方（②のヒント生成に渡す指示） |
 | `clue.examples` | | カギの手本（2〜3個） |
 | `clue.maxLength` | | カギの最大文字数（省略時は言語の標準。日本語は40） |
+| `explanation.style` | | このテーマの解説の書き方 |
+| `explanation.maxLength` | | 解説の最大文字数（省略時は言語の標準。日本語は120） |
 | `rules` | ○ | このテーマの但し書き（画面に表示する。なければ空配列） |
 | `words[].answer` | ○ | マスに入る文字列。正規化済みのカタカナ（下記ルール） |
 | `words[].display` | ○ | 答えを見せるときに添える表記（漢字など） |
@@ -439,6 +456,7 @@ data/words/ja/
 | `words[].direction` | `across`（ヨコ）または `down`（タテ） |
 | `words[].row`, `col` | 単語の先頭マスの位置（0 始まり） |
 | `words[].theme` | どのテーマファイルから選ばれたか（ヒントの作り方を決める） |
+| `words[].explanation` | 解説。完成したとき・全部の答えを見たときに表示する。③で書き込む |
 | `words[].clue` | ヒント。①の時点では `null`、②で書き込む |
 
 `grid` と `words` は同じ情報を重複して持つが、UI で扱いやすいので両方持たせる。
@@ -532,7 +550,7 @@ xword001/
 ```
 npm run make -- --date 2026-10-12 --theme countries   # puzzles/2026-10-12-ja.json を作る
 npm run trial -- --theme countries --days 30           # 30日分組んで集計する
-npm run clues -- --puzzle puzzles/2026-10-12-ja.json   # カギをつける
+npm run texts -- --puzzle puzzles/2026-10-12-ja.json   # カギと解説をつける
 npm run site                                           # site/ に HTML を作る
 npm test
 ```

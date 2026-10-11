@@ -67,13 +67,17 @@
   .clues li.wrong { background: var(--wrong); color: var(--fg); }
   .clues li .n { font-weight: bold; margin-right: 4px; }
   .clues li .ans { color: var(--revealed); margin-left: 4px; }
+  .clues li .explain { display: none; margin: 4px 0 2px; font-size: 0.9rem; color: var(--fg); }
+  .explained .clues li .explain { display: block; }
+  .clues li .tag[hidden] { display: none; }
+  .clues li .tag { display: inline-block; margin-right: 6px; padding: 0 6px; border: 1px solid var(--muted); border-radius: 999px; font-size: 0.75rem; color: var(--muted); }
 
   .rules { margin-top: 16px; font-size: 0.9rem; color: var(--muted); }
   .rules ul { padding-left: 1.2em; margin: 4px 0; }
 </style>
 </head>
 <body>
-<main>
+<main id="main">
   <h1 id="title"></h1>
   <p class="theme" id="theme"></p>
   <div class="layout">
@@ -154,6 +158,21 @@ const clueDefaults = {
   ],
 };
 
+// 解説生成の標準設定（テーマファイルの explanation で上書きできる）
+// 解説は、完成したとき・全部の答えを見たときに表示する
+const explanationDefaults = {
+  maxLength: 120,
+  instructions: [
+    'クロスワードパズルを解き終えた人が読む、答えの言葉の短い解説を日本語で書く。',
+    '2〜3文で、です・ます調で書く。',
+    '「へえ」と思える豆知識を1つ入れる。カギと同じ内容をくり返さない。',
+    '事実として確かなことだけを書く。自信がないことは書かない。',
+  ],
+};
+
+// 解説の欄で、テーマ外の「つなぎの言葉」につける印
+const fillerLabel = 'つなぎの言葉';
+
 // カギに答えが漏れていないかを調べる
 function leaksAnswer(clue, word) {
   const text = normalize(clue);
@@ -164,7 +183,7 @@ function leaksAnswer(clue, word) {
 
 
 // ---- パズル ----
-const PUZZLE = {"id":"2026-10-12-ja","date":"2026-10-12","locale":"ja","theme":"countries","title":"世界の国と地域","rules":["国名は略称で答えてください（例: アメリカ合衆国 → アメリカ）","国ではない地域（台湾・香港など）も含みます"],"size":{"rows":9,"cols":9},"grid":["#タイ###キ##","キ#タジキスタン#","プ#リ#タ#マ#グ","ロシア#チ#ケニア","ス###ヨ#ド#ム","#セキドウギニア#","##ユ#セ#ア##","#ポーランド#マ#","##バ##アメリカ"],"words":[{"number":1,"direction":"across","row":0,"col":1,"answer":"タイ","display":"タイ","theme":"countries","clue":"首都はバンコクの東南アジアの国"},{"number":5,"direction":"across","row":1,"col":2,"answer":"タジキスタン","display":"タジキスタン","theme":"countries","clue":"首都はドゥシャンベの中央アジアの国"},{"number":8,"direction":"across","row":3,"col":0,"answer":"ロシア","display":"ロシア","theme":"countries","clue":"モスクワが首都の世界最大面積の国"},{"number":9,"direction":"across","row":3,"col":6,"answer":"ケニア","display":"ケニア","theme":"countries","clue":"ナイロビを首都とする東アフリカの国"},{"number":10,"direction":"across","row":5,"col":1,"answer":"セキドウギニア","display":"赤道ギニア","theme":"countries","clue":"首都はマラボ。公用語はスペイン語"},{"number":12,"direction":"across","row":7,"col":1,"answer":"ポーランド","display":"ポーランド","theme":"countries","clue":"首都はワルシャワの中欧の国"},{"number":15,"direction":"across","row":8,"col":5,"answer":"アメリカ","display":"アメリカ","theme":"countries","clue":"首都はワシントンD.C.の北米の国"},{"number":2,"direction":"down","row":0,"col":2,"answer":"イタリア","display":"イタリア","theme":"countries","clue":"ローマを首都とする長靴形の半島の国"},{"number":3,"direction":"down","row":0,"col":6,"answer":"キタマケドニア","display":"北マケドニア","theme":"countries","clue":"首都はスコピエ。バルカン半島の内陸国"},{"number":4,"direction":"down","row":1,"col":0,"answer":"キプロス","display":"キプロス","theme":"countries","clue":"首都はニコシア、地中海東部の島国"},{"number":6,"direction":"down","row":1,"col":4,"answer":"キタチヨウセン","display":"北朝鮮","theme":"countries","clue":"首都は平壌。日本は国家承認せず"},{"number":7,"direction":"down","row":2,"col":8,"answer":"グアム","display":"グアム","theme":"countries","clue":"ハガニアを主都とする太平洋の米国準州"},{"number":11,"direction":"down","row":5,"col":2,"answer":"キユーバ","display":"キューバ","theme":"countries","clue":"首都はハバナ。カリブ海の島国"},{"number":13,"direction":"down","row":7,"col":5,"answer":"ドア","display":"ドア","theme":"general","clue":"部屋や家の出入り口にある開け閉めする板"},{"number":14,"direction":"down","row":7,"col":7,"answer":"マリ","display":"マリ","theme":"countries","clue":"首都はバマコの西アフリカ内陸国"}]};
+const PUZZLE = {"id":"2026-10-12-ja","date":"2026-10-12","locale":"ja","theme":"countries","title":"世界の国と地域","rules":["国名は略称で答えてください（例: アメリカ合衆国 → アメリカ）","国ではない地域（台湾・香港など）も含みます"],"size":{"rows":9,"cols":9},"grid":["#タイ###キ##","キ#タジキスタン#","プ#リ#タ#マ#グ","ロシア#チ#ケニア","ス###ヨ#ド#ム","#セキドウギニア#","##ユ#セ#ア##","#ポーランド#マ#","##バ##アメリカ"],"words":[{"number":1,"direction":"across","row":0,"col":1,"answer":"タイ","display":"タイ","theme":"countries","clue":"首都はバンコクの東南アジアの国","explanation":"国土は南北に長く、熱帯の気候が広がります。仏教寺院が多く、国民の多くが上座部仏教を信仰しています。"},{"number":5,"direction":"across","row":1,"col":2,"answer":"タジキスタン","display":"タジキスタン","theme":"countries","clue":"首都はドゥシャンベの中央アジアの国","explanation":"国土の9割以上が山地で、パミール高原の一部があります。国名は「タジク人の国」という意味です。"},{"number":8,"direction":"across","row":3,"col":0,"answer":"ロシア","display":"ロシア","theme":"countries","clue":"モスクワが首都の世界最大面積の国","explanation":"ヨーロッパとアジアにまたがり、11の時間帯があります。シベリア鉄道は世界最長級の鉄道路線として知られます。"},{"number":9,"direction":"across","row":3,"col":6,"answer":"ケニア","display":"ケニア","theme":"countries","clue":"ナイロビを首都とする東アフリカの国","explanation":"赤道が国土を通り、サバンナや高地など多様な自然があります。スワヒリ語と英語が公用語です。"},{"number":10,"direction":"across","row":5,"col":1,"answer":"セキドウギニア","display":"赤道ギニア","theme":"countries","clue":"首都はマラボ。公用語はスペイン語","explanation":"大陸部と島々からなり、ビオコ島に主要都市マラボがあります。アフリカでスペイン語が公用語の珍しい国です。"},{"number":12,"direction":"across","row":7,"col":1,"answer":"ポーランド","display":"ポーランド","theme":"countries","clue":"首都はワルシャワの中欧の国","explanation":"バルト海に面し、琥珀の産地として古くから知られます。作曲家ショパンの生地としても有名です。"},{"number":15,"direction":"across","row":8,"col":5,"answer":"アメリカ","display":"アメリカ","theme":"countries","clue":"首都はワシントンD.C.の北米の国","explanation":"50の州と首都ワシントンD.C.からなる連邦国家です。星条旗の星の数は州の数と同じ50個です。"},{"number":2,"direction":"down","row":0,"col":2,"answer":"イタリア","display":"イタリア","theme":"countries","clue":"ローマを首都とする長靴形の半島の国","explanation":"国内にバチカン市国とサンマリノという独立国を囲んでいます。世界遺産の登録数が特に多い国です。"},{"number":3,"direction":"down","row":0,"col":6,"answer":"キタマケドニア","display":"北マケドニア","theme":"countries","clue":"首都はスコピエ。バルカン半島の内陸国","explanation":"ギリシャとの国名をめぐる対立を解決するため、2019年に「マケドニア」から国名を改めました。オフリド湖は世界遺産です。"},{"number":4,"direction":"down","row":1,"col":0,"answer":"キプロス","display":"キプロス","theme":"countries","clue":"首都はニコシア、地中海東部の島国","explanation":"欧州連合に加盟していますが、地理的には西アジアに近い島です。銅の英語名copperはこの島名に由来します。"},{"number":6,"direction":"down","row":1,"col":4,"answer":"キタチヨウセン","display":"北朝鮮","theme":"countries","clue":"首都は平壌。日本は国家承認せず","explanation":"正式名称は朝鮮民主主義人民共和国です。国連には1991年に韓国と同時に加盟しました。"},{"number":7,"direction":"down","row":2,"col":8,"answer":"グアム","display":"グアム","theme":"countries","clue":"ハガニアを主都とする太平洋の米国準州","explanation":"アメリカの準州で、住民は米国市民です。ただし大統領選挙の本選には投票できません。"},{"number":11,"direction":"down","row":5,"col":2,"answer":"キユーバ","display":"キューバ","theme":"countries","clue":"首都はハバナ。カリブ海の島国","explanation":"カリブ海最大の島国で、砂糖や葉巻で知られます。音楽ではソンやルンバが世界に広まりました。"},{"number":13,"direction":"down","row":7,"col":5,"answer":"ドア","display":"ドア","theme":"general","clue":"部屋や家の出入り口にある開け閉めする板","explanation":"ドアは英語のdoorから来た外来語です。回転ドアは英語でrevolving doorといいます。"},{"number":14,"direction":"down","row":7,"col":7,"answer":"マリ","display":"マリ","theme":"countries","clue":"首都はバマコの西アフリカ内陸国","explanation":"ニジェール川が国土を流れ、古都トンブクトゥは交易と学問の中心でした。サハラ砂漠の南縁に位置します。"}]};
 
 // ---- 状態 ----
 const { rows, cols } = PUZZLE.size;
@@ -212,6 +231,7 @@ const board = document.getElementById('board');
 const CELL = 40; // 1マスの大きさ（viewBox の単位）
 const PAD = 1; // 外枠の線が切れないための余白
 const numbers = new Map(words.map((w) => [`${w.row},${w.col}`, w.number]));
+const mainThemes = PUZZLE.theme.split('+');
 
 function buildBoard() {
   board.setAttribute('viewBox', `${-PAD} ${-PAD} ${cols * CELL + PAD * 2} ${rows * CELL + PAD * 2}`);
@@ -251,8 +271,16 @@ function buildClues() {
   document.getElementById('down-label').textContent = labels.down;
   for (const w of words) {
     const li = document.createElement('li');
-    li.innerHTML = `<span class="n">${w.number}</span><span class="text"></span><span class="ans"></span>`;
+    li.innerHTML = `<span class="n">${w.number}</span><span class="text"></span><span class="ans"></span>` +
+      '<div class="explain"><span class="tag" hidden></span><span class="body"></span></div>';
     li.querySelector('.text').textContent = w.clue ?? '（カギなし）';
+    li.querySelector('.body').textContent = w.explanation ?? '';
+    // テーマ外の「つなぎの言葉」には印をつける
+    if (!mainThemes.includes(w.theme)) {
+      const tag = li.querySelector('.tag');
+      tag.textContent = fillerLabel;
+      tag.hidden = false;
+    }
     li.addEventListener('click', () => select(w));
     document.getElementById(w.direction).append(li);
     w.li = li;
@@ -265,12 +293,15 @@ function render() {
   const showWrong = checkRequested || allFilled();
   const isWrong = (r, c) => showWrong && filled[r][c] && filled[r][c] !== solution[r][c];
   board.innerHTML = boardSvg({ selectedCells, isWrong });
+  // 完成したとき・全部の答えを見たときは、解説を出す
+  const explained = isSolved() || words.every((w) => shownWords.includes(w.index));
+  document.getElementById('main').classList.toggle('explained', explained);
   for (const w of words) {
     w.li.classList.toggle('selected', w === selected);
     const complete = w.cells.every(([r, c]) => filled[r][c]);
     w.li.classList.toggle('done', complete);
     w.li.classList.toggle('wrong', w.cells.some(([r, c]) => isWrong(r, c)));
-    const shown = shownWords.includes(w.index);
+    const shown = explained || shownWords.includes(w.index);
     w.li.querySelector('.ans').textContent = shown ? `→ ${w.display}` : '';
   }
   const current = document.getElementById('current');
@@ -376,7 +407,7 @@ function isSolved() {
 
 function finish() {
   const usedReveal = shownWords.length > 0;
-  setMessage(usedReveal ? '全部うまりました。' : '完成！ おめでとうございます。');
+  setMessage(usedReveal ? '全部うまりました。カギの下に解説を出しました。' : '完成！ おめでとうございます。カギの下に解説を出しました。');
 }
 
 function setMessage(text) {
@@ -406,7 +437,7 @@ document.getElementById('reveal-word').addEventListener('click', () => {
 document.getElementById('reveal-all').addEventListener('click', () => {
   if (!confirm('全部の答えを表示しますか？')) return;
   reveal(words);
-  setMessage('全部の答えを表示しました。');
+  setMessage('全部の答えを表示しました。カギの下に解説を出しました。');
 });
 document.getElementById('reset').addEventListener('click', () => {
   if (!confirm('入力をすべて消しますか？')) return;

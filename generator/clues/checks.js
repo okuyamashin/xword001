@@ -1,10 +1,22 @@
-// カギの自動チェック（標準）。問題があれば理由の文字列、なければ null を返す
+// 自動チェック（標準）。問題があれば理由の文字列、なければ null を返す
 
-export function checkClue({ word, clue, maxLength, locale, otherClues = [] }) {
-  if (typeof clue !== 'string' || !clue.trim()) return 'カギが空';
-  if ([...clue].length > maxLength) return `${maxLength}文字を超えている（${[...clue].length}文字）`;
-  const leak = locale.leaksAnswer(clue, word);
-  if (leak) return leak;
-  if (otherClues.includes(clue)) return '別の単語と同じカギになっている';
+function checkCommon(text, maxLength) {
+  if (typeof text !== 'string' || !text.trim()) return '空になっている';
+  if ([...text].length > maxLength) return `${maxLength}文字を超えている（${[...text].length}文字）`;
   return null;
 }
+
+export function checkClue({ word, text, maxLength, locale, others = [] }) {
+  return (
+    checkCommon(text, maxLength) ??
+    locale.leaksAnswer(text, word) ??
+    (others.includes(text) ? '別の単語と同じカギになっている' : null)
+  );
+}
+
+// 解説は答えを見たあとに読むので、答えを含んでよい
+export function checkExplanation({ text, maxLength }) {
+  return checkCommon(text, maxLength);
+}
+
+export const CHECKS = { clue: checkClue, explanation: checkExplanation };

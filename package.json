@@ -10,8 +10,8 @@
     "make": "node generator/cli/make-puzzle.js",
     "trial": "node generator/cli/trial.js",
     "test": "node --test",
-    "clues": "NODE_USE_ENV_PROXY=1 node generator/cli/add-clues.js",
-    "site": "node generator/cli/build-site.js"
+    "site": "node generator/cli/build-site.js",
+    "texts": "NODE_USE_ENV_PROXY=1 node generator/cli/write-texts.js"
   },
   "dependencies": {
     "openai": "^7.32.0"

@@ -67,13 +67,17 @@
   .clues li.wrong { background: var(--wrong); color: var(--fg); }
   .clues li .n { font-weight: bold; margin-right: 4px; }
   .clues li .ans { color: var(--revealed); margin-left: 4px; }
+  .clues li .explain { display: none; margin: 4px 0 2px; font-size: 0.9rem; color: var(--fg); }
+  .explained .clues li .explain { display: block; }
+  .clues li .tag[hidden] { display: none; }
+  .clues li .tag { display: inline-block; margin-right: 6px; padding: 0 6px; border: 1px solid var(--muted); border-radius: 999px; font-size: 0.75rem; color: var(--muted); }
 
   .rules { margin-top: 16px; font-size: 0.9rem; color: var(--muted); }
   .rules ul { padding-left: 1.2em; margin: 4px 0; }
 </style>
 </head>
 <body>
-<main>
+<main id="main">
   <h1 id="title"></h1>
   <p class="theme" id="theme"></p>
   <div class="layout">
@@ -160,6 +164,7 @@ const board = document.getElementById('board');
 const CELL = 40; // 1マスの大きさ（viewBox の単位）
 const PAD = 1; // 外枠の線が切れないための余白
 const numbers = new Map(words.map((w) => [`${w.row},${w.col}`, w.number]));
+const mainThemes = PUZZLE.theme.split('+');
 
 function buildBoard() {
   board.setAttribute('viewBox', `${-PAD} ${-PAD} ${cols * CELL + PAD * 2} ${rows * CELL + PAD * 2}`);
@@ -199,8 +204,16 @@ function buildClues() {
   document.getElementById('down-label').textContent = labels.down;
   for (const w of words) {
     const li = document.createElement('li');
-    li.innerHTML = `<span class="n">${w.number}</span><span class="text"></span><span class="ans"></span>`;
+    li.innerHTML = `<span class="n">${w.number}</span><span class="text"></span><span class="ans"></span>` +
+      '<div class="explain"><span class="tag" hidden></span><span class="body"></span></div>';
     li.querySelector('.text').textContent = w.clue ?? '（カギなし）';
+    li.querySelector('.body').textContent = w.explanation ?? '';
+    // テーマ外の「つなぎの言葉」には印をつける
+    if (!mainThemes.includes(w.theme)) {
+      const tag = li.querySelector('.tag');
+      tag.textContent = fillerLabel;
+      tag.hidden = false;
+    }
     li.addEventListener('click', () => select(w));
     document.getElementById(w.direction).append(li);
     w.li = li;
@@ -213,12 +226,15 @@ function render() {
   const showWrong = checkRequested || allFilled();
   const isWrong = (r, c) => showWrong && filled[r][c] && filled[r][c] !== solution[r][c];
   board.innerHTML = boardSvg({ selectedCells, isWrong });
+  // 完成したとき・全部の答えを見たときは、解説を出す
+  const explained = isSolved() || words.every((w) => shownWords.includes(w.index));
+  document.getElementById('main').classList.toggle('explained', explained);
   for (const w of words) {
     w.li.classList.toggle('selected', w === selected);
     const complete = w.cells.every(([r, c]) => filled[r][c]);
     w.li.classList.toggle('done', complete);
     w.li.classList.toggle('wrong', w.cells.some(([r, c]) => isWrong(r, c)));
-    const shown = shownWords.includes(w.index);
+    const shown = explained || shownWords.includes(w.index);
     w.li.querySelector('.ans').textContent = shown ? `→ ${w.display}` : '';
   }
   const current = document.getElementById('current');
@@ -324,7 +340,7 @@ function isSolved() {
 
 function finish() {
   const usedReveal = shownWords.length > 0;
-  setMessage(usedReveal ? '全部うまりました。' : '完成！ おめでとうございます。');
+  setMessage(usedReveal ? '全部うまりました。カギの下に解説を出しました。' : '完成！ おめでとうございます。カギの下に解説を出しました。');
 }
 
 function setMessage(text) {
@@ -354,7 +370,7 @@ document.getElementById('reveal-word').addEventListener('click', () => {
 document.getElementById('reveal-all').addEventListener('click', () => {
   if (!confirm('全部の答えを表示しますか？')) return;
   reveal(words);
-  setMessage('全部の答えを表示しました。');
+  setMessage('全部の答えを表示しました。カギの下に解説を出しました。');
 });
 document.getElementById('reset').addEventListener('click', () => {
   if (!confirm('入力をすべて消しますか？')) return;
