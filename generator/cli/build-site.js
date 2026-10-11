@@ -4,12 +4,14 @@
 //   site/archive.html   バックナンバー（一覧）
 //   site/words.html      単語帳の一覧
 //   site/words-<ジャンル>.html / .json  ジャンルの単語帳（言葉・読み・カギ・解説）と、そのダウンロード用 JSON
+//   site/sitemap.xml・robots.txt・llms.txt  検索エンジンと AI 向けの案内（本番のアドレスは data/site/<locale>.json の baseUrl）
 // 使い方: node generator/cli/build-site.js [--locale ja] [--puzzles <dir>] [--out <dir>]
 
 import { readFile, readdir, writeFile, mkdir, cp, rm } from 'node:fs/promises';
 import path from 'node:path';
 import { parseArgs } from 'node:util';
-import { renderPuzzleHtml, renderArchiveHtml, renderWordsHtml, renderWordsIndexHtml, publicWordList, pageName, wordsPageName, DEFAULT_IMAGE } from '../site.js';
+import { renderPuzzleHtml, renderArchiveHtml, renderWordsHtml, renderWordsIndexHtml, publicWordList, pageName, wordsPageName, puzzleHeading, DEFAULT_IMAGE } from '../site.js';
+import { renderSitemap, renderRobots, renderLlmsTxt } from '../seo.js';
 import { ROOT } from '../lib/words.js';
 
 const { values } = parseArgs({
@@ -36,7 +38,7 @@ const site = JSON.parse(await read(`data/site/${values.locale}.json`));
 const outDir = values.out;
 await mkdir(outDir, { recursive: true });
 // 前回作ったページを消してから作り直す（名前を変えたときに古いページが残らないように）
-for (const f of await readdir(outDir)) if (f.endsWith('.html') || f.endsWith('.json')) await rm(path.join(outDir, f));
+for (const f of await readdir(outDir)) if (/\.(html|json|xml|txt)$/.test(f)) await rm(path.join(outDir, f));
 await rm(path.join(outDir, 'images'), { recursive: true, force: true });
 await cp(path.join(ROOT, 'data/images'), path.join(outDir, 'images'), { recursive: true, filter: (src) => !/\.(png|jpe?g)$/i.test(src) });
 const allImages = await readdir(path.join(ROOT, 'data/images'));
@@ -99,15 +101,34 @@ const { langFor } = await import('../scripts/index.js');
 const books = [];
 for (const theme of themes) {
   const genrePuzzles = puzzles.filter((p) => p.theme.split('+')[0] === theme.theme).sort((a, b) => (a.round ?? 1) - (b.round ?? 1));
-  const image = theme.image && imageFiles.includes(theme.image) ? thumbFor(theme.image) : null;
+  const hasImage = theme.image && imageFiles.includes(theme.image);
+  const image = hasImage ? thumbFor(theme.image) : null;
   const jsonName = `words-${theme.theme}.json`;
   await writeFile(path.join(outDir, jsonName), `${JSON.stringify(publicWordList(theme), null, 2)}\n`);
   const html = renderWordsHtml({
-    template: wordsTemplate, parts, site, theme, puzzles: genrePuzzles, image, jsonName,
+    template: wordsTemplate, parts, site, theme, puzzles: genrePuzzles, image, shareImage: hasImage ? theme.image : null, jsonName,
     lang: langFor(locale, theme.script),
   });
   await writeFile(path.join(outDir, wordsPageName(theme.theme)), html);
-  books.push({ theme, image, puzzleCount: genrePuzzles.length });
+  books.push({ theme, image, puzzleCount: genrePuzzles.length, lastmod: genrePuzzles.map((p) => p.date).sort().at(-1) });
 }
 await writeFile(path.join(outDir, 'words.html'), renderWordsIndexHtml({ template: wordsIndexTemplate, parts, site, books }));
 console.error(`→ words.html と単語帳 ${books.length} 冊`);
+
+// 検索エンジンと AI 向けの案内
+if (site.baseUrl) {
+  const newest = latest?.date;
+  const pages = [
+    { path: 'index.html', lastmod: newest },
+    { path: 'archive.html', lastmod: newest },
+    { path: 'words.html', lastmod: newest },
+    ...[...puzzles].reverse().map((p) => ({ path: pageName(p), lastmod: p.date })),
+    ...books.map(({ theme, lastmod }) => ({ path: wordsPageName(theme.theme), lastmod })),
+  ];
+  await writeFile(path.join(outDir, 'sitemap.xml'), renderSitemap(site, pages));
+  await writeFile(path.join(outDir, 'robots.txt'), renderRobots(site));
+  await writeFile(path.join(outDir, 'llms.txt'), renderLlmsTxt({ site, puzzles, themes, pageName, wordsPageName, puzzleHeading }));
+  console.error(`→ sitemap.xml（${pages.length} ページ）・robots.txt・llms.txt`);
+} else {
+  console.error(`data/site/${values.locale}.json に baseUrl がないので、sitemap.xml・robots.txt・llms.txt は作りません`);
+}

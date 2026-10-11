@@ -280,6 +280,8 @@ npm run site                          # site/ にページを作る
 - `npm run site` は、ジャンルの**単語帳のページ**（`site/words-<ジャンル>.html`）も自動で作ります。
   単語リストの表記・読み・難しさ・カギ・解説がそのまま公開されるので、**公開してよい内容だけを書きます**。
   作る側のメモ（`note`）は単語帳にもダウンロード用の JSON にも出ません。
+- `npm run site` は、`sitemap.xml`・`robots.txt`・`llms.txt` も作り直します（新しいパズルと単語帳は自動で入る。手で直す必要はありません）。
+  ジャンルの `description` は llms.txt と検索結果の説明文にも使われるので、1〜2 文で中身がわかるように書きます。
 
 公開（くわしくは `docs/deploy.md`）:
 
@@ -315,7 +317,7 @@ npm run site                          # site/ にページを作る
 | `data/words/ja/<ジャンル>.json` | 単語リスト（この手引きで作るもの） |
 | `data/words/ja/general.json` | 汎用リスト（つなぎの言葉）。`"filler": true` |
 | `data/images/<ジャンル>.webp` | ジャンルの絵 |
-| `data/site/ja.json` | サイト名、絵の共通の画風（`imageStyle`） |
+| `data/site/ja.json` | サイト名、本番のアドレス（`baseUrl`）、サイトの説明（`description`・`about`。トップページと llms.txt）、絵の共通の画風（`imageStyle`） |
 | `generator/locales/ja.js` | 文字のルール（`normalize`）、カギと解説の標準の指示 |
 | `generator/lib/theme-check.js` | 点検のルール |
 | `docs/design.md` | 設計ドキュメント（仕組みの詳しい説明） |

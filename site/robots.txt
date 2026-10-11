@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://xword.engawa5656.com/sitemap.xml

@@ -1,4 +1,15 @@
 {
   "name": "よろずのクロスワードパズル",
+  "alternateName": "Yorozu Crossword",
+  "baseUrl": "https://xword.engawa5656.com/",
+  "lang": "ja",
+  "ogLocale": "ja_JP",
+  "description": "国名・動物・文学作品・プログラミング言語など、いろいろなテーマで作る無料のクロスワードパズル。ブラウザですぐ遊べて、言葉の解説も読めます。",
+  "about": [
+    "1 問は 9×9 マスの自由配置型（スケルトン型）のクロスワードです。テーマの言葉が中心で、すき間を埋めるために身近な言葉が少し入ります。",
+    "答えはカタカナ（濁点・半濁点は 1 文字に数え、小さい文字は大きい文字として書きます）か、英字の大文字で入れます。",
+    "言葉が正しく埋まると、その言葉の解説が出ます。答えを見ることもできます。登録は要らず、解いた記録はブラウザに保存されます。",
+    "パズルはジャンルごとの単語リストから作っています。単語リスト（言葉・カギ・解説）は単語帳のページと JSON で公開しています。"
+  ],
   "imageStyle": "Square 1:1 composition. Antique copperplate engraving style with fine line work and cross-hatching, sepia ink on aged parchment paper, muted warm tones, 19th-century book illustration. No text, no letters, no numbers, no labels, no border."
 }

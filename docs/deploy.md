@@ -24,7 +24,8 @@ S3_BUCKET=<バケット名> CLOUDFRONT_DISTRIBUTION_ID=<ディストリビュー
 
 1. `site/` を作り直す（`npm run site` と同じ）
 2. 絵（`site/images/`）を S3 に同期する。キャッシュは 1 週間（`Cache-Control: public, max-age=604800`）。WebP は種類（`image/webp`）を明示する
-3. ページと JSON を S3 に同期する。キャッシュは 5 分（`public, max-age=300`）
+3. ページ・JSON・`sitemap.xml` を S3 に同期する。キャッシュは 5 分（`public, max-age=300`）。
+   `robots.txt`・`llms.txt` は日本語が化けないように `text/plain; charset=utf-8` を明示する
 4. 手元にないファイルは S3 からも消す（`--delete`）
 5. CloudFront のキャッシュを消す（`/*` の invalidation）
 
@@ -111,6 +112,14 @@ OAC を作ると、S3 のバケットポリシーの例が表示されるので�
 - [ ] 表紙の絵が出て消える（WebP が `image/webp` で届いている）
 - [ ] バックナンバー・単語帳・各問題のページへのリンクが動く
 - [ ] スマホで開いて、入力・答え合わせ・完成ができる
+- [ ] `https://xword.engawa5656.com/robots.txt`・`/sitemap.xml`・`/llms.txt` が開く（llms.txt の日本語が化けていない）
+
+### 3.1 検索エンジンへの登録（最初に 1 回）
+
+- [Google Search Console](https://search.google.com/search-console) でサイト（`https://xword.engawa5656.com/` のドメインか URL プレフィックス）を登録し、所有者の確認をする（DNS の TXT レコードが簡単）。
+  「サイトマップ」に `sitemap.xml` を送る。
+- Bing なら [Bing Webmaster Tools](https://www.bing.com/webmasters)（Search Console から読み込める）。
+- そのあとは、`npm run deploy` のたびに `sitemap.xml` が新しくなるので、送り直す必要はない。
 
 ---
 

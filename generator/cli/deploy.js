@@ -40,8 +40,11 @@ steps.push(
     '--content-type', 'image/webp', '--cache-control', IMAGE_CACHE, ...dry]],
   ['aws', ['s3', 'sync', `${site}/images`, `${target}/images`, '--delete', '--exclude', '*.webp',
     '--cache-control', IMAGE_CACHE, ...dry]],
-  // ページと JSON。消えたファイルは S3 からも消す
-  ['aws', ['s3', 'sync', site, target, '--delete', '--exclude', 'images/*', '--cache-control', PAGE_CACHE, ...dry]],
+  // ページ・JSON・sitemap.xml。消えたファイルは S3 からも消す
+  ['aws', ['s3', 'sync', site, target, '--delete', '--exclude', 'images/*', '--exclude', '*.txt', '--cache-control', PAGE_CACHE, ...dry]],
+  // robots.txt・llms.txt（日本語が化けないように文字コードを明示する）
+  ['aws', ['s3', 'sync', site, target, '--delete', '--exclude', '*', '--include', '*.txt',
+    '--content-type', 'text/plain; charset=utf-8', '--cache-control', PAGE_CACHE, ...dry]],
 );
 if (values.distribution && !values.dryrun) {
   steps.push(['aws', ['cloudfront', 'create-invalidation', '--distribution-id', values.distribution, '--paths', '/*']]);

@@ -105,4 +105,31 @@ test('サイトのページを作れる（トップページに最近の問題�
   assert.match(index, /href="archive.html">バックナンバーをすべて見る/);
   const archive = await readFile(path.join(out, 'archive.html'), 'utf8');
   assert.match(archive, /<p class="genre">.*の単語帳を見る/);
+  // 検索エンジンと AI 向け
+  for (const f of ['sitemap.xml', 'robots.txt', 'llms.txt']) assert.ok(files.includes(f), f);
+  const sitemap = await readFile(path.join(out, 'sitemap.xml'), 'utf8');
+  assert.match(sitemap, /<loc>https:\/\/xword\.engawa5656\.com\/<\/loc>/);
+  for (const f of files.filter((f) => f.endsWith('.html') && f !== 'index.html')) assert.ok(sitemap.includes(`/${f}</loc>`), `sitemap に ${f}`);
+  assert.match(await readFile(path.join(out, 'robots.txt'), 'utf8'), /^Sitemap: https:\/\/xword\.engawa5656\.com\/sitemap\.xml$/m);
+  const llms = await readFile(path.join(out, 'llms.txt'), 'utf8');
+  assert.match(llms, /^# よろずのクロスワードパズル\n\n> /);
+  assert.match(llms, /\(https:\/\/xword\.engawa5656\.com\/words-sangetsuki\.json\)/);
+  assert.match(index, /<link rel="canonical" href="https:\/\/xword\.engawa5656\.com\/">/);
+  assert.match(index, /"@type":"WebSite"/);
+  assert.match(archive, /<link rel="canonical" href="https:\/\/xword\.engawa5656\.com\/archive\.html">/);
+});
+
+test('SEO: 絶対 URL・OGP・サイトマップ', async () => {
+  const { absoluteUrl, renderHeadMeta, renderSitemap } = await import('../generator/seo.js');
+  const site = { name: 'テスト&サイト', baseUrl: 'https://example.com' };
+  assert.equal(absoluteUrl(site, 'index.html'), 'https://example.com/');
+  assert.equal(absoluteUrl({ ...site, baseUrl: 'https://example.com/' }, 'a.html'), 'https://example.com/a.html');
+  const head = renderHeadMeta({ site, path: 'a.html', title: '"題"', description: 'x', image: 'images/default.svg' });
+  assert.match(head, /og:site_name" content="テスト&amp;サイト"/);
+  assert.match(head, /og:title" content="&quot;題&quot;"/);
+  assert.doesNotMatch(head, /og:image/); // SVG は SNS が読めないので入れない
+  assert.match(renderHeadMeta({ site, path: 'a.html', title: 't', description: 'x', image: 'images/a.webp' }), /og:image" content="https:\/\/example\.com\/images\/a\.webp"/);
+  const xml = renderSitemap(site, [{ path: 'index.html', lastmod: '2026-10-11' }, { path: 'a.html' }]);
+  assert.match(xml, /<loc>https:\/\/example\.com\/<\/loc>\n    <lastmod>2026-10-11<\/lastmod>/);
+  assert.doesNotMatch(xml.split('a.html')[1], /lastmod/);
 });

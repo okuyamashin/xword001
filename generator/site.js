@@ -1,5 +1,7 @@
 // クロスワード（JSON）から HTML を作る。ファイル操作はしない。
 
+import { renderHeadMeta, websiteJsonLd, breadcrumbJsonLd } from './seo.js';
+
 export const DEFAULT_IMAGE = 'default.svg';
 
 // locales/<locale>.js のソースを、ブラウザでそのまま動く形にする
@@ -26,13 +28,16 @@ export function formatDate(date) {
 }
 
 // どのページにも共通の部品（CSS・ヘッダー・フッター・サイト名）をはめこむ
-function fillCommon(html, { parts, site, current }) {
+// head: renderHeadMeta に渡すもの（canonical・OGP・構造化データ）。site.baseUrl がなければ入れない
+function fillCommon(html, { parts, site, current, head }) {
+  const meta = head && site.baseUrl ? renderHeadMeta({ site, ...head }) : '';
   let header = parts.header;
   if (current) header = header.replace(`href="${current}"`, `href="${current}" aria-current="page"`);
   return html
     .replace('/*__BASE_CSS__*/', () => parts.baseCss)
     .replace('<!--__HEADER__-->', () => header)
     .replace('<!--__FOOTER__-->', () => parts.footer)
+    .replace('<!--__HEAD_META__-->', () => meta)
     .replaceAll('__SITE_NAME__', escapeHtml(site.name));
 }
 
@@ -53,14 +58,26 @@ export function renderPuzzleHtml({ template, parts, puzzle, localeSource, site, 
     <h2>単語帳</h2>
     <ul><li><a href="${wordsPageName(genre)}">${escapeHtml(puzzle.title)}の単語帳</a>（このジャンルの言葉とカギ・解説の一覧）</li></ul>
   </section>\n`;
+  const title = `${puzzleHeading(puzzle)} 第${puzzle.round ?? 1}回`;
+  const head = {
+    path: isLatest ? 'index.html' : pageName(puzzle),
+    title: isLatest ? site.name : title,
+    description: isLatest ? site.description ?? description : description,
+    image: data.image,
+    type: isLatest ? 'website' : 'article',
+    jsonLd: isLatest
+      ? [websiteJsonLd(site)]
+      : [breadcrumbJsonLd(site, [{ name: site.name, path: '' }, { name: 'バックナンバー', path: 'archive.html' }, { name: title, path: pageName(puzzle) }])],
+  };
   const html = template
-    .replace('__TITLE__', `${escapeHtml(puzzleHeading(puzzle))} 第${puzzle.round ?? 1}回｜${escapeHtml(site.name)}`)
-    .replace('__DESCRIPTION__', escapeHtml(description))
+    // トップページはサイト名を先に（サイト名で探す人のため）。問題のページは「〜のクロスワードパズル 第n回」を先に
+    .replace('__TITLE__', escapeHtml(isLatest ? `${site.name}｜${title}` : `${title}｜${site.name}`))
+    .replace('__DESCRIPTION__', escapeHtml(head.description))
     .replace('<!--__RECENT__-->', () => recentHtml(recent))
     .replace('<!--__RELATED__-->', () => relatedHtml)
     .replace('/*__LOCALE__*/', () => inlineLocale(localeSource))
     .replace('/*__PUZZLE__*/null', () => json);
-  return fillCommon(html, { parts, site, current: isLatest ? 'index.html' : null });
+  return fillCommon(html, { parts, site, current: isLatest ? 'index.html' : null, head });
 }
 
 function recentHtml(recent) {
@@ -119,7 +136,13 @@ ${list(items)}`;
   const html = template
     .replace('<!--__LATEST__-->', () => list(byDate.slice(0, latestCount)))
     .replace('<!--__THEMES__-->', () => themes);
-  return fillCommon(html, { parts, site, current: 'archive.html' });
+  const head = {
+    path: 'archive.html',
+    title: `バックナンバー｜${site.name}`,
+    description: `${site.name}のバックナンバー。これまでのクロスワードパズルをテーマごとに一覧できます。`,
+    jsonLd: [breadcrumbJsonLd(site, [{ name: site.name, path: '' }, { name: 'バックナンバー', path: 'archive.html' }])],
+  };
+  return fillCommon(html, { parts, site, current: 'archive.html', head });
 }
 
 function escapeHtml(text) {
@@ -130,7 +153,8 @@ const LEVELS = { 1: 'やさしい', 2: 'ふつう', 3: 'むずかしい' };
 
 // ジャンルの単語帳（言葉・読み・難しさ・カギ・解説）。theme: テーマファイル。puzzles: このジャンルのパズル。image: 一覧用の小さい絵。jsonName: ダウンロード用の JSON
 // lang: 言語設定と文字種を合わせたもの（scripts/index.js の langFor）。見出しは文字種ごと（五十音の行・頭文字）
-export function renderWordsHtml({ template, parts, site, theme, puzzles, image, jsonName, lang }) {
+// shareImage: SNS で表示する大きい絵（なければ image）
+export function renderWordsHtml({ template, parts, site, theme, puzzles, image, shareImage, jsonName, lang }) {
   const words = [...theme.words].sort((a, b) => a.answer.localeCompare(b.answer, 'ja') || a.display.localeCompare(b.display, 'ja'));
   const groups = lang.groups.map((g) => [g, words.filter((w) => lang.groupOf(w.answer) === g)]).filter(([, ws]) => ws.length);
   const entry = (w) => {
@@ -166,7 +190,14 @@ export function renderWordsHtml({ template, parts, site, theme, puzzles, image, 
     .replace('<!--__BOOK_HEAD__-->', () => head)
     .replace('<!--__KANA_INDEX__-->', () => kana)
     .replace('<!--__ENTRIES__-->', () => entries);
-  return fillCommon(html, { parts, site, current: null });
+  const headMeta = {
+    path: wordsPageName(theme.theme),
+    title: `${heading}｜${site.name}`,
+    description,
+    image: shareImage || image ? `images/${shareImage ?? image}` : null,
+    jsonLd: [breadcrumbJsonLd(site, [{ name: site.name, path: '' }, { name: '単語帳', path: 'words.html' }, { name: heading, path: wordsPageName(theme.theme) }])],
+  };
+  return fillCommon(html, { parts, site, current: null, head: headMeta });
 }
 
 // 単語帳の一覧。books: [{ theme, image, puzzleCount }]（つなぎの言葉は最後）
@@ -186,7 +217,13 @@ export function renderWordsIndexHtml({ template, parts, site, books }) {
     })
     .join('\n');
   const html = template.replace('<!--__CARDS__-->', () => `  <ul class="cards">\n${cards}\n  </ul>`);
-  return fillCommon(html, { parts, site, current: 'words.html' });
+  const head = {
+    path: 'words.html',
+    title: `単語帳｜${site.name}`,
+    description: `${site.name}の単語帳。ジャンルごとに、クロスワードに出る言葉とカギ・解説をまとめています。`,
+    jsonLd: [breadcrumbJsonLd(site, [{ name: site.name, path: '' }, { name: '単語帳', path: 'words.html' }])],
+  };
+  return fillCommon(html, { parts, site, current: 'words.html', head });
 }
 
 // 単語帳からダウンロードできる JSON。作る側のメモ（note）は入れない

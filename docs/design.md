@@ -708,7 +708,7 @@ npm test
 - 本番は `https://xword.engawa5656.com/`。S3 に置き、CloudFront（HTTPS・独自ドメイン・キャッシュ）を通して公開する。
   手順と AWS の準備は `docs/deploy.md`。
 - `npm run deploy`: `site/` を作り直し、S3 に同期（消えたファイルは消す）、CloudFront のキャッシュを消す。
-  キャッシュは絵 1 週間、ページと JSON 5 分。
+  キャッシュは絵 1 週間、ページと JSON 5 分。`robots.txt`・`llms.txt` は `text/plain; charset=utf-8` で送る（日本語が化けないように）。
 - 流れ: 作業ブランチで作る → 点検・動作確認 → `main` に入れる → `main` の内容で `npm run deploy`。
 - 作ったページ（`site/`）もリポジトリに入れる（`main` の `site/` をそのまま S3 に置けるように）。
 - 以前は GitHub Pages（`okuyamashin.github.io/xword001/`）で公開していたが、ファイル容量などの制限があるため S3 に切り替えた。
@@ -728,6 +728,27 @@ npm test
 - どのページにもヘッダーに「最新の問題」「バックナンバー」「単語帳」へのリンク。パズルのページとバックナンバーのジャンル見出しから、そのジャンルの単語帳へ。
 - 単語リストは公開してかまわない情報として、カギも解説もそのまま載せる（単語帳を見ながら解く人はいない前提）。
 - 共通部分は `template/base.css`（色・文字・ヘッダー）、`template/header.html`、`template/footer.html` にまとめ、作るときにはめこむ。
+
+### 13.7.1 検索エンジンと AI 向け（`generator/seo.js`）
+
+`npm run site` が、ページといっしょに次のものを作る。本番のアドレスは `data/site/ja.json` の `baseUrl`（`https://xword.engawa5656.com/`）。
+`baseUrl` がないときは作らない。
+
+| ファイル | 内容 |
+|---|---|
+| `site/sitemap.xml` | トップ（`/`）・バックナンバー・単語帳の一覧・各パズル・各単語帳。`lastmod` はパズルの日付（一覧と単語帳は、いちばん新しいパズルの日付） |
+| `site/robots.txt` | すべて読んでよい（`Allow: /`）。サイトマップの場所 |
+| `site/llms.txt` | AI 向けの案内（[llmstxt.org](https://llmstxt.org/) の形）。サイトの説明（`description`・`about`）、ページ、全パズル、単語帳と単語リスト（JSON）へのリンク |
+
+各ページの `<head>` に入れるもの:
+
+- `canonical`（トップページは `/`。`index.html` ではない）
+- OGP（`og:title`・`og:description`・`og:url`・`og:image` など）と `twitter:card`（`summary`。絵が正方形なので）。
+  `og:image` はジャンルの絵（800px の WebP）。方眼紙（SVG）は SNS が読めないので入れない
+- 構造化データ（JSON-LD）: トップページは `WebSite`、そのほかはパンくず（`BreadcrumbList`）
+- トップページの `<title>` は「サイト名｜最新の問題」、`description` はサイトの説明。問題のページは「〈テーマ〉のクロスワードパズル 第N回｜サイト名」
+
+`data/site/ja.json` の項目: `name`（サイト名）、`alternateName`（英名）、`baseUrl`、`lang`、`ogLocale`、`description`（サイトの説明。トップページと llms.txt）、`about`（llms.txt に載せる、遊び方などの説明）、`imageStyle`（絵の画風）。
 
 ### 13.8 絵（ジャンルにつき 1 枚）
 
