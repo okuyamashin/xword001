@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>動物の単語帳｜よろずのクロスワードパズル</title>
+<meta name="description" content="身近なペットから野生のけもの、鳥や虫、海の生き物まで。いろいろな動物の名前をカタカナで埋めていきましょう。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Shippori+Mincho:wght@500;700;800&display=swap">
+<style>
+  /* デザイン: 羊皮紙と銅版画。色はテーマごとに --accent などを差し替えられる（puzzle.design） */
+  :root {
+    --bg: #ddd1bc;
+    --paper: #f4ede0;
+    --fg: #2e2721;
+    --muted: #6b5f52;
+    --rule: #b6a68b;
+    --line: #3a3129;
+    --cell: #f4ede0;
+    --word: #e7d5ad;
+    --active: #d2b072;
+    --wrong: #e9b4a2;
+    --revealed: #2f4f6f;
+    --accent: #8c6a32;
+    --serif: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+    --latin: "Cormorant Garamond", "Times New Roman", serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--serif);
+    font-weight: 500;
+    line-height: 1.8;
+    letter-spacing: .03em;
+  }
+  .site-inner, main { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+  header.site { padding: 16px 0 8px; }
+  header.site .wordmark { margin: 0; font-family: var(--latin); font-weight: 600; font-size: .95rem; letter-spacing: .2em; text-transform: uppercase; }
+  header.site .name { margin: 0; color: var(--muted); font-size: .9rem; letter-spacing: .12em; }
+  header.site .site-inner { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  header.site a { color: inherit; text-decoration: none; }
+  header.site nav { display: flex; gap: 16px; font-size: .9rem; letter-spacing: .12em; }
+  header.site nav a { border-bottom: 1px solid transparent; }
+  header.site nav a:hover, header.site nav a[aria-current] { border-bottom-color: var(--fg); }
+  footer.site { margin-top: 40px; padding: 20px 0 28px; border-top: 1px solid var(--rule); color: var(--muted); font-size: .85rem; }
+
+  .hero { text-align: center; margin: 24px 0 20px; }
+  .date { margin: 0 0 4px; color: var(--muted); font-size: .85rem; letter-spacing: .12em; }
+  h1 { font-weight: 800; font-size: clamp(1.35rem, 5vw, 1.9rem); letter-spacing: .12em; line-height: 1.5; margin: 0; }
+  h1 .round { display: block; margin-top: 2px; font-size: .62em; letter-spacing: .3em; color: var(--accent); }
+  .subtitle { margin: 6px 0 0; font-family: var(--latin); font-size: 1.05rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .description {
+    max-width: 44em;
+    margin: 20px auto 0;
+    padding: 14px 18px;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    text-align: left;
+    line-height: 2;
+  }
+  .description:empty { display: none; }
+  .layout { display: grid; gap: 24px; }
+  @media (min-width: 760px) { .layout { grid-template-columns: minmax(0, 1fr) 320px; } }
+  footer.site a { color: inherit; }
+
+  .book-head { display: flex; gap: 16px; align-items: center; justify-content: center; flex-wrap: wrap; margin-top: 16px; }
+  .book-head img { width: 120px; height: 120px; object-fit: cover; box-shadow: 0 4px 12px rgba(46, 39, 33, .25); }
+  .facts { margin: 0; padding: 0; list-style: none; font-size: .9rem; line-height: 2; }
+  .facts a { color: var(--fg); }
+  .tools { position: sticky; top: 0; z-index: 1; margin: 20px 0 8px; padding: 10px 0; background: var(--bg); border-bottom: 1px solid var(--rule); }
+  .tools input { width: 100%; font: inherit; font-size: 1rem; padding: 8px 10px; border: 1px solid var(--line); border-radius: 2px; background: var(--paper); color: var(--fg); }
+  .tools .count { margin: 6px 0 0; font-size: .8rem; color: var(--muted); }
+  .kana { display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 6px 0 0; font-size: .9rem; }
+  .kana a { color: var(--fg); text-decoration: none; border-bottom: 1px solid var(--rule); }
+  h2.gyou { font-size: 1.1rem; letter-spacing: .2em; margin: 28px 0 8px; padding-bottom: 2px; border-bottom: 1px solid var(--rule); scroll-margin-top: 110px; }
+  .entries { list-style: none; padding: 0; margin: 0; }
+  .entry { padding: 12px 0; border-bottom: 1px dotted var(--rule); }
+  .entry .word { margin: 0; font-size: 1.15rem; font-weight: 700; }
+  .entry .reading { margin-left: 8px; font-size: .85rem; font-weight: 500; color: var(--muted); }
+  .entry .level { margin-left: 8px; padding: 0 6px; border: 1px solid var(--muted); font-size: .7rem; letter-spacing: .1em; color: var(--muted); vertical-align: .15em; }
+  .entry .row { margin: 4px 0 0; display: flex; gap: 10px; align-items: baseline; }
+  .entry .lbl { flex: none; padding: 0 6px; border: 1px solid var(--muted); font-size: .7rem; letter-spacing: .15em; line-height: 1.7; color: var(--muted); }
+  .entry .text { font-size: .92rem; line-height: 1.8; }
+  .entry[hidden], h2.gyou[hidden] { display: none; }
+</style>
+</head>
+<body>
+<header class="site"><div class="site-inner">
+  <div>
+    <p class="wordmark"><a href="index.html">Yorozu Crossword</a></p>
+    <p class="name">よろずのクロスワードパズル</p>
+  </div>
+  <nav><a href="index.html">最新の問題</a><a href="archive.html">バックナンバー</a><a href="words.html">単語帳</a></nav>
+</div></header>
+
+<main>
+  <div class="hero">
+    <h1>動物の単語帳</h1>
+    <p class="subtitle">Animals</p>
+    <p class="description">身近なペットから野生のけもの、鳥や虫、海の生き物まで。いろいろな動物の名前をカタカナで埋めていきましょう。</p>
+    <div class="book-head">
+      <img src="images/animals.thumb.webp" alt="" width="120" height="120">
+      <ul class="facts">
+        <li>279 語</li>
+        <li>パズル: <a href="00002-animals-001.html">第1回</a></li>
+        <li><a href="words-animals.json" download>単語リスト（JSON）をダウンロード</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="tools">
+    <input id="filter" type="search" placeholder="ことば・読み・カギ・解説で絞り込む" aria-label="絞り込み">
+    <p class="count" id="count"></p>
+    <nav class="kana"><a href="#gyou-ア">ア</a><a href="#gyou-カ">カ</a><a href="#gyou-サ">サ</a><a href="#gyou-タ">タ</a><a href="#gyou-ナ">ナ</a><a href="#gyou-ハ">ハ</a><a href="#gyou-マ">マ</a><a href="#gyou-ヤ">ヤ</a><a href="#gyou-ラ">ラ</a><a href="#gyou-ワ">ワ</a></nav>
+  </div>
+  <section class="group">
+    <h2 class="gyou" id="gyou-ア">ア行</h2>
+    <ul class="entries">
+      <li class="entry"><p class="word">アオダイショウ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">アゲハ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">アザラシ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">アサリ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">アシカ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">アナグマ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">アヒル<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">アホウドリ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">アマガエル<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">アメフラシ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">アメンボ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">アライグマ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">アリ<span class="level">やさしい</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">女王を中心に巣で集団生活する小さな虫</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">触角でにおいを感じ、仲間との情報伝達にも使います。道しるべのフェロモンで餌場への行列ができます。</span></p></li>
+      <li class="entry"><p class="word">アリクイ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">アリゲーター<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">アルパカ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">アルマジロ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">アワビ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">イカ<span class="level">やさしい</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">十本の腕と墨を吐く習性をもつ水の生き物</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">青い血をもつのは、銅を含むヘモシアニンで酸素を運ぶためです。心臓は三つあり、えら用に二つあります。</span></p></li>
+      <li class="entry"><p class="word">イグアナ<span class="level">ふつう</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">背にとげ状のうろこが並ぶ大型爬虫類</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">グリーンイグアナは木の上で過ごすことが多い草食性です。頭頂部には光を感じる「頭頂眼」があります。</span></p></li>
+      <li class="entry"><p class="word">イソギンチャク<span class="level">ふつう</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">触手で小魚を捕らえる花のような刺胞動物</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">脳や心臓はありませんが、体全体の神経網で刺激に反応します。足盤で岩にくっつき、ゆっくり移動することもあります。</span></p></li>
+      <li class="entry"><p class="word">イタチ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">イヌ<span class="level">やさしい</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">ワンワンと鳴く、人に最も身近な家畜</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">鼻のしわ模様「鼻紋」は個体ごとに異なります。識別に使えるほどで、人の指紋に似ています。</span></p></li>
+      <li class="entry"><p class="word">イノシシ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">イモムシ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">イモリ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">イリオモテヤマネコ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">イルカ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">インコ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">インパラ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ウーパールーパー<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ウォンバット<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ウグイス<span class="level">ふつう</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">ホーホケキョと鳴く春告げ鳥</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">絵の「梅に鶯」は、緑色のメジロと混同されることがあります。実際のウグイスは地味なオリーブ褐色です。</span></p></li>
+      <li class="entry"><p class="word">ウサギ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ウシ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ウシガエル<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ウスバカゲロウ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ウズラ<span class="level">ふつう</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">小さな卵が食用にされる、丸い体の鳥</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">ニホンウズラは研究動物としても利用されます。世代時間が短く、遺伝や発生の研究に役立ってきました。</span></p></li>
+      <li class="entry"><p class="word">ウソ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ウニ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ウマ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ウミウシ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ウミガメ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ウミネコ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">エビ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">エミュー<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">エリマキトカゲ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">オウム<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">オウムガイ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">オオカミ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">オオサンショウウオ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">オオハシ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">オカピ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">オケラ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">オシドリ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">オセロット<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">オナガ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">オポッサム<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">オランウータン<span class="level">ふつう</span></p></li>
+    </ul>
+  </section>
+  <section class="group">
+    <h2 class="gyou" id="gyou-カ">カ行</h2>
+    <ul class="entries">
+      <li class="entry"><p class="word">カイコ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">カイツブリ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">カエル<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">カキ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">カケス<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">カササギ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ガゼル<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">カタツムリ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ガチョウ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">カッコウ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">カナヘビ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">カナリア<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">カニ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">カバ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">カピバラ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">カブトガニ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">カブトムシ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">カマキリ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">カミキリムシ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">カメ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">カメレオン<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">カモ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">カモシカ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">カモノハシ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">カモメ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ガラガラヘビ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">カラカル<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">カラス<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">カワウソ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">カワセミ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">カンガルー<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">キーウィ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">キジ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">キツツキ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">キツネ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">キツネザル<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">キリギリス<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">キリン<span class="level">やさしい</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">首が長く、網目模様の体をもつ草食獣</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">首の骨の数は人と同じ7個です。長い舌は約45センチあり、とげのある枝葉をからめ取れます。</span></p></li>
+      <li class="entry"><p class="word">クジャク<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">クジラ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">クマ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">クモ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">クラゲ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">クワガタ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ケムシ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ゲンゴロウ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">コアラ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">コウノトリ<span class="level">ふつう</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">赤ん坊を運ぶ伝説で知られる大型水禽</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">日本では一度野生絶滅しましたが、兵庫県豊岡市などで再導入が進みました。田んぼの生き物も食べます。</span></p></li>
+      <li class="entry"><p class="word">コウモリ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">コオロギ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ゴキブリ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">コブラ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">コモドオオトカゲ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ゴリラ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">コンドル<span class="level">ふつう</span></p></li>
+    </ul>
+  </section>
+  <section class="group">
+    <h2 class="gyou" id="gyou-サ">サ行</h2>
+    <ul class="entries">
+      <li class="entry"><p class="word">サーバル<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">サイ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">サギ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">サザエ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">サソリ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ザリガニ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">サル<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">サンゴ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">サンショウウオ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">シカ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">シギ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">シジミ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">シジュウカラ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">シマウマ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ジャガー<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">シャコ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ジャコウウシ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">シャチ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ジュウシマツ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ジュゴン<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">シロアリ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">スカンク<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">スズムシ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">スズメ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">スズメバチ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">スッポン<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">セイウチ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">セキレイ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">セミ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ゾウ<span class="level">やさしい</span></p></li>
+    </ul>
+  </section>
+  <section class="group">
+    <h2 class="gyou" id="gyou-タ">タ行</h2>
+    <ul class="entries">
+      <li class="entry"><p class="word">タカ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">タガメ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">タコ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">タスマニアデビル<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ダチョウ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ダニ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">タヌキ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">タマムシ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ダンゴムシ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">チーター<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">チドリ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">チョウ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">チンチラ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">チンパンジー<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ツキノワグマ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ツバメ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ツル<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">テナガザル<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">テン<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">テントウムシ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">トカゲ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">トガリネズミ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">トキ<span class="level">ふつう</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">学名がニッポニア・ニッポンの鳥</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">羽の淡い桃色は「鴇色」と呼ばれます。佐渡島では放鳥が続き、野生下で繁殖する個体も増えています。</span></p></li>
+      <li class="entry"><p class="word">トド<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">トナカイ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">トビ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">トラ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">トンボ<span class="level">やさしい</span></p></li>
+    </ul>
+  </section>
+  <section class="group">
+    <h2 class="gyou" id="gyou-ナ">ナ行</h2>
+    <ul class="entries">
+      <li class="entry"><p class="word">ナマケモノ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ナマコ<span class="level">ふつう</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">敵に内臓を吐き出すことがある棘皮動物</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">体には骨片という小さな石灰質の粒が入っています。乾燥品は中華料理で「海参」と呼ばれ、珍重されます。</span></p></li>
+      <li class="entry"><p class="word">ナメクジ<span class="level">ふつう</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">殻をもたないカタツムリに似た軟体動物</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">塩をかけると、浸透圧で水分が外へ出て縮みます。夜や雨の日に活動が目立つ種類が多いです。</span></p></li>
+      <li class="entry"><p class="word">ニシキヘビ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ニホンザル<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ニワトリ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ヌー<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ヌートリア<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ネコ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ネズミ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ノスリ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ノミ<span class="level">ふつう</span></p></li>
+    </ul>
+  </section>
+  <section class="group">
+    <h2 class="gyou" id="gyou-ハ">ハ行</h2>
+    <ul class="entries">
+      <li class="entry"><p class="word">ハイエナ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">バイソン<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ハエ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">バク<span class="level">ふつう</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">長い鼻をもつ、夢を食う伝説でも知られる獣</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">現生種は中南米と東南アジアに分布します。奇蹄目の仲間で、ウマやサイに近い動物です。</span></p></li>
+      <li class="entry"><p class="word">ハクチョウ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ハクビシン<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ハゲワシ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ハシビロコウ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ハチ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ハチドリ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ハツカネズミ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">バッタ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">バッファロー<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ハト<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ハブ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ハマグリ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ハムスター<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ハヤブサ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ハリネズミ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ハリモグラ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">パンダ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ビーバー<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ヒキガエル<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ヒクイドリ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ヒグマ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ヒツジ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ヒトデ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ヒバリ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ピューマ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ヒョウ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ヒヨドリ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">フェレット<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">フクロウ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">フクロモモンガ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">フジツボ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ブタ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">フラミンゴ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">プレーリードッグ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ブンチョウ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ヘビ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ヘラジカ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ペリカン<span class="level">ふつう</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">下くちばしに大きなのど袋をもつ水鳥</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">魚をすくったあと、余分な水を抜いてからのみ込みます。仲間で魚を浅瀬へ追い込む種類もいます。</span></p></li>
+      <li class="entry"><p class="word">ペンギン<span class="level">やさしい</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">南半球に多く、翼で泳ぐ飛べない鳥</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">羽毛は短く密で、防水と保温に役立ちます。南極だけでなく、赤道近くのガラパゴスにもすむ種類がいます。</span></p></li>
+      <li class="entry"><p class="word">ホタテ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ホタル<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ホッキョクグマ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ホトトギス<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ポニー<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ボノボ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ホヤ<span class="level">むずかしい</span></p></li>
+    </ul>
+  </section>
+  <section class="group">
+    <h2 class="gyou" id="gyou-マ">マ行</h2>
+    <ul class="entries">
+      <li class="entry"><p class="word">マツムシ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">マナティー<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">マムシ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">マングース<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">マントヒヒ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ミーアキャット<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ミサゴ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ミツバチ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ミノムシ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ミミズ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ミミズク<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ムカデ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ムクドリ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ムササビ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">メジロ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">モグラ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">モズ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">モモンガ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">モルモット<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">モンシロチョウ<span class="level">ふつう</span></p></li>
+    </ul>
+  </section>
+  <section class="group">
+    <h2 class="gyou" id="gyou-ヤ">ヤ行</h2>
+    <ul class="entries">
+      <li class="entry"><p class="word">ヤギ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ヤク<span class="level">むずかしい</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">チベット高原で飼われる長毛の牛科動物</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">低酸素や寒さに強く、毛は衣類やテントに使われます。乳はバター茶の材料にもなります。</span></p></li>
+      <li class="entry"><p class="word">ヤゴ<span class="level">ふつう</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">水中で暮らすトンボの幼虫</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">下あごが折りたたみ式のマスクのように伸びます。獲物にすばやく突き出して捕らえるしくみです。</span></p></li>
+      <li class="entry"><p class="word">ヤドカリ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ヤマアラシ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ヤマドリ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ヤマネ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ヤマネコ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ヤモリ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ヤンバルクイナ<span class="level">ふつう</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">沖縄本島北部にすむ、飛ぶ力の弱い固有種</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">1981年に新種として発表されました。道路で車にはねられる事故が、保護上の大きな課題です。</span></p></li>
+      <li class="entry"><p class="word">ユキヒョウ<span class="level">ふつう</span></p></li>
+    </ul>
+  </section>
+  <section class="group">
+    <h2 class="gyou" id="gyou-ラ">ラ行</h2>
+    <ul class="entries">
+      <li class="entry"><p class="word">ライオン<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ライチョウ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ラクダ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ラッコ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ラバ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">ラマ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">リクガメ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">リス<span class="level">やさしい</span></p>
+        <p class="row"><span class="lbl">カギ</span><span class="text">ふさふさした尾で木を走る小型げっ歯類</span></p>
+        <p class="row"><span class="lbl">解説</span><span class="text">前歯は一生伸び続けます。木の実を土に埋めて貯蔵し、食べ残しが芽生えることもあります。</span></p></li>
+      <li class="entry"><p class="word">ルリビタキ<span class="level">むずかしい</span></p></li>
+      <li class="entry"><p class="word">レッサーパンダ<span class="level">ふつう</span></p></li>
+      <li class="entry"><p class="word">ロバ<span class="level">やさしい</span></p></li>
+    </ul>
+  </section>
+  <section class="group">
+    <h2 class="gyou" id="gyou-ワ">ワ行</h2>
+    <ul class="entries">
+      <li class="entry"><p class="word">ワシ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ワニ<span class="level">やさしい</span></p></li>
+      <li class="entry"><p class="word">ワラビー<span class="level">ふつう</span></p></li>
+    </ul>
+  </section>
+</main>
+<footer class="site"><div class="site-inner">よろずのクロスワードパズル ─ 毎日ひとつ、いろいろなテーマのクロスワードパズル。 <a href="archive.html">バックナンバー</a> <a href="words.html">単語帳</a></div></footer>
+
+<script>
+// 絞り込み（ひらがなで入れてもカタカナの読みに当たるようにする）
+const toKata = (s) => s.replace(/[ぁ-ゖ]/g, (c) => String.fromCharCode(c.charCodeAt(0) + 0x60));
+const entries = [...document.querySelectorAll('.entry')];
+const groups = [...document.querySelectorAll('section.group')];
+const count = document.getElementById('count');
+function apply() {
+  const q = toKata(document.getElementById('filter').value.trim());
+  let shown = 0;
+  for (const e of entries) {
+    const hit = !q || toKata(e.textContent).includes(q);
+    e.hidden = !hit;
+    if (hit) shown++;
+  }
+  for (const g of groups) g.querySelector('h2').hidden = !g.querySelector('.entry:not([hidden])');
+  count.textContent = q ? `${shown} / ${entries.length} 語` : `${entries.length} 語`;
+}
+document.getElementById('filter').addEventListener('input', apply);
+apply();
+</script>
+</body>
+</html>

@@ -2,12 +2,14 @@
 //   site/<ID>.html      パズルのページ（例: 00001-countries-001.html）
 //   site/index.html     いちばん新しいパズル（通し番号が最大のもの）
 //   site/archive.html   バックナンバー（一覧）
+//   site/words.html      単語帳の一覧
+//   site/words-<ジャンル>.html / .json  ジャンルの単語帳（言葉・読み・カギ・解説）と、そのダウンロード用 JSON
 // 使い方: node generator/cli/build-site.js [--locale ja] [--puzzles <dir>] [--out <dir>]
 
 import { readFile, readdir, writeFile, mkdir, cp, rm } from 'node:fs/promises';
 import path from 'node:path';
 import { parseArgs } from 'node:util';
-import { renderPuzzleHtml, renderArchiveHtml, pageName, DEFAULT_IMAGE } from '../site.js';
+import { renderPuzzleHtml, renderArchiveHtml, renderWordsHtml, renderWordsIndexHtml, publicWordList, pageName, wordsPageName, DEFAULT_IMAGE } from '../site.js';
 import { ROOT } from '../lib/words.js';
 
 const { values } = parseArgs({
@@ -20,13 +22,15 @@ const { values } = parseArgs({
 const read = (file) => readFile(path.join(ROOT, file), 'utf8');
 const template = await read('template/puzzle.html');
 const archiveTemplate = await read('template/archive.html');
+const wordsTemplate = await read('template/words.html');
+const wordsIndexTemplate = await read('template/words-index.html');
 const parts = { baseCss: await read('template/base.css'), header: await read('template/header.html'), footer: await read('template/footer.html') };
 const localeSource = await read(`generator/locales/${values.locale}.js`);
 const site = JSON.parse(await read(`data/site/${values.locale}.json`));
 const outDir = values.out;
 await mkdir(outDir, { recursive: true });
 // 前回作ったページを消してから作り直す（名前を変えたときに古いページが残らないように）
-for (const f of await readdir(outDir)) if (f.endsWith('.html')) await rm(path.join(outDir, f));
+for (const f of await readdir(outDir)) if (f.endsWith('.html') || f.endsWith('.json')) await rm(path.join(outDir, f));
 await rm(path.join(outDir, 'images'), { recursive: true, force: true });
 await cp(path.join(ROOT, 'data/images'), path.join(outDir, 'images'), { recursive: true, filter: (src) => !/\.(png|jpe?g)$/i.test(src) });
 const allImages = await readdir(path.join(ROOT, 'data/images'));
@@ -49,8 +53,10 @@ puzzles.sort((a, b) => a.serial - b.serial);
 
 // 絵はジャンル（テーマ）ごとに 1 枚。テーマファイルの image を使い、なければ方眼紙
 const themeImages = new Map();
+const themes = [];
 for (const f of (await readdir(path.join(ROOT, 'data/words', values.locale))).filter((f) => f.endsWith('.json'))) {
   const t = JSON.parse(await read(`data/words/${values.locale}/${f}`));
+  themes.push(t);
   if (t.image) themeImages.set(t.theme, t.image);
 }
 const imageFor = (puzzle) => {
@@ -78,3 +84,21 @@ for (const puzzle of puzzles) {
 const entries = puzzles.map((puzzle) => ({ puzzle, image: thumbFor(imageFor(puzzle)) }));
 await writeFile(path.join(outDir, 'archive.html'), renderArchiveHtml({ template: archiveTemplate, parts, site, entries }));
 console.error('→ archive.html');
+
+// 単語帳
+const locale = await import(`../locales/${values.locale}.js`);
+const books = [];
+for (const theme of themes) {
+  const genrePuzzles = puzzles.filter((p) => p.theme.split('+')[0] === theme.theme).sort((a, b) => (a.round ?? 1) - (b.round ?? 1));
+  const image = theme.image && imageFiles.includes(theme.image) ? thumbFor(theme.image) : null;
+  const jsonName = `words-${theme.theme}.json`;
+  await writeFile(path.join(outDir, jsonName), `${JSON.stringify(publicWordList(theme), null, 2)}\n`);
+  const html = renderWordsHtml({
+    template: wordsTemplate, parts, site, theme, puzzles: genrePuzzles, image, jsonName,
+    isValidAnswer: locale.isValidAnswer, normalize: locale.normalize,
+  });
+  await writeFile(path.join(outDir, wordsPageName(theme.theme)), html);
+  books.push({ theme, image, puzzleCount: genrePuzzles.length });
+}
+await writeFile(path.join(outDir, 'words.html'), renderWordsIndexHtml({ template: wordsIndexTemplate, parts, site, books }));
+console.error(`→ words.html と単語帳 ${books.length} 冊`);

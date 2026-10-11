@@ -12,6 +12,10 @@ export function pageName(puzzle) {
   return `${puzzle.id}.html`;
 }
 
+export function wordsPageName(theme) {
+  return `words-${theme}.html`;
+}
+
 export function puzzleHeading(puzzle) {
   return `${puzzle.title}のクロスワードパズル`;
 }
@@ -38,11 +42,16 @@ export function renderPuzzleHtml({ template, parts, puzzle, localeSource, site, 
   const description = puzzle.description ?? '';
   const data = { ...puzzle, description, image: `images/${image ?? puzzle.image ?? DEFAULT_IMAGE}` };
   const json = JSON.stringify(data).replace(/</g, '\\u003c');
-  const relatedHtml = related.length
-    ? `  <section class="related">\n    <h2>${escapeHtml(puzzle.title)}のほかの回</h2>\n    <ul>${related
+  const genre = puzzle.theme.split('+')[0];
+  const others = related.length
+    ? `\n    <h2>${escapeHtml(puzzle.title)}のほかの回</h2>\n    <ul>${related
         .map((p) => `<li><a href="${pageName(p)}">第${p.round ?? 1}回（${formatDate(p.date)}）</a></li>`)
-        .join('')}</ul>\n  </section>\n`
+        .join('')}</ul>`
     : '';
+  const relatedHtml = `  <section class="related">${others}
+    <h2>単語帳</h2>
+    <ul><li><a href="${wordsPageName(genre)}">${escapeHtml(puzzle.title)}の単語帳</a>（このジャンルの言葉とカギ・解説の一覧）</li></ul>
+  </section>\n`;
   const html = template
     .replace('__TITLE__', `${escapeHtml(puzzleHeading(puzzle))} 第${puzzle.round ?? 1}回｜${escapeHtml(site.name)}`)
     .replace('__DESCRIPTION__', escapeHtml(description))
@@ -78,7 +87,8 @@ export function renderArchiveHtml({ template, parts, site, entries, latestCount 
     .map((items) => {
       const p = items[0].puzzle;
       const en = p.subtitle ? `<span class="en">${escapeHtml(p.subtitle)}</span>` : '';
-      return `  <h2 class="section" id="theme-${escapeHtml(p.theme)}">${escapeHtml(p.title)}${en}</h2>\n${list(items)}`;
+      const book = `<a class="book" href="${wordsPageName(p.theme.split('+')[0])}">単語帳</a>`;
+      return `  <h2 class="section" id="theme-${escapeHtml(p.theme)}">${escapeHtml(p.title)}${en}${book}</h2>\n${list(items)}`;
     })
     .join('\n');
 
@@ -90,4 +100,88 @@ export function renderArchiveHtml({ template, parts, site, entries, latestCount 
 
 function escapeHtml(text) {
   return String(text).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+}
+
+// 単語帳の五十音の行
+const GYOU = [
+  ['ア', 'アイウエオ'], ['カ', 'カキクケコガギグゲゴ'], ['サ', 'サシスセソザジズゼゾ'], ['タ', 'タチツテトダヂヅデド'],
+  ['ナ', 'ナニヌネノ'], ['ハ', 'ハヒフヘホバビブベボパピプペポ'], ['マ', 'マミムメモ'], ['ヤ', 'ヤユヨ'],
+  ['ラ', 'ラリルレロ'], ['ワ', 'ワヲン'],
+];
+function gyouOf(answer) {
+  return GYOU.find(([, chars]) => chars.includes(answer[0]))?.[0] ?? 'ワ';
+}
+const LEVELS = { 1: 'やさしい', 2: 'ふつう', 3: 'むずかしい' };
+
+// ジャンルの単語帳（言葉・読み・難しさ・カギ・解説）。theme: テーマファイル。puzzles: このジャンルのパズル。image: 一覧用の小さい絵。jsonName: ダウンロード用の JSON
+export function renderWordsHtml({ template, parts, site, theme, puzzles, image, jsonName, isValidAnswer, normalize }) {
+  const words = [...theme.words].sort((a, b) => a.answer.localeCompare(b.answer, 'ja') || a.display.localeCompare(b.display, 'ja'));
+  const groups = GYOU.map(([g]) => [g, words.filter((w) => gyouOf(w.answer) === g)]).filter(([, ws]) => ws.length);
+  const entry = (w) => {
+    // 漢字などで書く語には、マスに入る読みを添える
+    const reading = isValidAnswer(normalize(w.display)) ? '' : `<span class="reading">${escapeHtml(w.answer)}</span>`;
+    const level = w.level ? `<span class="level">${LEVELS[w.level]}</span>` : '';
+    const row = (label, text) => (text ? `\n        <p class="row"><span class="lbl">${label}</span><span class="text">${escapeHtml(text)}</span></p>` : '');
+    return `      <li class="entry"><p class="word">${escapeHtml(w.display)}${reading}${level}</p>${row('カギ', w.clue)}${row('解説', w.explanation)}</li>`;
+  };
+  const entries = groups
+    .map(([g, ws]) => `  <section class="group">\n    <h2 class="gyou" id="gyou-${g}">${g}行</h2>\n    <ul class="entries">\n${ws.map(entry).join('\n')}\n    </ul>\n  </section>`)
+    .join('\n');
+  const kana = `    <nav class="kana">${groups.map(([g]) => `<a href="#gyou-${g}">${g}</a>`).join('')}</nav>`;
+  const rounds = puzzles.length
+    ? puzzles.map((p) => `<a href="${pageName(p)}">第${p.round ?? 1}回</a>`).join('・')
+    : 'まだありません';
+  const head = `      ${image ? `<img src="images/${escapeHtml(image)}" alt="" width="120" height="120">` : ''}
+      <ul class="facts">
+        <li>${words.length} 語</li>
+        <li>パズル: ${rounds}</li>
+        <li><a href="${escapeHtml(jsonName)}" download>単語リスト（JSON）をダウンロード</a></li>
+      </ul>`;
+  const heading = theme.filler ? 'つなぎの言葉の単語帳' : `${theme.title}の単語帳`;
+  const description = theme.filler
+    ? '盤面のすき間を埋めるために、どのジャンルのクロスワードにも入ることがある身近な言葉です。'
+    : theme.description;
+  const html = template
+    .replace('__TITLE__', `${escapeHtml(heading)}｜${escapeHtml(site.name)}`)
+    .replace('__DESCRIPTION__', escapeHtml(description))
+    .replace('__HEADING__', escapeHtml(heading))
+    .replace('__SUBTITLE__', escapeHtml(theme.subtitle ?? ''))
+    .replace('__BOOK_DESCRIPTION__', escapeHtml(description))
+    .replace('<!--__BOOK_HEAD__-->', () => head)
+    .replace('<!--__KANA_INDEX__-->', () => kana)
+    .replace('<!--__ENTRIES__-->', () => entries);
+  return fillCommon(html, { parts, site, current: null });
+}
+
+// 単語帳の一覧。books: [{ theme, image, puzzleCount }]（つなぎの言葉は最後）
+export function renderWordsIndexHtml({ template, parts, site, books }) {
+  const sorted = [...books].sort((a, b) => Number(a.theme.filler ?? false) - Number(b.theme.filler ?? false));
+  const cards = sorted
+    .map(({ theme, image, puzzleCount }) => {
+      const title = theme.filler ? 'つなぎの言葉' : theme.title;
+      return `    <li><a class="card" href="${wordsPageName(theme.theme)}">
+      ${image ? `<img src="images/${escapeHtml(image)}" alt="" loading="lazy" width="88" height="88">` : ''}
+      <div>
+        <p class="title">${escapeHtml(title)}の単語帳</p>
+        <p class="en">${escapeHtml(theme.subtitle ?? '')}</p>
+        <p class="meta">${theme.words.length} 語${theme.filler ? '' : `・パズル ${puzzleCount} 回`}</p>
+      </div>
+    </a></li>`;
+    })
+    .join('\n');
+  const html = template.replace('<!--__CARDS__-->', () => `  <ul class="cards">\n${cards}\n  </ul>`);
+  return fillCommon(html, { parts, site, current: 'words.html' });
+}
+
+// 単語帳からダウンロードできる JSON。作る側のメモ（note）は入れない
+export function publicWordList(theme) {
+  return {
+    locale: theme.locale,
+    theme: theme.theme,
+    title: theme.title,
+    subtitle: theme.subtitle,
+    description: theme.description,
+    rules: theme.rules ?? [],
+    words: theme.words.map(({ answer, display, level, clue, explanation }) => ({ answer, display, level, clue, explanation })),
+  };
 }

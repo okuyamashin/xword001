@@ -68,6 +68,7 @@
 
   h2.section { font-size: 1.15rem; letter-spacing: .2em; margin: 32px 0 12px; padding-bottom: 4px; border-bottom: 1px solid var(--rule); }
   h2.section .en { margin-left: 10px; font-family: var(--latin); font-size: .9rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  h2.section .book { float: right; font-size: .8rem; font-weight: 500; letter-spacing: .1em; color: var(--fg); }
   .cards { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; }
   @media (min-width: 760px) { .cards { grid-template-columns: 1fr 1fr; } }
   .card { display: flex; gap: 14px; padding: 12px; color: inherit; text-decoration: none; background: rgba(244, 237, 224, .55); border: 1px solid var(--rule); }
@@ -89,7 +90,7 @@
     <p class="wordmark"><a href="index.html">Yorozu Crossword</a></p>
     <p class="name">よろずのクロスワードパズル</p>
   </div>
-  <nav><a href="index.html">最新の問題</a><a href="archive.html" aria-current="page">バックナンバー</a></nav>
+  <nav><a href="index.html">最新の問題</a><a href="archive.html" aria-current="page">バックナンバー</a><a href="words.html">単語帳</a></nav>
 </div></header>
 
 <main>
@@ -125,7 +126,7 @@
       </div>
     </a></li>
   </ul>
-  <h2 class="section" id="theme-sangetsuki">山月記<span class="en">Sangetsuki — The Moon over the Mountain</span></h2>
+  <h2 class="section" id="theme-sangetsuki">山月記<span class="en">Sangetsuki — The Moon over the Mountain</span><a class="book" href="words-sangetsuki.html">単語帳</a></h2>
   <ul class="cards">
     <li><a class="card" href="00003-sangetsuki-001.html" data-id="00003-sangetsuki-001">
       <img src="images/sangetsuki.thumb.webp" alt="" loading="lazy" width="88" height="88">
@@ -136,7 +137,7 @@
       </div>
     </a></li>
   </ul>
-  <h2 class="section" id="theme-animals">動物<span class="en">Animals</span></h2>
+  <h2 class="section" id="theme-animals">動物<span class="en">Animals</span><a class="book" href="words-animals.html">単語帳</a></h2>
   <ul class="cards">
     <li><a class="card" href="00002-animals-001.html" data-id="00002-animals-001">
       <img src="images/animals.thumb.webp" alt="" loading="lazy" width="88" height="88">
@@ -147,7 +148,7 @@
       </div>
     </a></li>
   </ul>
-  <h2 class="section" id="theme-countries">世界の国と地域<span class="en">Countries and Regions</span></h2>
+  <h2 class="section" id="theme-countries">世界の国と地域<span class="en">Countries and Regions</span><a class="book" href="words-countries.html">単語帳</a></h2>
   <ul class="cards">
     <li><a class="card" href="00001-countries-001.html" data-id="00001-countries-001">
       <img src="images/countries.thumb.webp" alt="" loading="lazy" width="88" height="88">
@@ -159,7 +160,7 @@
     </a></li>
   </ul>
 </main>
-<footer class="site"><div class="site-inner">よろずのクロスワードパズル ─ 毎日ひとつ、いろいろなテーマのクロスワードパズル。 <a href="archive.html">バックナンバー</a></div></footer>
+<footer class="site"><div class="site-inner">よろずのクロスワードパズル ─ 毎日ひとつ、いろいろなテーマのクロスワードパズル。 <a href="archive.html">バックナンバー</a> <a href="words.html">単語帳</a></div></footer>
 
 <script>
 // この端末での進み具合（パズルのページが localStorage に保存したもの）

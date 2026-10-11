@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__</title>
+<meta name="description" content="__DESCRIPTION__">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Shippori+Mincho:wght@500;700;800&display=swap">
+<style>
+/*__BASE_CSS__*/
+  .book-head { display: flex; gap: 16px; align-items: center; justify-content: center; flex-wrap: wrap; margin-top: 16px; }
+  .book-head img { width: 120px; height: 120px; object-fit: cover; box-shadow: 0 4px 12px rgba(46, 39, 33, .25); }
+  .facts { margin: 0; padding: 0; list-style: none; font-size: .9rem; line-height: 2; }
+  .facts a { color: var(--fg); }
+  .tools { position: sticky; top: 0; z-index: 1; margin: 20px 0 8px; padding: 10px 0; background: var(--bg); border-bottom: 1px solid var(--rule); }
+  .tools input { width: 100%; font: inherit; font-size: 1rem; padding: 8px 10px; border: 1px solid var(--line); border-radius: 2px; background: var(--paper); color: var(--fg); }
+  .tools .count { margin: 6px 0 0; font-size: .8rem; color: var(--muted); }
+  .kana { display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 6px 0 0; font-size: .9rem; }
+  .kana a { color: var(--fg); text-decoration: none; border-bottom: 1px solid var(--rule); }
+  h2.gyou { font-size: 1.1rem; letter-spacing: .2em; margin: 28px 0 8px; padding-bottom: 2px; border-bottom: 1px solid var(--rule); scroll-margin-top: 110px; }
+  .entries { list-style: none; padding: 0; margin: 0; }
+  .entry { padding: 12px 0; border-bottom: 1px dotted var(--rule); }
+  .entry .word { margin: 0; font-size: 1.15rem; font-weight: 700; }
+  .entry .reading { margin-left: 8px; font-size: .85rem; font-weight: 500; color: var(--muted); }
+  .entry .level { margin-left: 8px; padding: 0 6px; border: 1px solid var(--muted); font-size: .7rem; letter-spacing: .1em; color: var(--muted); vertical-align: .15em; }
+  .entry .row { margin: 4px 0 0; display: flex; gap: 10px; align-items: baseline; }
+  .entry .lbl { flex: none; padding: 0 6px; border: 1px solid var(--muted); font-size: .7rem; letter-spacing: .15em; line-height: 1.7; color: var(--muted); }
+  .entry .text { font-size: .92rem; line-height: 1.8; }
+  .entry[hidden], h2.gyou[hidden] { display: none; }
+</style>
+</head>
+<body>
+<!--__HEADER__-->
+<main>
+  <div class="hero">
+    <h1>__HEADING__</h1>
+    <p class="subtitle">__SUBTITLE__</p>
+    <p class="description">__BOOK_DESCRIPTION__</p>
+    <div class="book-head">
+<!--__BOOK_HEAD__-->
+    </div>
+  </div>
+  <div class="tools">
+    <input id="filter" type="search" placeholder="ことば・読み・カギ・解説で絞り込む" aria-label="絞り込み">
+    <p class="count" id="count"></p>
+<!--__KANA_INDEX__-->
+  </div>
+<!--__ENTRIES__-->
+</main>
+<!--__FOOTER__-->
+<script>
+// 絞り込み（ひらがなで入れてもカタカナの読みに当たるようにする）
+const toKata = (s) => s.replace(/[ぁ-ゖ]/g, (c) => String.fromCharCode(c.charCodeAt(0) + 0x60));
+const entries = [...document.querySelectorAll('.entry')];
+const groups = [...document.querySelectorAll('section.group')];
+const count = document.getElementById('count');
+function apply() {
+  const q = toKata(document.getElementById('filter').value.trim());
+  let shown = 0;
+  for (const e of entries) {
+    const hit = !q || toKata(e.textContent).includes(q);
+    e.hidden = !hit;
+    if (hit) shown++;
+  }
+  for (const g of groups) g.querySelector('h2').hidden = !g.querySelector('.entry:not([hidden])');
+  count.textContent = q ? `${shown} / ${entries.length} 語` : `${entries.length} 語`;
+}
+document.getElementById('filter').addEventListener('input', apply);
+apply();
+</script>
+</body>
+</html>

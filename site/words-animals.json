@@ -1,0 +1,1446 @@
+{
+  "locale": "ja",
+  "theme": "animals",
+  "title": "動物",
+  "subtitle": "Animals",
+  "description": "身近なペットから野生のけもの、鳥や虫、海の生き物まで。いろいろな動物の名前をカタカナで埋めていきましょう。",
+  "rules": [
+    "動物の名前は、一般的なカタカナの呼び名で答えてください（例: 象 → ゾウ）",
+    "魚は含みません"
+  ],
+  "words": [
+    {
+      "answer": "イヌ",
+      "display": "イヌ",
+      "level": 1,
+      "clue": "ワンワンと鳴く、人に最も身近な家畜",
+      "explanation": "鼻のしわ模様「鼻紋」は個体ごとに異なります。識別に使えるほどで、人の指紋に似ています。"
+    },
+    {
+      "answer": "ネコ",
+      "display": "ネコ",
+      "level": 1
+    },
+    {
+      "answer": "ウシ",
+      "display": "ウシ",
+      "level": 1
+    },
+    {
+      "answer": "ウマ",
+      "display": "ウマ",
+      "level": 1
+    },
+    {
+      "answer": "ブタ",
+      "display": "ブタ",
+      "level": 1
+    },
+    {
+      "answer": "ヒツジ",
+      "display": "ヒツジ",
+      "level": 1
+    },
+    {
+      "answer": "ヤギ",
+      "display": "ヤギ",
+      "level": 1
+    },
+    {
+      "answer": "シカ",
+      "display": "シカ",
+      "level": 1
+    },
+    {
+      "answer": "クマ",
+      "display": "クマ",
+      "level": 1
+    },
+    {
+      "answer": "サル",
+      "display": "サル",
+      "level": 1
+    },
+    {
+      "answer": "キツネ",
+      "display": "キツネ",
+      "level": 1
+    },
+    {
+      "answer": "タヌキ",
+      "display": "タヌキ",
+      "level": 1
+    },
+    {
+      "answer": "ウサギ",
+      "display": "ウサギ",
+      "level": 1
+    },
+    {
+      "answer": "ネズミ",
+      "display": "ネズミ",
+      "level": 1
+    },
+    {
+      "answer": "トラ",
+      "display": "トラ",
+      "level": 1
+    },
+    {
+      "answer": "ゾウ",
+      "display": "ゾウ",
+      "level": 1
+    },
+    {
+      "answer": "ライオン",
+      "display": "ライオン",
+      "level": 1
+    },
+    {
+      "answer": "キリン",
+      "display": "キリン",
+      "level": 1,
+      "clue": "首が長く、網目模様の体をもつ草食獣",
+      "explanation": "首の骨の数は人と同じ7個です。長い舌は約45センチあり、とげのある枝葉をからめ取れます。"
+    },
+    {
+      "answer": "パンダ",
+      "display": "パンダ",
+      "level": 1
+    },
+    {
+      "answer": "ゴリラ",
+      "display": "ゴリラ",
+      "level": 1
+    },
+    {
+      "answer": "ラクダ",
+      "display": "ラクダ",
+      "level": 1
+    },
+    {
+      "answer": "イルカ",
+      "display": "イルカ",
+      "level": 1
+    },
+    {
+      "answer": "コアラ",
+      "display": "コアラ",
+      "level": 1
+    },
+    {
+      "answer": "カンガルー",
+      "display": "カンガルー",
+      "level": 1
+    },
+    {
+      "answer": "カバ",
+      "display": "カバ",
+      "level": 1
+    },
+    {
+      "answer": "サイ",
+      "display": "サイ",
+      "level": 1
+    },
+    {
+      "answer": "シマウマ",
+      "display": "シマウマ",
+      "level": 1
+    },
+    {
+      "answer": "チーター",
+      "display": "チーター",
+      "level": 1
+    },
+    {
+      "answer": "ヒヨウ",
+      "display": "ヒョウ",
+      "level": 1
+    },
+    {
+      "answer": "ジヤガー",
+      "display": "ジャガー",
+      "level": 2
+    },
+    {
+      "answer": "ピユーマ",
+      "display": "ピューマ",
+      "level": 2
+    },
+    {
+      "answer": "オオカミ",
+      "display": "オオカミ",
+      "level": 1
+    },
+    {
+      "answer": "ハイエナ",
+      "display": "ハイエナ",
+      "level": 2
+    },
+    {
+      "answer": "アライグマ",
+      "display": "アライグマ",
+      "level": 2
+    },
+    {
+      "answer": "イタチ",
+      "display": "イタチ",
+      "level": 2
+    },
+    {
+      "answer": "テン",
+      "display": "テン",
+      "level": 3
+    },
+    {
+      "answer": "カワウソ",
+      "display": "カワウソ",
+      "level": 2
+    },
+    {
+      "answer": "ラツコ",
+      "display": "ラッコ",
+      "level": 1
+    },
+    {
+      "answer": "アザラシ",
+      "display": "アザラシ",
+      "level": 1
+    },
+    {
+      "answer": "アシカ",
+      "display": "アシカ",
+      "level": 2
+    },
+    {
+      "answer": "トド",
+      "display": "トド",
+      "level": 3
+    },
+    {
+      "answer": "セイウチ",
+      "display": "セイウチ",
+      "level": 2
+    },
+    {
+      "answer": "クジラ",
+      "display": "クジラ",
+      "level": 1
+    },
+    {
+      "answer": "シヤチ",
+      "display": "シャチ",
+      "level": 2
+    },
+    {
+      "answer": "ジユゴン",
+      "display": "ジュゴン",
+      "level": 3
+    },
+    {
+      "answer": "マナテイー",
+      "display": "マナティー",
+      "level": 3
+    },
+    {
+      "answer": "モグラ",
+      "display": "モグラ",
+      "level": 1
+    },
+    {
+      "answer": "ハリネズミ",
+      "display": "ハリネズミ",
+      "level": 2
+    },
+    {
+      "answer": "コウモリ",
+      "display": "コウモリ",
+      "level": 1
+    },
+    {
+      "answer": "リス",
+      "display": "リス",
+      "level": 1,
+      "clue": "ふさふさした尾で木を走る小型げっ歯類",
+      "explanation": "前歯は一生伸び続けます。木の実を土に埋めて貯蔵し、食べ残しが芽生えることもあります。"
+    },
+    {
+      "answer": "モモンガ",
+      "display": "モモンガ",
+      "level": 2
+    },
+    {
+      "answer": "ムササビ",
+      "display": "ムササビ",
+      "level": 2
+    },
+    {
+      "answer": "ハムスター",
+      "display": "ハムスター",
+      "level": 1
+    },
+    {
+      "answer": "モルモツト",
+      "display": "モルモット",
+      "level": 2
+    },
+    {
+      "answer": "チンチラ",
+      "display": "チンチラ",
+      "level": 2
+    },
+    {
+      "answer": "ビーバー",
+      "display": "ビーバー",
+      "level": 2
+    },
+    {
+      "answer": "ヤマアラシ",
+      "display": "ヤマアラシ",
+      "level": 3
+    },
+    {
+      "answer": "ナマケモノ",
+      "display": "ナマケモノ",
+      "level": 2
+    },
+    {
+      "answer": "アリクイ",
+      "display": "アリクイ",
+      "level": 2
+    },
+    {
+      "answer": "アルマジロ",
+      "display": "アルマジロ",
+      "level": 2
+    },
+    {
+      "answer": "カピバラ",
+      "display": "カピバラ",
+      "level": 1
+    },
+    {
+      "answer": "オランウータン",
+      "display": "オランウータン",
+      "level": 2
+    },
+    {
+      "answer": "チンパンジー",
+      "display": "チンパンジー",
+      "level": 1
+    },
+    {
+      "answer": "ボノボ",
+      "display": "ボノボ",
+      "level": 3
+    },
+    {
+      "answer": "テナガザル",
+      "display": "テナガザル",
+      "level": 3
+    },
+    {
+      "answer": "ニホンザル",
+      "display": "ニホンザル",
+      "level": 2
+    },
+    {
+      "answer": "マントヒヒ",
+      "display": "マントヒヒ",
+      "level": 3
+    },
+    {
+      "answer": "キツネザル",
+      "display": "キツネザル",
+      "level": 3
+    },
+    {
+      "answer": "トナカイ",
+      "display": "トナカイ",
+      "level": 2
+    },
+    {
+      "answer": "ヘラジカ",
+      "display": "ヘラジカ",
+      "level": 3
+    },
+    {
+      "answer": "カモシカ",
+      "display": "カモシカ",
+      "level": 3
+    },
+    {
+      "answer": "インパラ",
+      "display": "インパラ",
+      "level": 3
+    },
+    {
+      "answer": "ガゼル",
+      "display": "ガゼル",
+      "level": 3
+    },
+    {
+      "answer": "ヌー",
+      "display": "ヌー",
+      "level": 3
+    },
+    {
+      "answer": "バイソン",
+      "display": "バイソン",
+      "level": 2
+    },
+    {
+      "answer": "バツフアロー",
+      "display": "バッファロー",
+      "level": 2
+    },
+    {
+      "answer": "ヤク",
+      "display": "ヤク",
+      "level": 3,
+      "clue": "チベット高原で飼われる長毛の牛科動物",
+      "explanation": "低酸素や寒さに強く、毛は衣類やテントに使われます。乳はバター茶の材料にもなります。"
+    },
+    {
+      "answer": "ラマ",
+      "display": "ラマ",
+      "level": 2
+    },
+    {
+      "answer": "アルパカ",
+      "display": "アルパカ",
+      "level": 1
+    },
+    {
+      "answer": "イノシシ",
+      "display": "イノシシ",
+      "level": 1
+    },
+    {
+      "answer": "バク",
+      "display": "バク",
+      "level": 2,
+      "clue": "長い鼻をもつ、夢を食う伝説でも知られる獣",
+      "explanation": "現生種は中南米と東南アジアに分布します。奇蹄目の仲間で、ウマやサイに近い動物です。"
+    },
+    {
+      "answer": "オカピ",
+      "display": "オカピ",
+      "level": 3
+    },
+    {
+      "answer": "ミーアキヤツト",
+      "display": "ミーアキャット",
+      "level": 2
+    },
+    {
+      "answer": "マングース",
+      "display": "マングース",
+      "level": 2
+    },
+    {
+      "answer": "フエレツト",
+      "display": "フェレット",
+      "level": 2
+    },
+    {
+      "answer": "スカンク",
+      "display": "スカンク",
+      "level": 2
+    },
+    {
+      "answer": "ハクビシン",
+      "display": "ハクビシン",
+      "level": 3
+    },
+    {
+      "answer": "アナグマ",
+      "display": "アナグマ",
+      "level": 3
+    },
+    {
+      "answer": "ツキノワグマ",
+      "display": "ツキノワグマ",
+      "level": 2
+    },
+    {
+      "answer": "ヒグマ",
+      "display": "ヒグマ",
+      "level": 2
+    },
+    {
+      "answer": "ホツキヨクグマ",
+      "display": "ホッキョクグマ",
+      "level": 2
+    },
+    {
+      "answer": "レツサーパンダ",
+      "display": "レッサーパンダ",
+      "level": 2
+    },
+    {
+      "answer": "ユキヒヨウ",
+      "display": "ユキヒョウ",
+      "level": 2
+    },
+    {
+      "answer": "ヤマネコ",
+      "display": "ヤマネコ",
+      "level": 2
+    },
+    {
+      "answer": "オセロツト",
+      "display": "オセロット",
+      "level": 3
+    },
+    {
+      "answer": "カラカル",
+      "display": "カラカル",
+      "level": 3
+    },
+    {
+      "answer": "サーバル",
+      "display": "サーバル",
+      "level": 3
+    },
+    {
+      "answer": "プレーリードツグ",
+      "display": "プレーリードッグ",
+      "level": 2
+    },
+    {
+      "answer": "ウオンバツト",
+      "display": "ウォンバット",
+      "level": 2
+    },
+    {
+      "answer": "カモノハシ",
+      "display": "カモノハシ",
+      "level": 2
+    },
+    {
+      "answer": "ハリモグラ",
+      "display": "ハリモグラ",
+      "level": 3
+    },
+    {
+      "answer": "フクロモモンガ",
+      "display": "フクロモモンガ",
+      "level": 3
+    },
+    {
+      "answer": "ワラビー",
+      "display": "ワラビー",
+      "level": 2
+    },
+    {
+      "answer": "タスマニアデビル",
+      "display": "タスマニアデビル",
+      "level": 2
+    },
+    {
+      "answer": "ジヤコウウシ",
+      "display": "ジャコウウシ",
+      "level": 3
+    },
+    {
+      "answer": "ハツカネズミ",
+      "display": "ハツカネズミ",
+      "level": 2
+    },
+    {
+      "answer": "ヌートリア",
+      "display": "ヌートリア",
+      "level": 3
+    },
+    {
+      "answer": "オポツサム",
+      "display": "オポッサム",
+      "level": 3
+    },
+    {
+      "answer": "イリオモテヤマネコ",
+      "display": "イリオモテヤマネコ",
+      "level": 2
+    },
+    {
+      "answer": "ヤマネ",
+      "display": "ヤマネ",
+      "level": 3
+    },
+    {
+      "answer": "トガリネズミ",
+      "display": "トガリネズミ",
+      "level": 3
+    },
+    {
+      "answer": "ロバ",
+      "display": "ロバ",
+      "level": 1
+    },
+    {
+      "answer": "ポニー",
+      "display": "ポニー",
+      "level": 1
+    },
+    {
+      "answer": "ラバ",
+      "display": "ラバ",
+      "level": 3
+    },
+    {
+      "answer": "ニワトリ",
+      "display": "ニワトリ",
+      "level": 1
+    },
+    {
+      "answer": "ハト",
+      "display": "ハト",
+      "level": 1
+    },
+    {
+      "answer": "タカ",
+      "display": "タカ",
+      "level": 1
+    },
+    {
+      "answer": "ワシ",
+      "display": "ワシ",
+      "level": 1
+    },
+    {
+      "answer": "ツル",
+      "display": "ツル",
+      "level": 1
+    },
+    {
+      "answer": "スズメ",
+      "display": "スズメ",
+      "level": 1
+    },
+    {
+      "answer": "ツバメ",
+      "display": "ツバメ",
+      "level": 1
+    },
+    {
+      "answer": "カラス",
+      "display": "カラス",
+      "level": 1
+    },
+    {
+      "answer": "カモ",
+      "display": "カモ",
+      "level": 1
+    },
+    {
+      "answer": "ハクチヨウ",
+      "display": "ハクチョウ",
+      "level": 1
+    },
+    {
+      "answer": "ガチヨウ",
+      "display": "ガチョウ",
+      "level": 2
+    },
+    {
+      "answer": "アヒル",
+      "display": "アヒル",
+      "level": 1
+    },
+    {
+      "answer": "ペンギン",
+      "display": "ペンギン",
+      "level": 1,
+      "clue": "南半球に多く、翼で泳ぐ飛べない鳥",
+      "explanation": "羽毛は短く密で、防水と保温に役立ちます。南極だけでなく、赤道近くのガラパゴスにもすむ種類がいます。"
+    },
+    {
+      "answer": "ダチヨウ",
+      "display": "ダチョウ",
+      "level": 1
+    },
+    {
+      "answer": "フクロウ",
+      "display": "フクロウ",
+      "level": 1
+    },
+    {
+      "answer": "ミミズク",
+      "display": "ミミズク",
+      "level": 2
+    },
+    {
+      "answer": "キツツキ",
+      "display": "キツツキ",
+      "level": 2
+    },
+    {
+      "answer": "カワセミ",
+      "display": "カワセミ",
+      "level": 2
+    },
+    {
+      "answer": "ウグイス",
+      "display": "ウグイス",
+      "level": 2,
+      "clue": "ホーホケキョと鳴く春告げ鳥",
+      "explanation": "絵の「梅に鶯」は、緑色のメジロと混同されることがあります。実際のウグイスは地味なオリーブ褐色です。"
+    },
+    {
+      "answer": "メジロ",
+      "display": "メジロ",
+      "level": 2
+    },
+    {
+      "answer": "ヒバリ",
+      "display": "ヒバリ",
+      "level": 2
+    },
+    {
+      "answer": "ムクドリ",
+      "display": "ムクドリ",
+      "level": 2
+    },
+    {
+      "answer": "シジユウカラ",
+      "display": "シジュウカラ",
+      "level": 2
+    },
+    {
+      "answer": "ヒヨドリ",
+      "display": "ヒヨドリ",
+      "level": 2
+    },
+    {
+      "answer": "モズ",
+      "display": "モズ",
+      "level": 2
+    },
+    {
+      "answer": "カツコウ",
+      "display": "カッコウ",
+      "level": 2
+    },
+    {
+      "answer": "ホトトギス",
+      "display": "ホトトギス",
+      "level": 2
+    },
+    {
+      "answer": "キジ",
+      "display": "キジ",
+      "level": 2
+    },
+    {
+      "answer": "ヤマドリ",
+      "display": "ヤマドリ",
+      "level": 2
+    },
+    {
+      "answer": "ウズラ",
+      "display": "ウズラ",
+      "level": 2,
+      "clue": "小さな卵が食用にされる、丸い体の鳥",
+      "explanation": "ニホンウズラは研究動物としても利用されます。世代時間が短く、遺伝や発生の研究に役立ってきました。"
+    },
+    {
+      "answer": "クジヤク",
+      "display": "クジャク",
+      "level": 1
+    },
+    {
+      "answer": "インコ",
+      "display": "インコ",
+      "level": 1
+    },
+    {
+      "answer": "オウム",
+      "display": "オウム",
+      "level": 1
+    },
+    {
+      "answer": "カナリア",
+      "display": "カナリア",
+      "level": 2
+    },
+    {
+      "answer": "ブンチヨウ",
+      "display": "ブンチョウ",
+      "level": 2
+    },
+    {
+      "answer": "ジユウシマツ",
+      "display": "ジュウシマツ",
+      "level": 2
+    },
+    {
+      "answer": "サギ",
+      "display": "サギ",
+      "level": 2
+    },
+    {
+      "answer": "トキ",
+      "display": "トキ",
+      "level": 2,
+      "clue": "学名がニッポニア・ニッポンの鳥",
+      "explanation": "羽の淡い桃色は「鴇色」と呼ばれます。佐渡島では放鳥が続き、野生下で繁殖する個体も増えています。"
+    },
+    {
+      "answer": "コウノトリ",
+      "display": "コウノトリ",
+      "level": 2,
+      "clue": "赤ん坊を運ぶ伝説で知られる大型水禽",
+      "explanation": "日本では一度野生絶滅しましたが、兵庫県豊岡市などで再導入が進みました。田んぼの生き物も食べます。"
+    },
+    {
+      "answer": "カモメ",
+      "display": "カモメ",
+      "level": 1
+    },
+    {
+      "answer": "ウミネコ",
+      "display": "ウミネコ",
+      "level": 2
+    },
+    {
+      "answer": "アホウドリ",
+      "display": "アホウドリ",
+      "level": 2
+    },
+    {
+      "answer": "ペリカン",
+      "display": "ペリカン",
+      "level": 2,
+      "clue": "下くちばしに大きなのど袋をもつ水鳥",
+      "explanation": "魚をすくったあと、余分な水を抜いてからのみ込みます。仲間で魚を浅瀬へ追い込む種類もいます。"
+    },
+    {
+      "answer": "フラミンゴ",
+      "display": "フラミンゴ",
+      "level": 1
+    },
+    {
+      "answer": "ハヤブサ",
+      "display": "ハヤブサ",
+      "level": 2
+    },
+    {
+      "answer": "トビ",
+      "display": "トビ",
+      "level": 2
+    },
+    {
+      "answer": "コンドル",
+      "display": "コンドル",
+      "level": 2
+    },
+    {
+      "answer": "ハゲワシ",
+      "display": "ハゲワシ",
+      "level": 2
+    },
+    {
+      "answer": "ヒクイドリ",
+      "display": "ヒクイドリ",
+      "level": 3
+    },
+    {
+      "answer": "エミユー",
+      "display": "エミュー",
+      "level": 2
+    },
+    {
+      "answer": "キーウイ",
+      "display": "キーウィ",
+      "level": 2
+    },
+    {
+      "answer": "オオハシ",
+      "display": "オオハシ",
+      "level": 3
+    },
+    {
+      "answer": "ハチドリ",
+      "display": "ハチドリ",
+      "level": 2
+    },
+    {
+      "answer": "カケス",
+      "display": "カケス",
+      "level": 3
+    },
+    {
+      "answer": "カササギ",
+      "display": "カササギ",
+      "level": 2
+    },
+    {
+      "answer": "セキレイ",
+      "display": "セキレイ",
+      "level": 3
+    },
+    {
+      "answer": "ライチヨウ",
+      "display": "ライチョウ",
+      "level": 2
+    },
+    {
+      "answer": "シギ",
+      "display": "シギ",
+      "level": 3
+    },
+    {
+      "answer": "チドリ",
+      "display": "チドリ",
+      "level": 3
+    },
+    {
+      "answer": "カイツブリ",
+      "display": "カイツブリ",
+      "level": 3
+    },
+    {
+      "answer": "オシドリ",
+      "display": "オシドリ",
+      "level": 2
+    },
+    {
+      "answer": "ヤンバルクイナ",
+      "display": "ヤンバルクイナ",
+      "level": 2,
+      "clue": "沖縄本島北部にすむ、飛ぶ力の弱い固有種",
+      "explanation": "1981年に新種として発表されました。道路で車にはねられる事故が、保護上の大きな課題です。"
+    },
+    {
+      "answer": "ミサゴ",
+      "display": "ミサゴ",
+      "level": 3
+    },
+    {
+      "answer": "ノスリ",
+      "display": "ノスリ",
+      "level": 3
+    },
+    {
+      "answer": "ウソ",
+      "display": "ウソ",
+      "level": 3
+    },
+    {
+      "answer": "ルリビタキ",
+      "display": "ルリビタキ",
+      "level": 3
+    },
+    {
+      "answer": "ハシビロコウ",
+      "display": "ハシビロコウ",
+      "level": 2
+    },
+    {
+      "answer": "オナガ",
+      "display": "オナガ",
+      "level": 3
+    },
+    {
+      "answer": "ヘビ",
+      "display": "ヘビ",
+      "level": 1
+    },
+    {
+      "answer": "カメ",
+      "display": "カメ",
+      "level": 1
+    },
+    {
+      "answer": "トカゲ",
+      "display": "トカゲ",
+      "level": 1
+    },
+    {
+      "answer": "ワニ",
+      "display": "ワニ",
+      "level": 1
+    },
+    {
+      "answer": "ヤモリ",
+      "display": "ヤモリ",
+      "level": 2
+    },
+    {
+      "answer": "イグアナ",
+      "display": "イグアナ",
+      "level": 2,
+      "clue": "背にとげ状のうろこが並ぶ大型爬虫類",
+      "explanation": "グリーンイグアナは木の上で過ごすことが多い草食性です。頭頂部には光を感じる「頭頂眼」があります。"
+    },
+    {
+      "answer": "カメレオン",
+      "display": "カメレオン",
+      "level": 2
+    },
+    {
+      "answer": "コブラ",
+      "display": "コブラ",
+      "level": 2
+    },
+    {
+      "answer": "ニシキヘビ",
+      "display": "ニシキヘビ",
+      "level": 2
+    },
+    {
+      "answer": "マムシ",
+      "display": "マムシ",
+      "level": 2
+    },
+    {
+      "answer": "ハブ",
+      "display": "ハブ",
+      "level": 2
+    },
+    {
+      "answer": "アオダイシヨウ",
+      "display": "アオダイショウ",
+      "level": 2
+    },
+    {
+      "answer": "ガラガラヘビ",
+      "display": "ガラガラヘビ",
+      "level": 2
+    },
+    {
+      "answer": "ウミガメ",
+      "display": "ウミガメ",
+      "level": 2
+    },
+    {
+      "answer": "リクガメ",
+      "display": "リクガメ",
+      "level": 2
+    },
+    {
+      "answer": "スツポン",
+      "display": "スッポン",
+      "level": 2
+    },
+    {
+      "answer": "コモドオオトカゲ",
+      "display": "コモドオオトカゲ",
+      "level": 2
+    },
+    {
+      "answer": "アリゲーター",
+      "display": "アリゲーター",
+      "level": 3
+    },
+    {
+      "answer": "カナヘビ",
+      "display": "カナヘビ",
+      "level": 3
+    },
+    {
+      "answer": "エリマキトカゲ",
+      "display": "エリマキトカゲ",
+      "level": 2
+    },
+    {
+      "answer": "カエル",
+      "display": "カエル",
+      "level": 1
+    },
+    {
+      "answer": "イモリ",
+      "display": "イモリ",
+      "level": 2
+    },
+    {
+      "answer": "サンシヨウウオ",
+      "display": "サンショウウオ",
+      "level": 2
+    },
+    {
+      "answer": "オオサンシヨウウオ",
+      "display": "オオサンショウウオ",
+      "level": 2
+    },
+    {
+      "answer": "ウーパールーパー",
+      "display": "ウーパールーパー",
+      "level": 2
+    },
+    {
+      "answer": "ヒキガエル",
+      "display": "ヒキガエル",
+      "level": 2
+    },
+    {
+      "answer": "アマガエル",
+      "display": "アマガエル",
+      "level": 2
+    },
+    {
+      "answer": "ウシガエル",
+      "display": "ウシガエル",
+      "level": 3
+    },
+    {
+      "answer": "チヨウ",
+      "display": "チョウ",
+      "level": 1
+    },
+    {
+      "answer": "ハチ",
+      "display": "ハチ",
+      "level": 1
+    },
+    {
+      "answer": "アリ",
+      "display": "アリ",
+      "level": 1,
+      "clue": "女王を中心に巣で集団生活する小さな虫",
+      "explanation": "触角でにおいを感じ、仲間との情報伝達にも使います。道しるべのフェロモンで餌場への行列ができます。"
+    },
+    {
+      "answer": "セミ",
+      "display": "セミ",
+      "level": 1
+    },
+    {
+      "answer": "トンボ",
+      "display": "トンボ",
+      "level": 1
+    },
+    {
+      "answer": "バツタ",
+      "display": "バッタ",
+      "level": 1
+    },
+    {
+      "answer": "コオロギ",
+      "display": "コオロギ",
+      "level": 2
+    },
+    {
+      "answer": "カマキリ",
+      "display": "カマキリ",
+      "level": 1
+    },
+    {
+      "answer": "カブトムシ",
+      "display": "カブトムシ",
+      "level": 1
+    },
+    {
+      "answer": "クワガタ",
+      "display": "クワガタ",
+      "level": 1
+    },
+    {
+      "answer": "テントウムシ",
+      "display": "テントウムシ",
+      "level": 1
+    },
+    {
+      "answer": "ホタル",
+      "display": "ホタル",
+      "level": 1
+    },
+    {
+      "answer": "ゴキブリ",
+      "display": "ゴキブリ",
+      "level": 2
+    },
+    {
+      "answer": "ハエ",
+      "display": "ハエ",
+      "level": 2
+    },
+    {
+      "answer": "キリギリス",
+      "display": "キリギリス",
+      "level": 2
+    },
+    {
+      "answer": "スズムシ",
+      "display": "スズムシ",
+      "level": 2
+    },
+    {
+      "answer": "カミキリムシ",
+      "display": "カミキリムシ",
+      "level": 2
+    },
+    {
+      "answer": "アメンボ",
+      "display": "アメンボ",
+      "level": 3
+    },
+    {
+      "answer": "ミツバチ",
+      "display": "ミツバチ",
+      "level": 2
+    },
+    {
+      "answer": "スズメバチ",
+      "display": "スズメバチ",
+      "level": 2
+    },
+    {
+      "answer": "アゲハ",
+      "display": "アゲハ",
+      "level": 2
+    },
+    {
+      "answer": "モンシロチヨウ",
+      "display": "モンシロチョウ",
+      "level": 2
+    },
+    {
+      "answer": "クモ",
+      "display": "クモ",
+      "level": 1
+    },
+    {
+      "answer": "サソリ",
+      "display": "サソリ",
+      "level": 2
+    },
+    {
+      "answer": "ムカデ",
+      "display": "ムカデ",
+      "level": 2
+    },
+    {
+      "answer": "ダンゴムシ",
+      "display": "ダンゴムシ",
+      "level": 2
+    },
+    {
+      "answer": "ミミズ",
+      "display": "ミミズ",
+      "level": 1
+    },
+    {
+      "answer": "ナメクジ",
+      "display": "ナメクジ",
+      "level": 2,
+      "clue": "殻をもたないカタツムリに似た軟体動物",
+      "explanation": "塩をかけると、浸透圧で水分が外へ出て縮みます。夜や雨の日に活動が目立つ種類が多いです。"
+    },
+    {
+      "answer": "カタツムリ",
+      "display": "カタツムリ",
+      "level": 1
+    },
+    {
+      "answer": "カイコ",
+      "display": "カイコ",
+      "level": 2
+    },
+    {
+      "answer": "シロアリ",
+      "display": "シロアリ",
+      "level": 2
+    },
+    {
+      "answer": "ノミ",
+      "display": "ノミ",
+      "level": 2
+    },
+    {
+      "answer": "ダニ",
+      "display": "ダニ",
+      "level": 2
+    },
+    {
+      "answer": "ゲンゴロウ",
+      "display": "ゲンゴロウ",
+      "level": 3
+    },
+    {
+      "answer": "タガメ",
+      "display": "タガメ",
+      "level": 3
+    },
+    {
+      "answer": "マツムシ",
+      "display": "マツムシ",
+      "level": 3
+    },
+    {
+      "answer": "ウスバカゲロウ",
+      "display": "ウスバカゲロウ",
+      "level": 3
+    },
+    {
+      "answer": "ミノムシ",
+      "display": "ミノムシ",
+      "level": 2
+    },
+    {
+      "answer": "ケムシ",
+      "display": "ケムシ",
+      "level": 2
+    },
+    {
+      "answer": "イモムシ",
+      "display": "イモムシ",
+      "level": 2
+    },
+    {
+      "answer": "ヤゴ",
+      "display": "ヤゴ",
+      "level": 2,
+      "clue": "水中で暮らすトンボの幼虫",
+      "explanation": "下あごが折りたたみ式のマスクのように伸びます。獲物にすばやく突き出して捕らえるしくみです。"
+    },
+    {
+      "answer": "オケラ",
+      "display": "オケラ",
+      "level": 3
+    },
+    {
+      "answer": "タマムシ",
+      "display": "タマムシ",
+      "level": 3
+    },
+    {
+      "answer": "タコ",
+      "display": "タコ",
+      "level": 1
+    },
+    {
+      "answer": "イカ",
+      "display": "イカ",
+      "level": 1,
+      "clue": "十本の腕と墨を吐く習性をもつ水の生き物",
+      "explanation": "青い血をもつのは、銅を含むヘモシアニンで酸素を運ぶためです。心臓は三つあり、えら用に二つあります。"
+    },
+    {
+      "answer": "カニ",
+      "display": "カニ",
+      "level": 1
+    },
+    {
+      "answer": "エビ",
+      "display": "エビ",
+      "level": 1
+    },
+    {
+      "answer": "ヤドカリ",
+      "display": "ヤドカリ",
+      "level": 2
+    },
+    {
+      "answer": "クラゲ",
+      "display": "クラゲ",
+      "level": 1
+    },
+    {
+      "answer": "ヒトデ",
+      "display": "ヒトデ",
+      "level": 1
+    },
+    {
+      "answer": "ウニ",
+      "display": "ウニ",
+      "level": 1
+    },
+    {
+      "answer": "ナマコ",
+      "display": "ナマコ",
+      "level": 2,
+      "clue": "敵に内臓を吐き出すことがある棘皮動物",
+      "explanation": "体には骨片という小さな石灰質の粒が入っています。乾燥品は中華料理で「海参」と呼ばれ、珍重されます。"
+    },
+    {
+      "answer": "イソギンチヤク",
+      "display": "イソギンチャク",
+      "level": 2,
+      "clue": "触手で小魚を捕らえる花のような刺胞動物",
+      "explanation": "脳や心臓はありませんが、体全体の神経網で刺激に反応します。足盤で岩にくっつき、ゆっくり移動することもあります。"
+    },
+    {
+      "answer": "サンゴ",
+      "display": "サンゴ",
+      "level": 2
+    },
+    {
+      "answer": "アメフラシ",
+      "display": "アメフラシ",
+      "level": 3
+    },
+    {
+      "answer": "オウムガイ",
+      "display": "オウムガイ",
+      "level": 3
+    },
+    {
+      "answer": "ホヤ",
+      "display": "ホヤ",
+      "level": 3
+    },
+    {
+      "answer": "ザリガニ",
+      "display": "ザリガニ",
+      "level": 2
+    },
+    {
+      "answer": "シヤコ",
+      "display": "シャコ",
+      "level": 3
+    },
+    {
+      "answer": "カブトガニ",
+      "display": "カブトガニ",
+      "level": 2
+    },
+    {
+      "answer": "ホタテ",
+      "display": "ホタテ",
+      "level": 2
+    },
+    {
+      "answer": "アサリ",
+      "display": "アサリ",
+      "level": 2
+    },
+    {
+      "answer": "ハマグリ",
+      "display": "ハマグリ",
+      "level": 2
+    },
+    {
+      "answer": "サザエ",
+      "display": "サザエ",
+      "level": 2
+    },
+    {
+      "answer": "アワビ",
+      "display": "アワビ",
+      "level": 2
+    },
+    {
+      "answer": "シジミ",
+      "display": "シジミ",
+      "level": 2
+    },
+    {
+      "answer": "カキ",
+      "display": "カキ",
+      "level": 2
+    },
+    {
+      "answer": "フジツボ",
+      "display": "フジツボ",
+      "level": 3
+    },
+    {
+      "answer": "ウミウシ",
+      "display": "ウミウシ",
+      "level": 3
+    }
+  ]
+}
