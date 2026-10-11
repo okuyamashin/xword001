@@ -115,3 +115,37 @@ test('解説: 空のものだけを埋め、カギを依頼に添え、答えを
   assert.equal(result.puzzle.words[1].explanation, 'もう書いてある');
   assert.equal(checkExplanation({ text: 'あ'.repeat(121), maxLength: 120 }) !== null, true);
 });
+
+test('紹介文: 答えを見て書かせ、画風を付け、答えの漏れは注意として返す', async () => {
+  const { addIntro } = await import('../generator/clues/intro.js');
+  const countries = await loadThemeFile('ja', 'countries');
+  const puzzle = {
+    title: '世界の国と地域', theme: 'countries', locale: 'ja',
+    words: [{ answer: 'ケニア', display: 'ケニア', theme: 'countries' }, { answer: 'ドア', display: 'ドア', theme: 'general' }],
+  };
+  let request;
+  const writer = { name: 'fake', async generate(req) { request = req; return { description: 'ケニアなど世界の国を集めました。', imageSubject: 'A globe on a desk.' }; } };
+  const site = { imageStyle: 'Engraving style.' };
+  const result = await addIntro({ puzzle, themeFiles: [countries], locale: ja, site, writer });
+  assert.ok(request.prompt.includes('ケニア（ケニア）'));
+  assert.ok(request.prompt.includes('ドア（ドア）［テーマ外のつなぎの言葉］'));
+  assert.equal(result.puzzle.intro.theme, '世界の国と地域');
+  assert.equal(result.puzzle.intro.imagePrompt, 'A globe on a desk. Engraving style.');
+  assert.equal(result.warnings.length, 1);
+  // すでにあるときは呼ばない
+  const again = await addIntro({ puzzle: result.puzzle, themeFiles: [countries], locale: ja, site, writer: { generate() { throw new Error('呼ばれた'); } } });
+  assert.equal(again.puzzle.intro.description, 'ケニアなど世界の国を集めました。');
+});
+
+test('同じテーマの何回目かを数える', async () => {
+  const { nextRound } = await import('../generator/build.js');
+  const existing = [
+    { id: '2026-10-12-ja', date: '2026-10-12', locale: 'ja', theme: 'countries' },
+    { id: '2026-10-13-ja', date: '2026-10-13', locale: 'ja', theme: 'kamakura' },
+    { id: '2026-10-14-ja', date: '2026-10-14', locale: 'ja', theme: 'countries' },
+  ];
+  assert.equal(nextRound(existing, { id: '2026-10-20-ja', date: '2026-10-20', locale: 'ja', theme: 'countries' }), 3);
+  assert.equal(nextRound(existing, { id: '2026-10-14-ja', date: '2026-10-14', locale: 'ja', theme: 'countries' }), 2); // 作り直しでも番号は変わらない
+  assert.equal(nextRound(existing, { id: '2026-10-20-ja', date: '2026-10-20', locale: 'ja', theme: 'kamakura' }), 2);
+  assert.equal(nextRound(existing, { id: '2026-10-20-ja', date: '2026-10-20', locale: 'ja', theme: 'fish' }), 1);
+});

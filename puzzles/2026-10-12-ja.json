@@ -4,6 +4,7 @@
   "locale": "ja",
   "theme": "countries",
   "title": "世界の国と地域",
+  "round": 1,
   "subtitle": "Countries and Regions",
   "description": "世界の国と地域の名前を集めました。首都や名物、歴史をヒントに、国名をカタカナで埋めていきましょう。",
   "image": "countries.svg",
@@ -195,5 +196,10 @@
       "clue": "首都はバマコの西アフリカ内陸国",
       "explanation": "ニジェール川が国土を流れ、古都トンブクトゥは交易と学問の中心でした。サハラ砂漠の南縁に位置します。"
     }
-  ]
+  ],
+  "intro": {
+    "theme": "世界の国と地域",
+    "description": "大きな国から小さな島の地域まで、世界各地の名前が並びます。位置や文化を思い浮かべながら、旅する気分でマスを埋めてみてください。",
+    "imagePrompt": "A square cover image of a travel-themed tabletop with a globe, tropical shoreline, snowy domes, safari animals, Mediterranean ruins, Caribbean drums, and high mountain peaks. No text, labels, or country names. Square 1:1 composition. Antique copperplate engraving style with fine line work and cross-hatching, sepia ink on aged parchment paper, muted warm tones, 19th-century book illustration. No text, no letters, no numbers, no labels, no border."
+  }
 }

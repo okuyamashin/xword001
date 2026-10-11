@@ -55,13 +55,27 @@ export const explanationDefaults = {
   ],
 };
 
+// パズルの紹介文（テーマの説明）と、表紙の絵の題材の標準設定
+export const introDefaults = {
+  maxLength: 160,
+  instructions: [
+    'クロスワードパズルのページの冒頭に載せる、このパズルの紹介文を日本語で書く。',
+    '2〜3文、です・ます調。テーマの面白さが伝わり、解いてみたくなる文にする。',
+    'このパズルに入っている言葉を見て、その顔ぶれに合わせた内容にする。',
+    'ただし答えの言葉そのもの（表記・読み）は書かない。',
+    '事実として確かなことだけを書く。',
+    'あわせて、ページの表紙にする正方形の絵の題材を英語で1〜2文書く（imageSubject）。',
+    '題材は、テーマとこのパズルの言葉から思い浮かぶ情景や物にする。文字・地図上の国名・ラベルは描かせない。画風の指定は書かない（あとで付ける）。',
+  ],
+};
+
 // 解説の欄で、テーマ外の「つなぎの言葉」につける印
 export const fillerLabel = 'つなぎの言葉';
 
 // カギに答えが漏れていないかを調べる
 export function leaksAnswer(clue, word) {
   const text = normalize(clue);
-  if (text.includes(word.answer)) return `カギに答え「${word.answer}」が含まれている`;
-  if (word.display && clue.includes(word.display)) return `カギに表記「${word.display}」が含まれている`;
+  if (text.includes(word.answer)) return `答え「${word.answer}」が含まれている`;
+  if (word.display && clue.includes(word.display)) return `答えの表記「${word.display}」が含まれている`;
   return null;
 }

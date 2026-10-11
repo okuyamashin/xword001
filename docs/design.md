@@ -149,7 +149,7 @@
 |---|---|
 | `subtitle` | テーマの英語名。見出しの下に出す |
 | `description` | テーマの説明。見出しの下に罫線で囲んで出す。meta description にも使う |
-| `image` | 最初に出す正方形の絵（`data/images/` のファイル名）。なければ方眼紙の絵（`default.svg`） |
+| `image` | 最初に出す正方形の絵（`data/images/` のファイル名）。パズル専用の絵 `data/images/<パズルのID>.png`（例: `2026-10-12-ja.png`、webp/jpg/svg も可）があればそちらを優先。どちらもなければ方眼紙の絵（`default.svg`） |
 | `design` | 色の差し替え。CSS 変数名と値（例: `{"accent": "#2f4f6f"}`） |
 
 - サイト名は `data/site/<locale>.json` の `name`。
@@ -285,6 +285,7 @@
 ```
 npm run texts -- --puzzle puzzles/2026-10-12-ja.json                       # カギ → 解説の順に OpenAI で書く
 npm run texts -- --puzzle puzzles/2026-10-12-ja.json --only explanation    # 解説だけ
+npm run texts -- --puzzle puzzles/2026-10-12-ja.json --only intro          # 紹介文と画像プロンプトだけ
 npm run texts -- --puzzle puzzles/2026-10-12-ja.json --drafts texts.json   # 用意した文章を使う
 ```
 
@@ -485,6 +486,10 @@ data/words/ja/
 | `words[].direction` | `across`（ヨコ）または `down`（タテ） |
 | `words[].row`, `col` | 単語の先頭マスの位置（0 始まり） |
 | `words[].theme` | どのテーマファイルから選ばれたか（ヒントの作り方を決める） |
+| `round` | 同じテーマの何回目か。見出しとタイトルに「第N回」と出す。作るときに `puzzles/` の既存分から数える |
+| `intro.theme` | テーマ（作るときに指定したもの） |
+| `intro.description` | このパズルの紹介文。入った答えを見て AI が書く（答えは書かないよう指示。漏れたら注意を出すだけで止めない）。見出しの下と meta description に使う |
+| `intro.imagePrompt` | 表紙の絵を作るための画像プロンプト（英語）。AI が書いた題材に、サイト共通の画風（`data/site/<locale>.json` の `imageStyle`）を付けたもの |
 | `words[].explanation` | 解説。完成したとき・全部の答えを見たときに表示する。③で書き込む |
 | `words[].clue` | ヒント。①の時点では `null`、②で書き込む |
 

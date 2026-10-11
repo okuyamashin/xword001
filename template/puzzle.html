@@ -45,6 +45,7 @@
   .hero { text-align: center; margin: 24px 0 20px; }
   .date { margin: 0 0 4px; color: var(--muted); font-size: .85rem; letter-spacing: .12em; }
   h1 { font-weight: 800; font-size: clamp(1.35rem, 5vw, 1.9rem); letter-spacing: .12em; line-height: 1.5; margin: 0; }
+  h1 .round { display: block; margin-top: 2px; font-size: .62em; letter-spacing: .3em; color: var(--accent); }
   .subtitle { margin: 6px 0 0; font-family: var(--latin); font-size: 1.05rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
   .description {
     max-width: 44em;
@@ -464,6 +465,10 @@ function setMessage(text) {
 const [y, m, d] = PUZZLE.date.split('-').map(Number);
 document.getElementById('date').textContent = `${y}年${m}月${d}日`;
 document.getElementById('title').textContent = `${PUZZLE.title}のクロスワードパズル`;
+const roundEl = document.createElement('span');
+roundEl.className = 'round';
+roundEl.textContent = `第${PUZZLE.round ?? 1}回`;
+document.getElementById('title').append(roundEl);
 document.getElementById('subtitle').textContent = PUZZLE.subtitle ?? '';
 document.getElementById('description').textContent = PUZZLE.description ?? '';
 // テーマの色（テーマファイルの design）

@@ -1,4 +1,4 @@
-// OpenAI API（Responses API）でカギや解説を書く。
+// OpenAI API（Responses API）でカギ・解説・パズルの紹介文を書く。
 // 認証: 環境変数 OPENAI_API_KEY。クラウド環境のネットワークシークレットで
 // api.openai.com にキーが付く場合は、未設定でもよい（仮の値で送り、プロキシが本物を付ける）。
 
@@ -13,13 +13,14 @@ export function createOpenAIWriter({
 } = {}) {
   return {
     name: `openai:${model}`,
-    async write({ system, prompt, schema }) {
+    // JSON スキーマどおりのオブジェクトを返す
+    async generate({ system, prompt, schema }) {
       const response = await client.responses.create({
         model,
         reasoning: { effort },
         instructions: system,
         input: prompt,
-        text: { format: { type: 'json_schema', name: 'items', schema, strict: true } },
+        text: { format: { type: 'json_schema', name: 'result', schema, strict: true } },
       });
       if (response.status === 'incomplete') {
         throw new Error(`応答が途中で終わった: ${response.incomplete_details?.reason ?? '理由不明'}`);
@@ -27,9 +28,13 @@ export function createOpenAIWriter({
       const refusal = response.output
         ?.flatMap((item) => (item.type === 'message' ? item.content : []))
         .find((part) => part.type === 'refusal');
-      if (refusal) throw new Error(`カギの生成を断られた: ${refusal.refusal}`);
+      if (refusal) throw new Error(`生成を断られた: ${refusal.refusal}`);
       if (!response.output_text) throw new Error('応答にテキストがない');
-      return JSON.parse(response.output_text).items;
+      return JSON.parse(response.output_text);
+    },
+    // 単語ごとの文章（カギ・解説）: [{ answer, display, text }]
+    async write(request) {
+      return (await this.generate(request)).items;
     },
   };
 }

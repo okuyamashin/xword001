@@ -1,9 +1,9 @@
 // 使い方: node generator/cli/make-puzzle.js --date 2026-10-12 --theme countries [--locale ja] [--stdout]
 
-import { writeFile, mkdir } from 'node:fs/promises';
+import { writeFile, mkdir, readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 import { parseArgs } from 'node:util';
-import { buildPuzzle } from '../build.js';
+import { buildPuzzle, nextRound } from '../build.js';
 import { loadThemeFile, ROOT } from '../lib/words.js';
 
 const { values } = parseArgs({
@@ -17,7 +17,15 @@ const { values } = parseArgs({
 
 const themeFiles = await Promise.all(values.theme.split('+').map((t) => loadThemeFile(values.locale, t)));
 const generalFile = await loadThemeFile(values.locale, 'general');
-const { puzzle, stats } = buildPuzzle({ date: values.date, locale: values.locale, themeFiles, generalFile });
+// 同じテーマの何回目か（puzzles/ にある既存のクロスワードから数える）
+const dir = path.join(ROOT, 'puzzles');
+await mkdir(dir, { recursive: true });
+const existing = await Promise.all(
+  (await readdir(dir)).filter((f) => f.endsWith('.json')).map(async (f) => JSON.parse(await readFile(path.join(dir, f), 'utf8'))),
+);
+const theme = themeFiles.map((f) => f.theme).join('+');
+const round = nextRound(existing, { id: `${values.date}-${values.locale}`, date: values.date, locale: values.locale, theme });
+const { puzzle, stats } = buildPuzzle({ date: values.date, locale: values.locale, themeFiles, generalFile, round });
 
 console.error(puzzle.grid.map((row) => row.replaceAll('#', '・')).join('\n'));
 console.error(stats);
@@ -25,8 +33,6 @@ const json = `${JSON.stringify(puzzle, null, 2)}\n`;
 if (values.stdout) {
   process.stdout.write(json);
 } else {
-  const dir = path.join(ROOT, 'puzzles');
-  await mkdir(dir, { recursive: true });
   const file = path.join(dir, `${puzzle.id}.json`);
   await writeFile(file, json);
   console.error(`→ ${path.relative(ROOT, file)}`);
