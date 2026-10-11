@@ -603,3 +603,10 @@ npm test
 | GitHub Actions | リポジトリの Secrets（`OPENAI_API_KEY`） |
 | AWS Lambda | Secrets Manager か SSM パラメータストア（SecureString） |
 | 手元のパソコン | `export OPENAI_API_KEY=...` |
+
+### 13.6 公開（GitHub Pages）
+
+- `.github/workflows/pages.yml`: `main` に入るたびに `site/` を作り直し、GitHub Pages に公開する（手動実行も可）。
+- テスト用の URL: `https://okuyamashin.github.io/xword001/`
+- 本番では `engawa5656.com` のサブドメインを使う。リポジトリの Settings → Pages の Custom domain に入れ、
+  DNS にそのサブドメインの CNAME（向け先 `okuyamashin.github.io`）を追加する。
