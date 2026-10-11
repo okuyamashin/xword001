@@ -286,7 +286,7 @@ npm run site                          # site/ にページを作る
 公開（くわしくは `docs/deploy.md`）:
 
 1. `npm run site` で作ったページ（`site/*.html`）をブラウザで開いて確かめる（スマホの幅でも）
-2. `npm run site` で作り直した `site/` も含めて、変更をコミットし、作業ブランチにプッシュする
+2. 変更（単語リスト・絵・パズル）をコミットし、作業ブランチにプッシュする（`site/` はリポジトリに入れない）
 3. `main` に入れる（入れるのは持ち主が確認してから）
 4. `main` の内容で `npm run deploy` を実行し、本番（S3 + CloudFront、`https://xword.engawa5656.com/`）に上げる。
    最初に `npm run deploy -- --dryrun` で、送られるもの・消えるものを確かめる
