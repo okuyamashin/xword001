@@ -7,7 +7,7 @@
   "round": 1,
   "subtitle": "Animals",
   "description": "身近なペットから野生のけもの、鳥や虫、海の生き物まで。いろいろな動物の名前をカタカナで埋めていきましょう。",
-  "image": null,
+  "image": "animals.webp",
   "design": {
     "accent": "#4a5d3a"
   },

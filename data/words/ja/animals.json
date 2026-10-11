@@ -4,6 +4,8 @@
   "title": "動物",
   "subtitle": "Animals",
   "description": "身近なペットから野生のけもの、鳥や虫、海の生き物まで。いろいろな動物の名前をカタカナで埋めていきましょう。",
+  "image": "animals.webp",
+  "imagePrompt": "A natural history plate showing many kinds of animals together in one harmonious scene: an elephant, a giraffe and a lion on the savanna, a bear and a deer at the forest edge, an owl and other birds perched and in flight, a tortoise and a frog by a pond, butterflies and a beetle among the leaves, and an octopus and a crab on the rocky shore in the foreground. No fish. Square 1:1 composition. Antique copperplate engraving style with fine line work and cross-hatching, sepia ink on aged parchment paper, muted warm tones, 19th-century book illustration. No text, no letters, no numbers, no labels, no border.",
   "design": {
     "accent": "#4a5d3a"
   },

@@ -150,6 +150,7 @@
 | `subtitle` | テーマの英語名。見出しの下に出す |
 | `description` | テーマの説明。見出しの下に罫線で囲んで出す。meta description にも使う |
 | `image` | 最初に出す正方形の絵（`data/images/` のファイル名）。パズル専用の絵 `data/images/<パズルのID>.png`（例: `2026-10-12-ja.png`、webp/jpg/svg も可）があればそちらを優先。どちらもなければ方眼紙の絵（`default.svg`） |
+| `imagePrompt` | テーマの絵（`image`）を作るための画像プロンプト（英語。サイト共通の画風の指定まで含めた、そのまま使える形）。パズルごとの絵のプロンプトはクロスワードの `intro.imagePrompt` |
 | `design` | 色の差し替え。CSS 変数名と値（例: `{"accent": "#2f4f6f"}`） |
 
 - サイト名は `data/site/<locale>.json` の `name`。
@@ -650,7 +651,7 @@ npm test
 
 ### 13.8 絵の形式と大きさ
 
-- 表紙の絵（PNG・JPEG）は `data/images/<パズルのID>.png` に置き、`npm run images` で WebP に変える。
+- 表紙の絵（PNG・JPEG）は `data/images/<パズルのID>.png`（その回だけの絵）または `data/images/<テーマID>.png`（テーマの絵。例: `animals.png`）に置き、`npm run images` で WebP に変える。
   - `<ID>.webp`: 800px 四方、品質 72。表紙は 1.2 秒ほどしか出ないので軽さを優先（1040px・品質 78 と見比べて差はほぼなし）。
     例: 2026-10-12 の絵は PNG 4.3MB → WebP 約 200KB
   - `<ID>.thumb.webp`: 176px 四方（一覧の 88px の 2 倍）。品質 72
