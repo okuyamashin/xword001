@@ -2,10 +2,11 @@
   "locale": "ja",
   "theme": "countries",
   "title": "世界の国と地域",
+  "subtitle": "Countries and Regions",
   "description": "世界の国と地域の名前を集めました。首都や名物、歴史をヒントに、国名をカタカナで埋めていきましょう。",
   "image": "countries.svg",
   "design": {
-    "accent": "#1f4e79"
+    "accent": "#2f4f6f"
   },
   "clue": {
     "style": "首都・位置・隣国・国旗・名物・有名な人や出来事などから出題する。国名の一部をカギに含めない。国ではない地域は、メモにある位置づけ（「中国の特別行政区」など）を踏まえて出題する。",

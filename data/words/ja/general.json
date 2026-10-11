@@ -2,6 +2,7 @@
   "locale": "ja",
   "theme": "general",
   "title": "一般",
+  "subtitle": "Everyday Words",
   "description": "テーマに関係なく使える、身のまわりの言葉。",
   "clue": {
     "style": "辞書の意味を、小学生にもわかるやさしい言葉で言い換える。同じ読みの語が多いので、表記（display）の語の意味で出題する。",

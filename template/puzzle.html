@@ -4,72 +4,73 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>__TITLE__</title>
+<meta name="description" content="__DESCRIPTION__">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;800&family=Noto+Sans+JP:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Shippori+Mincho:wght@500;700;800&display=swap">
 <style>
-  /* デザイン: 紙と墨。色はテーマごとに --accent などを差し替えられる（puzzle.design） */
+  /* デザイン: 羊皮紙と銅版画。色はテーマごとに --accent などを差し替えられる（puzzle.design） */
   :root {
-    --bg: #f5efe2;
-    --paper: #fffaf0;
-    --fg: #2b2622;
-    --muted: #7a6f63;
-    --line: #2b2622;
-    --cell: #fffaf0;
-    --word: #f3dfb4;
-    --active: #e8b65a;
-    --wrong: #f2b8a8;
-    --revealed: #1f4e79;
-    --accent: #b23a2a;
-    --chrome-bg: #2b2622;
-    --chrome-fg: #f5efe2;
-    --display-font: "Shippori Mincho B1", "Hiragino Mincho ProN", "Yu Mincho", serif;
-    --body-font: "Noto Sans JP", system-ui, -apple-system, "Hiragino Sans", sans-serif;
+    --bg: #ddd1bc;
+    --paper: #f4ede0;
+    --fg: #2e2721;
+    --muted: #6b5f52;
+    --rule: #b6a68b;
+    --line: #3a3129;
+    --cell: #f4ede0;
+    --word: #e7d5ad;
+    --active: #d2b072;
+    --wrong: #e9b4a2;
+    --revealed: #2f4f6f;
+    --accent: #8c6a32;
+    --serif: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+    --latin: "Cormorant Garamond", "Times New Roman", serif;
   }
   * { box-sizing: border-box; }
   body {
     margin: 0;
-    background-color: var(--bg);
-    background-image: radial-gradient(rgba(0, 0, 0, .035) 1px, transparent 1px);
-    background-size: 6px 6px;
+    background: var(--bg);
     color: var(--fg);
-    font-family: var(--body-font);
-    line-height: 1.6;
+    font-family: var(--serif);
+    font-weight: 500;
+    line-height: 1.8;
+    letter-spacing: .03em;
   }
-  header.site, footer.site { background: var(--chrome-bg); color: var(--chrome-fg); }
-  .site-inner { max-width: 960px; margin: 0 auto; padding: 10px 16px; }
-  header.site .logo { font-family: var(--display-font); font-size: 1.2rem; font-weight: 800; letter-spacing: .06em; }
-  footer.site { margin-top: 32px; font-size: .85rem; }
-  main { max-width: 960px; margin: 0 auto; padding: 20px 16px; }
+  .site-inner, main { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+  header.site { padding: 16px 0 8px; }
+  header.site .wordmark { margin: 0; font-family: var(--latin); font-weight: 600; font-size: .95rem; letter-spacing: .2em; text-transform: uppercase; }
+  header.site .name { margin: 0; color: var(--muted); font-size: .9rem; letter-spacing: .12em; }
+  footer.site { margin-top: 40px; padding: 20px 0 28px; border-top: 1px solid var(--rule); color: var(--muted); font-size: .85rem; }
 
-  .hero { margin-bottom: 16px; }
-  .date { margin: 0; color: var(--muted); font-size: .9rem; letter-spacing: .08em; }
-  h1 {
-    font-family: var(--display-font);
-    font-weight: 800;
-    font-size: 1.8rem;
-    letter-spacing: .06em;
-    margin: 0 0 8px;
-    padding-bottom: 6px;
-    border-bottom: 3px double var(--fg);
+  .hero { text-align: center; margin: 24px 0 20px; }
+  .date { margin: 0 0 4px; color: var(--muted); font-size: .85rem; letter-spacing: .12em; }
+  h1 { font-weight: 800; font-size: clamp(1.35rem, 5vw, 1.9rem); letter-spacing: .12em; line-height: 1.5; margin: 0; }
+  .subtitle { margin: 6px 0 0; font-family: var(--latin); font-size: 1.05rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .description {
+    max-width: 44em;
+    margin: 20px auto 0;
+    padding: 14px 18px;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    text-align: left;
+    line-height: 2;
   }
-  h1::before { content: ""; display: inline-block; width: .5em; height: .5em; margin-right: .4em; vertical-align: .15em; background: var(--accent); }
-  .description { margin: 0; max-width: 40em; }
-  .layout { display: grid; gap: 20px; }
+  .description:empty { display: none; }
+  .layout { display: grid; gap: 24px; }
   @media (min-width: 760px) { .layout { grid-template-columns: minmax(0, 1fr) 320px; } }
 
   /* 盤面と、最初に出すテーマの絵 */
-  .board-wrap { position: relative; width: min(100%, 520px); }
+  .board-wrap { position: relative; width: min(100%, 520px); margin: 0 auto; }
   .cover {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border: 1.5px solid var(--fg);
     background: var(--paper);
+    box-shadow: 0 6px 18px rgba(46, 39, 33, .25);
     cursor: pointer;
-    transition: opacity .6s ease, transform .6s ease;
+    transition: opacity .7s ease, transform .7s ease;
   }
   .cover.hide { opacity: 0; transform: scale(1.03); pointer-events: none; }
   .board {
@@ -81,26 +82,26 @@
     touch-action: manipulation;
   }
   .board .cell { cursor: pointer; }
-  .board .cell rect { fill: var(--cell); stroke: var(--line); stroke-width: 1.2; }
+  .board .cell rect { fill: var(--cell); stroke: var(--line); stroke-width: 1; }
   .board .cell.in-word rect { fill: var(--word); }
   .board .cell.active rect { fill: var(--active); }
   .board .cell.wrong rect { fill: var(--wrong); }
   .board .num { font-size: 10px; fill: var(--muted); }
-  .board .letter { font-family: var(--display-font); font-weight: 800; font-size: 24px; fill: var(--fg); text-anchor: middle; dominant-baseline: central; }
+  .board .letter { font-family: var(--serif); font-weight: 700; font-size: 24px; fill: var(--fg); text-anchor: middle; dominant-baseline: central; }
   .board .cell.revealed .letter { fill: var(--revealed); }
 
-  .entry { margin-top: 12px; width: min(100%, 520px); }
+  .entry { margin: 14px auto 0; width: min(100%, 520px); }
   .current { min-height: 4.5em; margin: 0 0 8px; }
   .current .label { font-weight: bold; }
   .input-row { display: flex; gap: 8px; }
-  .input-row input { flex: 1; min-width: 0; font: inherit; font-size: 1.1rem; padding: 8px; border: 1.5px solid var(--fg); border-radius: 2px; background: var(--paper); color: var(--fg); }
-  button { font: inherit; font-size: 1rem; padding: 8px 12px; cursor: pointer; background: var(--paper); color: var(--fg); border: 1.5px solid var(--fg); border-radius: 2px; }
-  button[type=submit], #check { background: var(--fg); color: var(--chrome-fg); }
+  .input-row input { flex: 1; min-width: 0; font: inherit; font-size: 1.1rem; padding: 8px; border: 1px solid var(--line); border-radius: 2px; background: var(--paper); color: var(--fg); }
+  button { font: inherit; font-size: .95rem; padding: 7px 14px; cursor: pointer; background: transparent; color: var(--fg); border: 1px solid var(--line); border-radius: 2px; letter-spacing: .08em; }
+  button[type=submit] { background: var(--fg); color: var(--paper); }
   button:active { transform: translateY(1px); }
   .buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
   .message { min-height: 3em; margin: 8px 0 0; color: var(--accent); font-weight: bold; }
 
-  .clues h2 { font-family: var(--display-font); font-size: 1.15rem; margin: 0 0 6px; border-bottom: 1px solid var(--fg); }
+  .clues h2 { font-size: 1.1rem; letter-spacing: .2em; margin: 0 0 6px; padding-bottom: 2px; border-bottom: 1px solid var(--rule); }
   .clues ol { list-style: none; padding: 0; margin: 0 0 16px; }
   .clues li { padding: 4px 6px; cursor: pointer; border-radius: 2px; }
   .clues li.selected { background: var(--word); }
@@ -110,7 +111,7 @@
   .clues li .ans { color: var(--revealed); margin-left: 4px; }
   .clues li .explain { display: none; margin: 4px 0 2px; font-size: 0.9rem; color: var(--fg); }
   .clues li.show-explain .explain { display: block; }
-  .note { margin: 8px 0 0; padding: 8px 10px; border-left: 4px solid var(--accent); background: var(--paper); font-size: 0.95rem; }
+  .note { margin: 8px 0 0; padding: 10px 14px; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); background: rgba(244, 237, 224, .55); font-size: 0.95rem; }
   .note p { margin: 0; }
   .note p + p { margin-top: 6px; }
   .note[hidden] { display: none; }
@@ -119,16 +120,20 @@
   .clues li .tag[hidden] { display: none; }
   .clues li .tag { display: inline-block; margin-right: 6px; padding: 0 6px; border: 1px solid var(--muted); border-radius: 999px; font-size: 0.75rem; color: var(--muted); }
 
-  .rules { margin-top: 16px; font-size: 0.9rem; color: var(--muted); }
+  .rules { margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--rule); font-size: 0.9rem; color: var(--muted); }
   .rules ul { padding-left: 1.2em; margin: 4px 0; }
 </style>
 </head>
 <body>
-<header class="site"><div class="site-inner"><span class="logo">__SITE_NAME__</span></div></header>
+<header class="site"><div class="site-inner">
+  <p class="wordmark">Yorozu Crossword</p>
+  <p class="name">__SITE_NAME__</p>
+</div></header>
 <main id="main">
   <div class="hero">
     <p class="date" id="date"></p>
     <h1 id="title"></h1>
+    <p class="subtitle" id="subtitle"></p>
     <p class="description" id="description"></p>
   </div>
   <div class="layout">
@@ -165,7 +170,7 @@
     <ul id="rules"></ul>
   </section>
 </main>
-<footer class="site"><div class="site-inner">__SITE_NAME__ ─ 毎日ひとつ、テーマのあるクロスワード。</div></footer>
+<footer class="site"><div class="site-inner">__SITE_NAME__ ─ 毎日ひとつ、いろいろなテーマのクロスワードパズル。</div></footer>
 
 <script>
 // ---- 言語ごとの設定（generator/locales/<locale>.js を埋め込む） ----
@@ -457,8 +462,9 @@ function setMessage(text) {
 
 // ---- 開始 ----
 const [y, m, d] = PUZZLE.date.split('-').map(Number);
-document.getElementById('date').textContent = `${y}年${m}月${d}日のクロスワード`;
-document.getElementById('title').textContent = PUZZLE.title;
+document.getElementById('date').textContent = `${y}年${m}月${d}日`;
+document.getElementById('title').textContent = `${PUZZLE.title}のクロスワードパズル`;
+document.getElementById('subtitle').textContent = PUZZLE.subtitle ?? '';
 document.getElementById('description').textContent = PUZZLE.description ?? '';
 // テーマの色（テーマファイルの design）
 for (const [key, value] of Object.entries(PUZZLE.design ?? {})) {

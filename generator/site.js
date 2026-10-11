@@ -12,7 +12,8 @@ export function renderPuzzleHtml({ template, puzzle, localeSource, site }) {
   const data = { ...puzzle, image: `images/${puzzle.image ?? DEFAULT_IMAGE}` };
   const json = JSON.stringify(data).replace(/</g, '\\u003c');
   return template
-    .replace('__TITLE__', `${escapeHtml(puzzle.title)}｜${escapeHtml(site.name)} ${puzzle.date}`)
+    .replace('__TITLE__', `${escapeHtml(puzzle.title)}のクロスワードパズル｜${escapeHtml(site.name)}`)
+    .replace('__DESCRIPTION__', escapeHtml(puzzle.description ?? ''))
     .replaceAll('__SITE_NAME__', escapeHtml(site.name))
     .replace('/*__LOCALE__*/', () => inlineLocale(localeSource))
     .replace('/*__PUZZLE__*/null', () => json);

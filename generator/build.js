@@ -20,6 +20,7 @@ export function buildPuzzle({ date, locale, themeFiles, generalFile, layout = {}
     locale,
     theme: themeFiles.map((f) => f.theme).join('+'),
     title: themeFiles.map((f) => f.title).join('・'),
+    subtitle: themeFiles.map((f) => f.subtitle).filter(Boolean).join(' & '),
     description: themeFiles.map((f) => f.description).filter(Boolean).join(' '),
     image: themeFiles.find((f) => f.image)?.image ?? null,
     design: Object.assign({}, ...themeFiles.map((f) => f.design ?? {})),

@@ -4,10 +4,11 @@
   "locale": "ja",
   "theme": "countries",
   "title": "世界の国と地域",
+  "subtitle": "Countries and Regions",
   "description": "世界の国と地域の名前を集めました。首都や名物、歴史をヒントに、国名をカタカナで埋めていきましょう。",
   "image": "countries.svg",
   "design": {
-    "accent": "#1f4e79"
+    "accent": "#2f4f6f"
   },
   "rules": [
     "国名は略称で答えてください（例: アメリカ合衆国 → アメリカ）",
