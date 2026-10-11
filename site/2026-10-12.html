@@ -70,6 +70,8 @@
   .clues li .explain { display: none; margin: 4px 0 2px; font-size: 0.9rem; color: var(--fg); }
   .clues li.show-explain .explain { display: block; }
   .note { margin: 8px 0 0; padding: 8px 10px; border-left: 4px solid var(--accent); background: var(--word); font-size: 0.95rem; }
+  .note p { margin: 0; }
+  .note p + p { margin-top: 6px; }
   .note[hidden] { display: none; }
   .note .label { font-weight: bold; color: var(--accent); margin-right: 6px; }
   .note .word { font-weight: bold; margin-right: 6px; }
@@ -100,7 +102,7 @@
           <button type="button" id="reset">リセット</button>
         </div>
         <p class="message" id="message" role="status"></p>
-        <div class="note" id="note" hidden><span class="label"></span><span class="word"></span><span class="body"></span></div>
+        <div class="note" id="note" hidden></div>
       </div>
     </section>
     <section class="clues">
@@ -349,6 +351,7 @@ function enter(text) {
   const invalid = letters.filter((ch) => !isValidAnswer(ch));
   if (invalid.length) return setMessage(`使えない文字があります: ${[...new Set(invalid)].join(' ')}`);
   const target = selected;
+  const correctBefore = new Set(words.filter(isCorrect));
   const len = selected.cells.length;
   selected.cells.forEach(([r, c], i) => {
     if (revealed[r][c]) return;
@@ -357,8 +360,11 @@ function enter(text) {
   checkRequested = false;
   save();
   render();
-  // 正解なら、入力した場所の近くにも解説を出す
-  if (isCorrect(target)) showNote(target, '正解！');
+  // 正解なら、入力した場所の近くにも解説を出す。
+  // 交差で一緒に正解になった単語も並べる（入力した単語を先頭に）
+  const newlyCorrect = words.filter((w) => isCorrect(w) && (w === target || !correctBefore.has(w)));
+  newlyCorrect.sort((a, b) => (a === target ? -1 : b === target ? 1 : 0));
+  if (newlyCorrect.length) showNote(newlyCorrect, '正解！');
   else hideNote();
   if (allFilled()) return judge();
   if (letters.length !== len) {
@@ -414,11 +420,18 @@ function isCorrect(w) {
   return w.cells.every(([r, c]) => filled[r][c] === solution[r][c]);
 }
 
-function showNote(w, label) {
+function showNote(targets, label) {
   const note = document.getElementById('note');
-  note.querySelector('.label').textContent = label;
-  note.querySelector('.word').textContent = w.display;
-  note.querySelector('.body').textContent = w.explanation ?? '';
+  note.replaceChildren(
+    ...targets.map((w) => {
+      const p = document.createElement('p');
+      p.innerHTML = '<span class="label"></span><span class="word"></span><span class="body"></span>';
+      p.querySelector('.label').textContent = label;
+      p.querySelector('.word').textContent = w.display;
+      p.querySelector('.body').textContent = w.explanation ?? '';
+      return p;
+    }),
+  );
   note.hidden = false;
 }
 
@@ -457,7 +470,7 @@ document.getElementById('reveal-word').addEventListener('click', () => {
   if (!selected) return setMessage('先にカギを選んでください。');
   reveal([selected]);
   document.getElementById('answer').value = selected.answer;
-  showNote(selected, '答え');
+  showNote([selected], '答え');
   if (allFilled()) judge();
   else setMessage('');
 });
