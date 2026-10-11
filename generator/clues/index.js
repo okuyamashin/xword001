@@ -4,7 +4,7 @@
 //   → だめなものだけ理由を添えて書き直させる（最大 maxRounds 回）
 //
 // writer は { name, write({ system, prompt, schema, words }) → [{answer, display, clue}] }。
-// Claude API（writers/anthropic.js）や、用意したカギ（writers/file.js）を差し替えて使う。
+// OpenAI API（writers/openai.js）や、用意したカギ（writers/file.js）を差し替えて使う。
 // ファイル操作はしない。
 
 import { buildClueRequest } from './request.js';

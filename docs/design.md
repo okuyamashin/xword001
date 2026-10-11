@@ -239,18 +239,19 @@
 | 言語の標準の指示 | `generator/locales/ja.js` の `clueDefaults`。常体で短く・答えを含めない・答えが1つに絞れる・確かな事実だけ、など |
 | テーマの指示 | テーマファイルの `clue.style` と `clue.examples` |
 | 単語の一覧 | 表記・読み・文字数・`note`（ヒント作りの手がかり） |
-| writer | 書き手の差し替え口。`anthropic`（Claude API）と `file`（用意したカギを使う）がある |
+| writer | 書き手の差し替え口。`openai`（OpenAI API）と `file`（用意したカギを使う）がある |
 | 自動チェック | 空でない／最大文字数以内／答え（読み・表記）を含まない／他の単語と同じカギでない |
 
-- Claude API の writer は、JSON の形を指定して（structured outputs）カギを受け取る。
-  安全分類で断られたときに別のモデルへ自動で切り替える設定（`fallbacks: "default"`）を入れている。
+- AI は OpenAI を使う。writer は Responses API で、JSON の形を指定して（Structured Outputs, `strict: true`）カギを受け取る。
+  モデルは `--model` か環境変数 `OPENAI_MODEL` で指定する（省略時は `gpt-5.5`）。
+- 断られた応答（refusal）や、途中で切れた応答（incomplete）はエラーにする。
 - 答えの漏れは、カギを `normalize()` してから探す。ひらがなや小さい文字で書かれていても見つかる。
 - 未実装: 「カギだけを見せて解かせ、正解するか」を確かめるチェック（5.2）。
 
 使い方:
 
 ```
-npm run clues -- --puzzle puzzles/2026-10-12-ja.json                      # Claude API で書く（要 ANTHROPIC_API_KEY）
+npm run clues -- --puzzle puzzles/2026-10-12-ja.json                      # OpenAI API で書く（要 OPENAI_API_KEY）
 npm run clues -- --puzzle puzzles/2026-10-12-ja.json --drafts clues.json  # 用意したカギを使う
 ```
 
@@ -557,3 +558,14 @@ npm test
 | 生成時間 | 1問あたり約 1.8 秒 |
 
 20語には届かないが、国名だけでもほぼテーマの語で埋まる。語数を増やすなら、置き方の探し方を改良するか、盤面を少し大きくする。
+
+### 13.5 API キーの置き場所
+
+キーはリポジトリに置かない。動かす場所ごとに、その場所の秘密情報の保管場所に入れ、環境変数 `OPENAI_API_KEY` として渡す。
+
+| 動かす場所 | 置き場所 |
+|---|---|
+| Claude Code のクラウド環境 | 環境設定の「Network secrets」。種類は Bearer、許可するサイトは `api.openai.com`、ヘッダーは `Authorization`／接頭辞 `Bearer`。キーはプロキシが付けるので、セッションの中からは見えない |
+| GitHub Actions | リポジトリの Secrets（`OPENAI_API_KEY`） |
+| AWS Lambda | Secrets Manager か SSM パラメータストア（SecureString） |
+| 手元のパソコン | `export OPENAI_API_KEY=...` |

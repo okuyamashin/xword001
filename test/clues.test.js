@@ -51,26 +51,31 @@ test('サンプルのパズルはすべてのカギがチェックを通る', as
   }
 });
 
-test('Claude API の writer: 依頼の形と応答の読み取り', async () => {
-  const { createAnthropicWriter } = await import('../generator/clues/writers/anthropic.js');
+test('OpenAI の writer: 依頼の形と応答の読み取り', async () => {
+  const { createOpenAIWriter } = await import('../generator/clues/writers/openai.js');
   let sent;
   const client = {
-    beta: {
-      messages: {
-        async create(params) {
-          sent = params;
-          return { stop_reason: 'end_turn', content: [{ type: 'text', text: '{"clues":[{"answer":"ドア","display":"ドア","clue":"出入り口の戸"}]}' }] };
-        },
+    responses: {
+      async create(params) {
+        sent = params;
+        return { status: 'completed', output: [], output_text: '{"clues":[{"answer":"ドア","display":"ドア","clue":"出入り口の戸"}]}' };
       },
     },
   };
-  const writer = createAnthropicWriter({ client });
+  const writer = createOpenAIWriter({ client, model: 'test-model' });
   const clues = await writer.write({ system: 's', prompt: 'p', schema: { type: 'object' } });
   assert.deepEqual(clues, [{ answer: 'ドア', display: 'ドア', clue: '出入り口の戸' }]);
-  assert.equal(sent.model, 'claude-opus-5-5');
-  assert.equal(sent.output_config.format.type, 'json_schema');
-  assert.equal(sent.fallbacks, 'default');
+  assert.equal(sent.model, 'test-model');
+  assert.equal(sent.instructions, 's');
+  assert.equal(sent.text.format.type, 'json_schema');
+  assert.equal(sent.text.format.strict, true);
 
-  client.beta.messages.create = async () => ({ stop_reason: 'refusal', stop_details: { category: 'cyber' }, content: [] });
+  client.responses.create = async () => ({
+    status: 'completed',
+    output: [{ type: 'message', content: [{ type: 'refusal', refusal: 'no' }] }],
+    output_text: '',
+  });
   await assert.rejects(writer.write({ system: 's', prompt: 'p', schema: {} }), /断られた/);
+  client.responses.create = async () => ({ status: 'incomplete', incomplete_details: { reason: 'max_output_tokens' }, output: [] });
+  await assert.rejects(writer.write({ system: 's', prompt: 'p', schema: {} }), /途中で終わった/);
 });
