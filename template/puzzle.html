@@ -438,7 +438,7 @@ function setMessage(text) {
 
 // ---- 開始 ----
 const [y, m, d] = PUZZLE.date.split('-').map(Number);
-document.getElementById('date').textContent = `${y}年${m}月${d}日`;
+document.getElementById('date').textContent = `No.${String(PUZZLE.serial).padStart(5, '0')}　${y}年${m}月${d}日`;
 document.getElementById('title').textContent = `${PUZZLE.title}のクロスワードパズル`;
 const roundEl = document.createElement('span');
 roundEl.className = 'round';

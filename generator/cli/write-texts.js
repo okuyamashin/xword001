@@ -1,10 +1,10 @@
 // クロスワードに、カギ（clue）・解説（explanation）・紹介文と画像プロンプト（intro）をつける。
 // まだ空のものだけを埋める。
 // 使い方:
-//   node generator/cli/write-texts.js --puzzle puzzles/2026-10-12-ja.json                       # カギ → 解説 → 紹介文の順に OpenAI で書く
-//   node generator/cli/write-texts.js --puzzle puzzles/2026-10-12-ja.json --only intro          # 紹介文と画像プロンプトだけ
-//   node generator/cli/write-texts.js --puzzle puzzles/2026-10-12-ja.json --only explanation    # 解説だけ
-//   node generator/cli/write-texts.js --puzzle puzzles/2026-10-12-ja.json --drafts texts.json   # 用意した文章を使う
+//   node generator/cli/write-texts.js --puzzle puzzles/00001-countries-001.json                       # カギ → 解説 → 紹介文の順に OpenAI で書く
+//   node generator/cli/write-texts.js --puzzle puzzles/00001-countries-001.json --only intro          # 紹介文と画像プロンプトだけ
+//   node generator/cli/write-texts.js --puzzle puzzles/00001-countries-001.json --only explanation    # 解説だけ
+//   node generator/cli/write-texts.js --puzzle puzzles/00001-countries-001.json --drafts texts.json   # 用意した文章を使う
 // どれも同じ自動チェックを通し、通ったものを同じファイルに書き込む。
 
 import { readFile, writeFile } from 'node:fs/promises';

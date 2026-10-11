@@ -7,9 +7,9 @@
 ## 使い方（Node.js 20 以上）
 
 ```
-npm run make -- --date 2026-10-12 --theme countries   # puzzles/2026-10-12-ja.json を作る
+npm run make -- --theme countries                      # puzzles/00004-countries-002.json のように次の番号で作る
 npm run trial -- --theme countries --days 30           # 何日分か組んで集計する
-npm run texts -- --puzzle puzzles/2026-10-12-ja.json   # カギと解説をつける（OpenAI。要 OPENAI_API_KEY）
+npm run texts -- --puzzle puzzles/00001-countries-001.json   # カギと解説をつける（OpenAI。要 OPENAI_API_KEY）
 npm run site                                           # site/ に HTML を作る
 npm test
 ```

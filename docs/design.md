@@ -149,7 +149,7 @@
 |---|---|
 | `subtitle` | テーマの英語名。見出しの下に出す |
 | `description` | テーマの説明。見出しの下に罫線で囲んで出す。meta description にも使う |
-| `image` | 最初に出す正方形の絵（`data/images/` のファイル名）。パズル専用の絵 `data/images/<パズルのID>.png`（例: `2026-10-12-ja.png`、webp/jpg/svg も可）があればそちらを優先。どちらもなければ方眼紙の絵（`default.svg`） |
+| `image` | 最初に出す正方形の絵（`data/images/` のファイル名）。パズル専用の絵 `data/images/<パズルのID>.png`（例: `00001-countries-001.png`、webp/jpg/svg も可）があればそちらを優先。どちらもなければ方眼紙の絵（`default.svg`） |
 | `imagePrompt` | テーマの絵（`image`）を作るための画像プロンプト（英語。サイト共通の画風の指定まで含めた、そのまま使える形）。パズルごとの絵のプロンプトはクロスワードの `intro.imagePrompt` |
 | `design` | 色の差し替え。CSS 変数名と値（例: `{"accent": "#2f4f6f"}`） |
 
@@ -295,10 +295,10 @@
 使い方:
 
 ```
-npm run texts -- --puzzle puzzles/2026-10-12-ja.json                       # カギ → 解説の順に OpenAI で書く
-npm run texts -- --puzzle puzzles/2026-10-12-ja.json --only explanation    # 解説だけ
-npm run texts -- --puzzle puzzles/2026-10-12-ja.json --only intro          # 紹介文と画像プロンプトだけ
-npm run texts -- --puzzle puzzles/2026-10-12-ja.json --drafts texts.json   # 用意した文章を使う
+npm run texts -- --puzzle puzzles/00001-countries-001.json                       # カギ → 解説の順に OpenAI で書く
+npm run texts -- --puzzle puzzles/00001-countries-001.json --only explanation    # 解説だけ
+npm run texts -- --puzzle puzzles/00001-countries-001.json --only intro          # 紹介文と画像プロンプトだけ
+npm run texts -- --puzzle puzzles/00001-countries-001.json --drafts texts.json   # 用意した文章を使う
 ```
 
 ### 5.5 解説（実装済み）
@@ -498,7 +498,9 @@ data/words/ja/
 | `words[].direction` | `across`（ヨコ）または `down`（タテ） |
 | `words[].row`, `col` | 単語の先頭マスの位置（0 始まり） |
 | `words[].theme` | どのテーマファイルから選ばれたか（ヒントの作り方を決める） |
-| `round` | 同じテーマの何回目か。見出しとタイトルに「第N回」と出す。作るときに `puzzles/` の既存分から数える |
+| `serial` | サイト全体の通し番号（8.5） |
+| `genre` | ジャンルの英名（8.5） |
+| `round` | ジャンル内の連番。見出しとタイトルに「第N回」と出す（8.5） |
 | `intro.theme` | テーマ（作るときに指定したもの） |
 | `intro.description` | このパズルの紹介文。入った答えを見て AI が書く（答えは書かないよう指示。漏れたら注意を出すだけで止めない）。見出しの下と meta description に使う |
 | `intro.imagePrompt` | 表紙の絵を作るための画像プロンプト（英語）。AI が書いた題材に、サイト共通の画風（`data/site/<locale>.json` の `imageStyle`）を付けたもの |
@@ -510,6 +512,29 @@ data/words/ja/
 
 
 ---
+
+## 8.5 命名ルール（パズルの ID）
+
+1日1問とは限らないので、日付ではなく番号で名前をつける。
+
+```
+00001-countries-001
+│     │         └ そのジャンルの中での連番（3桁、0埋め）。ページの「第N回」もこの番号
+│     └ ジャンルの英名（= テーマ ID。小文字・数字、区切りはアンダースコア。例: japanese_history）
+└ サイト全体の通し番号（5桁、0埋め）
+```
+
+- この ID を、クロスワードのファイル（`puzzles/<ID>.json`）、ページ（`site/<ID>.html`）、
+  その回の絵（`data/images/<ID>.png` → `.webp`）、進み具合の保存（localStorage の `xword:<ID>`）に使う。
+- 番号は `npm run make` が `puzzles/` の既存分から自動で決める（通し番号は最大＋1、ジャンル内連番はそのジャンルの最大＋1）。
+- `date` は作った日の記録。ページに表示するが、並び順や名前には使わない。並び順は通し番号。
+- 複数テーマを合わせたパズルのジャンル名は、テーマ ID を `_` でつなぐ。
+
+| 旧 ID（日付） | 新 ID |
+|---|---|
+| 2026-10-12-ja | 00001-countries-001 |
+| 2026-10-13-ja | 00002-animals-001 |
+| 2026-10-14-ja | 00003-sangetsuki-001 |
 
 ## 9. リポジトリ構成（案）
 
@@ -594,9 +619,9 @@ xword001/
 ### 13.2 使い方
 
 ```
-npm run make -- --date 2026-10-12 --theme countries   # puzzles/2026-10-12-ja.json を作る
+npm run make -- --theme countries                      # puzzles/00004-countries-002.json のように次の番号で作る
 npm run trial -- --theme countries --days 30           # 30日分組んで集計する
-npm run texts -- --puzzle puzzles/2026-10-12-ja.json   # カギと解説をつける
+npm run texts -- --puzzle puzzles/00001-countries-001.json   # カギと解説をつける
 npm run site                                           # site/ に HTML を作る
 npm test
 ```
@@ -653,8 +678,8 @@ npm test
 
 | ページ | 内容 |
 |---|---|
-| `site/<日付>.html` | パズルのページ。下に「同じテーマのほかの回」へのリンク |
-| `site/index.html` | いちばん新しいパズル |
+| `site/<ID>.html` | パズルのページ（例: `00001-countries-001.html`）。下に「同じテーマのほかの回」へのリンク |
+| `site/index.html` | いちばん新しいパズル（通し番号が最大のもの） |
 | `site/archive.html` | バックナンバー。新着（4問）と、テーマごとの一覧（最近出たテーマから、各テーマは新しい回から）。絵の見本・見出し・第N回・日付・紹介文を出す。この端末で解いたものに「完成」、解きかけに「途中」の印（localStorage の進み具合を読む） |
 
 - どのページにもヘッダーに「最新の問題」「バックナンバー」へのリンク。

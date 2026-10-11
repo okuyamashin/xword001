@@ -53,7 +53,7 @@ test('チェックに落ちたカギは理由を添えて書き直させる', as
 
 test('サンプルのパズルはすべてのカギがチェックを通る', async () => {
   const { readFile } = await import('node:fs/promises');
-  const puzzle = JSON.parse(await readFile(new URL('../puzzles/2026-10-12-ja.json', import.meta.url), 'utf8'));
+  const puzzle = JSON.parse(await readFile(new URL('../puzzles/00001-countries-001.json', import.meta.url), 'utf8'));
   for (const w of puzzle.words) {
     assert.equal(checkClue({ word: w, text: w.clue, maxLength: 40, locale: ja }), null, w.display);
   }
@@ -139,17 +139,19 @@ test('紹介文: 答えを見て書かせ、画風を付け、答えの漏れは
   assert.equal(again.puzzle.intro.description, 'ケニアなど世界の国を集めました。');
 });
 
-test('同じテーマの何回目かを数える', async () => {
-  const { nextRound } = await import('../generator/build.js');
+test('命名ルール: 通し番号5桁-ジャンル-ジャンル内連番3桁', async () => {
+  const { nextNumbers, puzzleId, genreOf } = await import('../generator/build.js');
   const existing = [
-    { id: '2026-10-12-ja', date: '2026-10-12', locale: 'ja', theme: 'countries' },
-    { id: '2026-10-13-ja', date: '2026-10-13', locale: 'ja', theme: 'kamakura' },
-    { id: '2026-10-14-ja', date: '2026-10-14', locale: 'ja', theme: 'countries' },
+    { locale: 'ja', serial: 1, genre: 'countries', round: 1 },
+    { locale: 'ja', serial: 2, genre: 'animals', round: 1 },
+    { locale: 'ja', serial: 3, genre: 'countries', round: 2 },
   ];
-  assert.equal(nextRound(existing, { id: '2026-10-20-ja', date: '2026-10-20', locale: 'ja', theme: 'countries' }), 3);
-  assert.equal(nextRound(existing, { id: '2026-10-14-ja', date: '2026-10-14', locale: 'ja', theme: 'countries' }), 2); // 作り直しでも番号は変わらない
-  assert.equal(nextRound(existing, { id: '2026-10-20-ja', date: '2026-10-20', locale: 'ja', theme: 'kamakura' }), 2);
-  assert.equal(nextRound(existing, { id: '2026-10-20-ja', date: '2026-10-20', locale: 'ja', theme: 'fish' }), 1);
+  assert.deepEqual(nextNumbers(existing, { locale: 'ja', genre: 'countries' }), { serial: 4, round: 3 });
+  assert.deepEqual(nextNumbers(existing, { locale: 'ja', genre: 'japanese_history' }), { serial: 4, round: 1 });
+  assert.deepEqual(nextNumbers([], { locale: 'ja', genre: 'animals' }), { serial: 1, round: 1 });
+  assert.equal(puzzleId({ serial: 4, genre: 'japanese_history', round: 1 }), '00004-japanese_history-001');
+  assert.equal(genreOf([{ theme: 'kamakura' }, { theme: 'japanese_history' }]), 'kamakura_japanese_history');
+  assert.throws(() => genreOf([{ theme: 'Japanese-History' }]), /命名ルール/);
 });
 
 test('番号で返された文章を、正しい単語に割り当てる', async () => {

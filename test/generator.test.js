@@ -26,13 +26,14 @@ test('単語リストの answer はすべて正規化済み', async () => {
   }
 });
 
-test('同じ日付からは同じパズルができ、検証を通る', async () => {
+test('同じ番号からは同じパズルができ、IDは命名ルールどおりで、検証を通る', async () => {
   const themeFiles = [await loadThemeFile('ja', 'countries')];
   const generalFile = await loadThemeFile('ja', 'general');
   const layout = { attempts: 30 };
-  const a = buildPuzzle({ date: '2026-10-12', locale: 'ja', themeFiles, generalFile, layout });
-  const b = buildPuzzle({ date: '2026-10-12', locale: 'ja', themeFiles, generalFile, layout });
+  const a = buildPuzzle({ serial: 1, round: 1, date: '2026-10-12', locale: 'ja', themeFiles, generalFile, layout });
+  const b = buildPuzzle({ serial: 1, round: 1, date: '2026-10-12', locale: 'ja', themeFiles, generalFile, layout });
   assert.deepEqual(a.puzzle, b.puzzle);
+  assert.equal(a.puzzle.id, '00001-countries-001');
   assert.deepEqual(validatePuzzle(a.puzzle), []);
   assert.ok(a.stats.generalCount <= 2);
 });

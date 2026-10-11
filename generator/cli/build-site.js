@@ -1,10 +1,10 @@
 // puzzles/*.json から site/ に HTML を作る。
-//   site/<日付>.html    パズルのページ
-//   site/index.html     いちばん新しいパズル
+//   site/<ID>.html      パズルのページ（例: 00001-countries-001.html）
+//   site/index.html     いちばん新しいパズル（通し番号が最大のもの）
 //   site/archive.html   バックナンバー（一覧）
 // 使い方: node generator/cli/build-site.js [--locale ja] [--puzzles <dir>] [--out <dir>]
 
-import { readFile, readdir, writeFile, mkdir, cp } from 'node:fs/promises';
+import { readFile, readdir, writeFile, mkdir, cp, rm } from 'node:fs/promises';
 import path from 'node:path';
 import { parseArgs } from 'node:util';
 import { renderPuzzleHtml, renderArchiveHtml, pageName, DEFAULT_IMAGE } from '../site.js';
@@ -25,6 +25,9 @@ const localeSource = await read(`generator/locales/${values.locale}.js`);
 const site = JSON.parse(await read(`data/site/${values.locale}.json`));
 const outDir = values.out;
 await mkdir(outDir, { recursive: true });
+// 前回作ったページを消してから作り直す（名前を変えたときに古いページが残らないように）
+for (const f of await readdir(outDir)) if (f.endsWith('.html')) await rm(path.join(outDir, f));
+await rm(path.join(outDir, 'images'), { recursive: true, force: true });
 await cp(path.join(ROOT, 'data/images'), path.join(outDir, 'images'), { recursive: true, filter: (src) => !/\.(png|jpe?g)$/i.test(src) });
 const allImages = await readdir(path.join(ROOT, 'data/images'));
 // 表紙に使える絵（一覧用の小さい絵 *.thumb.webp は除く）。PNG・JPEG は npm run images で WebP にしてから使う
@@ -38,10 +41,11 @@ const thumbFor = (image) => {
 };
 
 const puzzles = [];
-for (const file of (await readdir(values.puzzles)).filter((f) => f.endsWith(`-${values.locale}.json`))) {
-  puzzles.push(JSON.parse(await readFile(path.join(values.puzzles, file), 'utf8')));
+for (const file of (await readdir(values.puzzles)).filter((f) => f.endsWith('.json'))) {
+  const puzzle = JSON.parse(await readFile(path.join(values.puzzles, file), 'utf8'));
+  if (puzzle.locale === values.locale) puzzles.push(puzzle);
 }
-puzzles.sort((a, b) => a.date.localeCompare(b.date));
+puzzles.sort((a, b) => a.serial - b.serial);
 
 // パズル専用の絵（data/images/<id>.png など）→ テーマの絵 → 方眼紙
 const imageFor = (puzzle) =>

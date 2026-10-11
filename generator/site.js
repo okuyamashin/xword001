@@ -9,7 +9,7 @@ export function inlineLocale(source) {
 
 // パズルのページのファイル名
 export function pageName(puzzle) {
-  return `${puzzle.date}.html`;
+  return `${puzzle.id}.html`;
 }
 
 export function puzzleHeading(puzzle) {
@@ -54,13 +54,13 @@ export function renderPuzzleHtml({ template, parts, puzzle, localeSource, site, 
 
 // 一覧ページ。entries: [{ puzzle, image }]
 export function renderArchiveHtml({ template, parts, site, entries, latestCount = 4 }) {
-  const byDate = [...entries].sort((a, b) => b.puzzle.date.localeCompare(a.puzzle.date));
+  const byDate = [...entries].sort((a, b) => b.puzzle.serial - a.puzzle.serial);
   const card = ({ puzzle, image }) => {
     const description = puzzle.intro?.description ?? puzzle.description ?? '';
     return `    <li><a class="card" href="${pageName(puzzle)}" data-id="${escapeHtml(puzzle.id)}">
       <img src="images/${escapeHtml(image)}" alt="" loading="lazy" width="88" height="88">
       <div class="meta">
-        <p class="date">${formatDate(puzzle.date)}</p>
+        <p class="date">No.${String(puzzle.serial).padStart(5, '0')}　${formatDate(puzzle.date)}</p>
         <p class="title">${escapeHtml(puzzleHeading(puzzle))}<span class="round">第${puzzle.round ?? 1}回</span><span class="status"></span></p>
         <p class="desc">${escapeHtml(description)}</p>
       </div>

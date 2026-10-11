@@ -1,9 +1,11 @@
-// 使い方: node generator/cli/make-puzzle.js --date 2026-10-12 --theme countries [--locale ja] [--stdout]
+// 使い方: node generator/cli/make-puzzle.js --theme countries [--locale ja] [--date 2026-10-12] [--stdout]
+// puzzles/<通し番号5桁>-<ジャンル>-<ジャンル内連番3桁>.json を作る（例: puzzles/00004-countries-002.json）。
+// --date は作った日として記録するだけ（省略時は今日）。
 
 import { writeFile, mkdir, readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 import { parseArgs } from 'node:util';
-import { buildPuzzle, nextRound } from '../build.js';
+import { buildPuzzle, nextNumbers, genreOf } from '../build.js';
 import { loadThemeFile, ROOT } from '../lib/words.js';
 
 const { values } = parseArgs({
@@ -17,15 +19,14 @@ const { values } = parseArgs({
 
 const themeFiles = await Promise.all(values.theme.split('+').map((t) => loadThemeFile(values.locale, t)));
 const generalFile = await loadThemeFile(values.locale, 'general');
-// 同じテーマの何回目か（puzzles/ にある既存のクロスワードから数える）
+// 通し番号とジャンル内の連番（puzzles/ にある既存のクロスワードから決める）
 const dir = path.join(ROOT, 'puzzles');
 await mkdir(dir, { recursive: true });
 const existing = await Promise.all(
   (await readdir(dir)).filter((f) => f.endsWith('.json')).map(async (f) => JSON.parse(await readFile(path.join(dir, f), 'utf8'))),
 );
-const theme = themeFiles.map((f) => f.theme).join('+');
-const round = nextRound(existing, { id: `${values.date}-${values.locale}`, date: values.date, locale: values.locale, theme });
-const { puzzle, stats } = buildPuzzle({ date: values.date, locale: values.locale, themeFiles, generalFile, round });
+const { serial, round } = nextNumbers(existing, { locale: values.locale, genre: genreOf(themeFiles) });
+const { puzzle, stats } = buildPuzzle({ serial, round, date: values.date, locale: values.locale, themeFiles, generalFile });
 
 console.error(puzzle.grid.map((row) => row.replaceAll('#', '・')).join('\n'));
 console.error(stats);

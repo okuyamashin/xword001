@@ -22,7 +22,7 @@ const t0 = Date.now();
 for (let i = 0; i < days; i++) {
   const date = new Date(start.getTime() + i * 86400000).toISOString().slice(0, 10);
   try {
-    const { stats } = buildPuzzle({ date, locale: values.locale, themeFiles, generalFile });
+    const { stats } = buildPuzzle({ serial: i + 1, round: 1, date, seed: `trial-${date}`, locale: values.locale, themeFiles, generalFile });
     tally.words.push(stats.words);
     tally.general.push(stats.generalCount);
     tally.crossings.push(stats.crossings);
