@@ -14,7 +14,10 @@ test('日本語の正規化', () => {
 });
 
 test('単語リストの answer はすべて正規化済み', async () => {
-  for (const theme of ['countries', 'general']) {
+  const { readdir } = await import('node:fs/promises');
+  const themes = (await readdir(new URL('../data/words/ja/', import.meta.url))).map((f) => f.replace(/\.json$/, ''));
+  assert.ok(themes.length >= 3);
+  for (const theme of themes) {
     const file = await loadThemeFile('ja', theme);
     for (const w of file.words) {
       assert.ok(isValidAnswer(w.answer), `${theme}: ${w.answer}`);

@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>動物のクロスワードパズル 第1回｜よろずのクロスワードパズル</title>
+<meta name="description" content="海辺から森、南の島まで、鳥や小さな生き物、ふしぎな海の仲間が集まりました。身近な存在から珍しい姿まで、幅広い動物名をたどって楽しめます。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Shippori+Mincho:wght@500;700;800&display=swap">
+<style>
+  /* デザイン: 羊皮紙と銅版画。色はテーマごとに --accent などを差し替えられる（puzzle.design） */
+  :root {
+    --bg: #ddd1bc;
+    --paper: #f4ede0;
+    --fg: #2e2721;
+    --muted: #6b5f52;
+    --rule: #b6a68b;
+    --line: #3a3129;
+    --cell: #f4ede0;
+    --word: #e7d5ad;
+    --active: #d2b072;
+    --wrong: #e9b4a2;
+    --revealed: #2f4f6f;
+    --accent: #8c6a32;
+    --serif: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+    --latin: "Cormorant Garamond", "Times New Roman", serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--serif);
+    font-weight: 500;
+    line-height: 1.8;
+    letter-spacing: .03em;
+  }
+  .site-inner, main { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+  header.site { padding: 16px 0 8px; }
+  header.site .wordmark { margin: 0; font-family: var(--latin); font-weight: 600; font-size: .95rem; letter-spacing: .2em; text-transform: uppercase; }
+  header.site .name { margin: 0; color: var(--muted); font-size: .9rem; letter-spacing: .12em; }
+  header.site .site-inner { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  header.site a { color: inherit; text-decoration: none; }
+  header.site nav { display: flex; gap: 16px; font-size: .9rem; letter-spacing: .12em; }
+  header.site nav a { border-bottom: 1px solid transparent; }
+  header.site nav a:hover, header.site nav a[aria-current] { border-bottom-color: var(--fg); }
+  footer.site { margin-top: 40px; padding: 20px 0 28px; border-top: 1px solid var(--rule); color: var(--muted); font-size: .85rem; }
+
+  .hero { text-align: center; margin: 24px 0 20px; }
+  .date { margin: 0 0 4px; color: var(--muted); font-size: .85rem; letter-spacing: .12em; }
+  h1 { font-weight: 800; font-size: clamp(1.35rem, 5vw, 1.9rem); letter-spacing: .12em; line-height: 1.5; margin: 0; }
+  h1 .round { display: block; margin-top: 2px; font-size: .62em; letter-spacing: .3em; color: var(--accent); }
+  .subtitle { margin: 6px 0 0; font-family: var(--latin); font-size: 1.05rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .description {
+    max-width: 44em;
+    margin: 20px auto 0;
+    padding: 14px 18px;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    text-align: left;
+    line-height: 2;
+  }
+  .description:empty { display: none; }
+  .layout { display: grid; gap: 24px; }
+  @media (min-width: 760px) { .layout { grid-template-columns: minmax(0, 1fr) 320px; } }
+  footer.site a { color: inherit; }
+
+  /* 盤面と、最初に出すテーマの絵 */
+  .board-wrap { position: relative; width: min(100%, 520px); margin: 0 auto; }
+  .cover {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: var(--paper);
+    box-shadow: 0 6px 18px rgba(46, 39, 33, .25);
+    cursor: pointer;
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .cover.hide { opacity: 0; transform: scale(1.03); pointer-events: none; }
+  .board {
+    display: block;
+    width: 100%;
+    height: auto;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+  }
+  .board .cell { cursor: pointer; }
+  .board .cell rect { fill: var(--cell); stroke: var(--line); stroke-width: 1; }
+  .board .cell.in-word rect { fill: var(--word); }
+  .board .cell.active rect { fill: var(--active); }
+  .board .cell.wrong rect { fill: var(--wrong); }
+  .board .num { font-size: 10px; fill: var(--muted); }
+  .board .letter { font-family: var(--serif); font-weight: 700; font-size: 24px; fill: var(--fg); text-anchor: middle; dominant-baseline: central; }
+  .board .cell.revealed .letter { fill: var(--revealed); }
+
+  .entry { margin: 14px auto 0; width: min(100%, 520px); }
+  .current { min-height: 4.5em; margin: 0 0 8px; }
+  .current .label { font-weight: bold; }
+  .input-row { display: flex; gap: 8px; }
+  .input-row input { flex: 1; min-width: 0; font: inherit; font-size: 1.1rem; padding: 8px; border: 1px solid var(--line); border-radius: 2px; background: var(--paper); color: var(--fg); }
+  button { font: inherit; font-size: .95rem; padding: 7px 14px; cursor: pointer; background: transparent; color: var(--fg); border: 1px solid var(--line); border-radius: 2px; letter-spacing: .08em; }
+  button[type=submit] { background: var(--fg); color: var(--paper); }
+  button:active { transform: translateY(1px); }
+  .buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .message { min-height: 3em; margin: 8px 0 0; color: var(--accent); font-weight: bold; }
+
+  .clues h2 { font-size: 1.1rem; letter-spacing: .2em; margin: 0 0 6px; padding-bottom: 2px; border-bottom: 1px solid var(--rule); }
+  .clues ol { list-style: none; padding: 0; margin: 0 0 16px; }
+  .clues li { padding: 4px 6px; cursor: pointer; border-radius: 2px; }
+  .clues li.selected { background: var(--word); }
+  .clues li.done { color: var(--muted); }
+  .clues li.wrong { background: var(--wrong); color: var(--fg); }
+  .clues li .n { font-weight: bold; margin-right: 4px; }
+  .clues li .ans { color: var(--revealed); margin-left: 4px; }
+  .clues li .explain { display: none; margin: 4px 0 2px; font-size: 0.9rem; color: var(--fg); }
+  .clues li.show-explain .explain { display: block; }
+  .note { margin: 8px 0 0; padding: 10px 14px; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); background: rgba(244, 237, 224, .55); font-size: 0.95rem; }
+  .note p { margin: 0; }
+  .note p + p { margin-top: 6px; }
+  .note[hidden] { display: none; }
+  .note .label { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .note .word { font-weight: bold; margin-right: 6px; }
+  .clues li .tag[hidden] { display: none; }
+  .clues li .tag { display: inline-block; margin-right: 6px; padding: 0 6px; border: 1px solid var(--muted); border-radius: 999px; font-size: 0.75rem; color: var(--muted); }
+
+  .related { margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--rule); }
+  .related h2 { font-size: 1rem; letter-spacing: .2em; margin: 0 0 6px; }
+  .related ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 6px 18px; }
+  .related a { color: var(--fg); }
+  .rules { margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--rule); font-size: 0.9rem; color: var(--muted); }
+  .rules ul { padding-left: 1.2em; margin: 4px 0; }
+</style>
+</head>
+<body>
+<header class="site"><div class="site-inner">
+  <div>
+    <p class="wordmark"><a href="index.html">Yorozu Crossword</a></p>
+    <p class="name">よろずのクロスワードパズル</p>
+  </div>
+  <nav><a href="index.html">最新の問題</a><a href="archive.html">バックナンバー</a></nav>
+</div></header>
+
+<main id="main">
+  <div class="hero">
+    <p class="date" id="date"></p>
+    <h1 id="title"></h1>
+    <p class="subtitle" id="subtitle"></p>
+    <p class="description" id="description"></p>
+  </div>
+  <div class="layout">
+    <section>
+      <div class="board-wrap">
+        <svg class="board" id="board" role="img" aria-label="クロスワードの盤面"></svg>
+        <img class="cover" id="cover" alt="" hidden>
+      </div>
+      <div class="entry">
+        <p class="current" id="current">カギを選んでください。</p>
+        <form class="input-row" id="form" autocomplete="off">
+          <input id="answer" type="text" inputmode="text" placeholder="答えを入力" aria-label="答え">
+          <button type="submit">入れる</button>
+        </form>
+        <div class="buttons">
+          <button type="button" id="check">答え合わせ</button>
+          <button type="button" id="reveal-word">この答えを見る</button>
+          <button type="button" id="reveal-all">全部の答えを見る</button>
+          <button type="button" id="reset">リセット</button>
+        </div>
+        <p class="message" id="message" role="status"></p>
+        <div class="note" id="note" hidden></div>
+      </div>
+    </section>
+    <section class="clues">
+      <h2 id="across-label"></h2>
+      <ol id="across"></ol>
+      <h2 id="down-label"></h2>
+      <ol id="down"></ol>
+    </section>
+  </div>
+
+  <section class="rules">
+    <strong>答えの書き方</strong>
+    <ul id="rules"></ul>
+  </section>
+</main>
+<footer class="site"><div class="site-inner">よろずのクロスワードパズル ─ 毎日ひとつ、いろいろなテーマのクロスワードパズル。 <a href="archive.html">バックナンバー</a></div></footer>
+
+
+<script>
+// ---- 言語ごとの設定（generator/locales/<locale>.js を埋め込む） ----
+// 日本語の文字ルール（全体のルール）
+
+const SMALL = Object.fromEntries(
+  [...'ァィゥェォッャュョヮヵヶ'].map((c, i) => [c, 'アイウエオツヤユヨワカケ'[i]]),
+);
+const VU = [['ヴァ', 'バ'], ['ヴィ', 'ビ'], ['ヴェ', 'ベ'], ['ヴォ', 'ボ'], ['ヴ', 'ブ']];
+
+const locale = 'ja';
+
+const labels = { across: 'ヨコ', down: 'タテ' };
+
+const rules = [
+  '答えはカタカナで、1マスに1文字入ります（ひらがなで入力してもかまいません）',
+  '小さい文字は大きい文字で入れます（例: シャツ → シヤツ）',
+  '濁点・半濁点のついた文字は1文字です（例: ガ は1マス）',
+  '「ヴ」は使わず、バ行で表します（例: ヴァイオリン → バイオリン）',
+  '長音「ー」は1文字です',
+];
+
+// 入力やリストの文字列を、マスに入る形にそろえる
+function normalize(text) {
+  let s = [...text.normalize('NFKC')]
+    .map((c) => (c >= 'ぁ' && c <= 'ゖ' ? String.fromCodePoint(c.codePointAt(0) + 0x60) : c))
+    .join('');
+  for (const [from, to] of VU) s = s.replaceAll(from, to);
+  s = [...s].map((c) => SMALL[c] ?? c).join('');
+  return s.replace(/[・\s]/g, '');
+}
+
+function isValidAnswer(answer) {
+  return /^[ア-ンー]+$/.test(answer) && !/[ァィゥェォッャュョヮヵヶヴ]/.test(answer);
+}
+
+// ヒント生成の標準設定（テーマファイルの clue で上書きできる）
+const clueDefaults = {
+  maxLength: 40,
+  instructions: [
+    'クロスワードパズルのカギ（ヒント）を日本語で書く。',
+    '1つのカギは短い1〜2文で書く。です・ます調にしない（「〜の国」「〜するもの」のような体言止めか常体）。',
+    '答えの言葉そのもの、答えの漢字、答えの一部をカギに含めない。',
+    'カギだけを読んで、答えが1つに絞れるようにする。',
+    '事実として確かなことだけを書く。自信がないことは書かない。',
+  ],
+};
+
+// 解説生成の標準設定（テーマファイルの explanation で上書きできる）
+// 解説は、完成したとき・全部の答えを見たときに表示する
+const explanationDefaults = {
+  maxLength: 120,
+  instructions: [
+    'クロスワードパズルを解き終えた人が読む、答えの言葉の短い解説を日本語で書く。',
+    '2〜3文で、です・ます調で書く。',
+    '「へえ」と思える豆知識を1つ入れる。カギと同じ内容をくり返さない。',
+    '事実として確かなことだけを書く。自信がないことは書かない。',
+  ],
+};
+
+// パズルの紹介文（テーマの説明）と、表紙の絵の題材の標準設定
+const introDefaults = {
+  maxLength: 160,
+  instructions: [
+    'クロスワードパズルのページの冒頭に載せる、このパズルの紹介文を日本語で書く。',
+    '2〜3文、です・ます調。テーマの面白さが伝わり、解いてみたくなる文にする。',
+    'このパズルに入っている言葉を見て、その顔ぶれに合わせた内容にする。',
+    'ただし答えの言葉そのもの（表記・読み）は書かない。',
+    '事実として確かなことだけを書く。',
+    'あわせて、ページの表紙にする正方形の絵の題材を英語で1〜2文書く（imageSubject）。',
+    '題材は、テーマとこのパズルの言葉から思い浮かぶ情景や物にする。文字・地図上の国名・ラベルは描かせない。画風の指定は書かない（あとで付ける）。',
+  ],
+};
+
+// 解説の欄で、テーマ外の「つなぎの言葉」につける印
+const fillerLabel = 'つなぎの言葉';
+
+// カギに答えが漏れていないかを調べる
+function leaksAnswer(clue, word) {
+  const text = normalize(clue);
+  if (text.includes(word.answer)) return `答え「${word.answer}」が含まれている`;
+  if (word.display && clue.includes(word.display)) return `答えの表記「${word.display}」が含まれている`;
+  return null;
+}
+
+
+// ---- パズル ----
+const PUZZLE = {"id":"2026-10-13-ja","date":"2026-10-13","locale":"ja","theme":"animals","title":"動物","round":1,"subtitle":"Animals","description":"海辺から森、南の島まで、鳥や小さな生き物、ふしぎな海の仲間が集まりました。身近な存在から珍しい姿まで、幅広い動物名をたどって楽しめます。","image":"images/default.svg","design":{"accent":"#4a5d3a"},"rules":["動物の名前は、一般的なカタカナの呼び名で答えてください（例: 象 → ゾウ）","魚は含みません"],"size":{"rows":9,"cols":9},"grid":["#ナマコ##リユウ","#メ#ウグイス#ズ","ヤク#ノ#ソ##ラ","#ジ#ト#ギ###","ト#ペリカン#イヌ","キリン##チ#グ#","##ギ##ヤ#アリ","#ヤンバルクイナ#","#ゴ#ク##カ##"],"words":[{"number":1,"direction":"across","row":0,"col":1,"answer":"ナマコ","display":"ナマコ","theme":"animals","clue":"敵に内臓を吐き出すことがある棘皮動物","explanation":"体には骨片という小さな石灰質の粒が入っています。乾燥品は中華料理で「海参」と呼ばれ、珍重されます。"},{"number":3,"direction":"across","row":0,"col":6,"answer":"リユウ","display":"龍","theme":"general","clue":"東洋の伝説に出る、空を飛ぶ蛇のような生き物","explanation":"十二支では「辰」と書きます。十二支の動物で唯一、実在しない生き物です。"},{"number":5,"direction":"across","row":1,"col":3,"answer":"ウグイス","display":"ウグイス","theme":"animals","clue":"ホーホケキョと鳴く春告げ鳥","explanation":"絵の「梅に鶯」は、緑色のメジロと混同されることがあります。実際のウグイスは地味なオリーブ褐色です。"},{"number":7,"direction":"across","row":2,"col":0,"answer":"ヤク","display":"ヤク","theme":"animals","clue":"チベット高原で飼われる長毛の牛科動物","explanation":"低酸素や寒さに強く、毛は衣類やテントに使われます。乳はバター茶の材料にもなります。"},{"number":9,"direction":"across","row":4,"col":2,"answer":"ペリカン","display":"ペリカン","theme":"animals","clue":"下くちばしに大きなのど袋をもつ水鳥","explanation":"魚をすくったあと、余分な水を抜いてからのみ込みます。仲間で魚を浅瀬へ追い込む種類もいます。"},{"number":10,"direction":"across","row":4,"col":7,"answer":"イヌ","display":"イヌ","theme":"animals","clue":"ワンワンと鳴く、人に最も身近な家畜","explanation":"鼻のしわ模様「鼻紋」は個体ごとに異なります。識別に使えるほどで、人の指紋に似ています。"},{"number":11,"direction":"across","row":5,"col":0,"answer":"キリン","display":"キリン","theme":"animals","clue":"首が長く、網目模様の体をもつ草食獣","explanation":"首の骨の数は人と同じ7個です。長い舌は約45センチあり、とげのある枝葉をからめ取れます。"},{"number":12,"direction":"across","row":6,"col":7,"answer":"アリ","display":"アリ","theme":"animals","clue":"女王を中心に巣で集団生活する小さな虫","explanation":"触角でにおいを感じ、仲間との情報伝達にも使います。道しるべのフェロモンで餌場への行列ができます。"},{"number":13,"direction":"across","row":7,"col":1,"answer":"ヤンバルクイナ","display":"ヤンバルクイナ","theme":"animals","clue":"沖縄本島北部にすむ、飛ぶ力の弱い固有種","explanation":"1981年に新種として発表されました。道路で車にはねられる事故が、保護上の大きな課題です。"},{"number":1,"direction":"down","row":0,"col":1,"answer":"ナメクジ","display":"ナメクジ","theme":"animals","clue":"殻をもたないカタツムリに似た軟体動物","explanation":"塩をかけると、浸透圧で水分が外へ出て縮みます。夜や雨の日に活動が目立つ種類が多いです。"},{"number":2,"direction":"down","row":0,"col":3,"answer":"コウノトリ","display":"コウノトリ","theme":"animals","clue":"赤ん坊を運ぶ伝説で知られる大型水禽","explanation":"日本では一度野生絶滅しましたが、兵庫県豊岡市などで再導入が進みました。田んぼの生き物も食べます。"},{"number":3,"direction":"down","row":0,"col":6,"answer":"リス","display":"リス","theme":"animals","clue":"ふさふさした尾で木を走る小型げっ歯類","explanation":"前歯は一生伸び続けます。木の実を土に埋めて貯蔵し、食べ残しが芽生えることもあります。"},{"number":4,"direction":"down","row":0,"col":8,"answer":"ウズラ","display":"ウズラ","theme":"animals","clue":"小さな卵が食用にされる、丸い体の鳥","explanation":"ニホンウズラは研究動物としても利用されます。世代時間が短く、遺伝や発生の研究に役立ってきました。"},{"number":6,"direction":"down","row":1,"col":5,"answer":"イソギンチヤク","display":"イソギンチャク","theme":"animals","clue":"触手で小魚を捕らえる花のような刺胞動物","explanation":"脳や心臓はありませんが、体全体の神経網で刺激に反応します。足盤で岩にくっつき、ゆっくり移動することもあります。"},{"number":8,"direction":"down","row":4,"col":0,"answer":"トキ","display":"トキ","theme":"animals","clue":"学名がニッポニア・ニッポンの鳥","explanation":"羽の淡い桃色は「鴇色」と呼ばれます。佐渡島では放鳥が続き、野生下で繁殖する個体も増えています。"},{"number":9,"direction":"down","row":4,"col":2,"answer":"ペンギン","display":"ペンギン","theme":"animals","clue":"南半球に多く、翼で泳ぐ飛べない鳥","explanation":"羽毛は短く密で、防水と保温に役立ちます。南極だけでなく、赤道近くのガラパゴスにもすむ種類がいます。"},{"number":10,"direction":"down","row":4,"col":7,"answer":"イグアナ","display":"イグアナ","theme":"animals","clue":"背にとげ状のうろこが並ぶ大型爬虫類","explanation":"グリーンイグアナは木の上で過ごすことが多い草食性です。頭頂部には光を感じる「頭頂眼」があります。"},{"number":13,"direction":"down","row":7,"col":1,"answer":"ヤゴ","display":"ヤゴ","theme":"animals","clue":"水中で暮らすトンボの幼虫","explanation":"下あごが折りたたみ式のマスクのように伸びます。獲物にすばやく突き出して捕らえるしくみです。"},{"number":14,"direction":"down","row":7,"col":3,"answer":"バク","display":"バク","theme":"animals","clue":"長い鼻をもつ、夢を食う伝説でも知られる獣","explanation":"現生種は中南米と東南アジアに分布します。奇蹄目の仲間で、ウマやサイに近い動物です。"},{"number":15,"direction":"down","row":7,"col":6,"answer":"イカ","display":"イカ","theme":"animals","clue":"十本の腕と墨を吐く習性をもつ水の生き物","explanation":"青い血をもつのは、銅を含むヘモシアニンで酸素を運ぶためです。心臓は三つあり、えら用に二つあります。"}],"intro":{"theme":"動物","description":"海辺から森、南の島まで、鳥や小さな生き物、ふしぎな海の仲間が集まりました。身近な存在から珍しい姿まで、幅広い動物名をたどって楽しめます。","imagePrompt":"A lively square scene where forest, shoreline, and tide pool meet, with assorted birds, tiny creatures, a tall long-necked mammal, and sea life gathered naturally. No text, labels, or map names. Square 1:1 composition. Antique copperplate engraving style with fine line work and cross-hatching, sepia ink on aged parchment paper, muted warm tones, 19th-century book illustration. No text, no letters, no numbers, no labels, no border."}};
+
+// ---- 状態 ----
+const { rows, cols } = PUZZLE.size;
+const solution = PUZZLE.grid.map((row) => [...row]);
+const words = PUZZLE.words.map((w, i) => ({ ...w, index: i, cells: cellsOf(w) }));
+const storageKey = `xword:${PUZZLE.id}`;
+let filled = emptyGrid();
+let revealed = emptyGrid(false);
+let shownWords = []; // 答えを見た単語の index
+let selected = null;
+let activeCell = null;
+let checkRequested = false; // 「答え合わせ」を押した直後だけ true（次の入力で戻す）
+
+function emptyGrid(value = '') {
+  return Array.from({ length: rows }, () => Array(cols).fill(value));
+}
+function cellsOf(w) {
+  const [dr, dc] = w.direction === 'across' ? [0, 1] : [1, 0];
+  return [...w.answer].map((_, i) => [w.row + dr * i, w.col + dc * i]);
+}
+function wordsAt(r, c) {
+  return words.filter((w) => w.cells.some(([wr, wc]) => wr === r && wc === c));
+}
+
+// ---- 保存 ----
+function save() {
+  try {
+    localStorage.setItem(storageKey, JSON.stringify({ filled, revealed, shownWords, solved: isSolved(), started: filled.flat().some(Boolean) }));
+  } catch {}
+}
+function load() {
+  try {
+    const data = JSON.parse(localStorage.getItem(storageKey) ?? 'null');
+    if (data?.filled?.length === rows) {
+      filled = data.filled;
+      revealed = data.revealed;
+      shownWords = data.shownWords ?? [];
+    }
+  } catch {}
+}
+
+// ---- 描画 ----
+// 盤面は SVG。マスの大きさを座標で固定し、render() のたびにまるごと描き直す。
+const board = document.getElementById('board');
+const CELL = 40; // 1マスの大きさ（viewBox の単位）
+const PAD = 1; // 外枠の線が切れないための余白
+const numbers = new Map(words.map((w) => [`${w.row},${w.col}`, w.number]));
+const mainThemes = PUZZLE.theme.split('+');
+
+function buildBoard() {
+  board.setAttribute('viewBox', `${-PAD} ${-PAD} ${cols * CELL + PAD * 2} ${rows * CELL + PAD * 2}`);
+  board.addEventListener('click', (e) => {
+    const cell = e.target.closest('[data-r]');
+    if (cell) onCellClick(Number(cell.dataset.r), Number(cell.dataset.c));
+  });
+}
+
+function boardSvg({ selectedCells, isWrong }) {
+  const parts = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      if (solution[r][c] === '#') continue;
+      const x = c * CELL;
+      const y = r * CELL;
+      const cls = ['cell'];
+      if (selectedCells.has(`${r},${c}`)) cls.push('in-word');
+      if (activeCell?.[0] === r && activeCell?.[1] === c) cls.push('active');
+      if (isWrong(r, c)) cls.push('wrong');
+      if (revealed[r][c]) cls.push('revealed');
+      const num = numbers.get(`${r},${c}`);
+      parts.push(
+        `<g class="${cls.join(' ')}" data-r="${r}" data-c="${c}">` +
+          `<rect x="${x}" y="${y}" width="${CELL}" height="${CELL}"/>` +
+          (num ? `<text class="num" x="${x + 3}" y="${y + 10}">${num}</text>` : '') +
+          (filled[r][c] ? `<text class="letter" x="${x + CELL / 2}" y="${y + CELL / 2 + 2}">${filled[r][c]}</text>` : '') +
+          '</g>',
+      );
+    }
+  }
+  return parts.join('');
+}
+
+function buildClues() {
+  document.getElementById('across-label').textContent = labels.across;
+  document.getElementById('down-label').textContent = labels.down;
+  for (const w of words) {
+    const li = document.createElement('li');
+    li.innerHTML = `<span class="n">${w.number}</span><span class="text"></span><span class="ans"></span>` +
+      '<div class="explain"><span class="tag" hidden></span><span class="body"></span></div>';
+    li.querySelector('.text').textContent = w.clue ?? '（カギなし）';
+    li.querySelector('.body').textContent = w.explanation ?? '';
+    // テーマ外の「つなぎの言葉」には印をつける
+    if (!mainThemes.includes(w.theme)) {
+      const tag = li.querySelector('.tag');
+      tag.textContent = fillerLabel;
+      tag.hidden = false;
+    }
+    li.addEventListener('click', () => select(w));
+    document.getElementById(w.direction).append(li);
+    w.li = li;
+  }
+}
+
+function render() {
+  const selectedCells = new Set(selected?.cells.map(([r, c]) => `${r},${c}`));
+  // 全部埋まったとき、または答え合わせを押したときは、まちがいに色をつける
+  const showWrong = checkRequested || allFilled();
+  const isWrong = (r, c) => showWrong && filled[r][c] && filled[r][c] !== solution[r][c];
+  board.innerHTML = boardSvg({ selectedCells, isWrong });
+  // 正解した単語・答えを見た単語は、解説を出す（完成時・全部の答えを見たときは全部）
+  const explained = isSolved() || words.every((w) => shownWords.includes(w.index));
+  for (const w of words) {
+    w.li.classList.toggle('selected', w === selected);
+    const complete = w.cells.every(([r, c]) => filled[r][c]);
+    w.li.classList.toggle('done', complete);
+    w.li.classList.toggle('wrong', w.cells.some(([r, c]) => isWrong(r, c)));
+    const shown = explained || isCorrect(w) || shownWords.includes(w.index);
+    w.li.classList.toggle('show-explain', shown);
+    w.li.querySelector('.ans').textContent = shown ? `→ ${w.display}` : '';
+  }
+  const current = document.getElementById('current');
+  if (selected) {
+    current.innerHTML = '<span class="label"></span> <span class="text"></span>';
+    current.querySelector('.label').textContent = `${labels[selected.direction]}${selected.number}（${selected.cells.length}文字）`;
+    current.querySelector('.text').textContent = selected.clue ?? '';
+  }
+}
+
+// ---- 操作 ----
+function select(w, cell = null) {
+  selected = w;
+  activeCell = cell ?? w.cells[0];
+  if (!allFilled()) setMessage('');
+  render();
+  const input = document.getElementById('answer');
+  input.value = w.cells.map(([r, c]) => filled[r][c] || '').join('');
+  input.focus();
+  input.select();
+}
+
+function onCellClick(r, c) {
+  const candidates = wordsAt(r, c);
+  if (!candidates.length) return;
+  // 同じマスをもう一度押したら、タテとヨコを切り替える
+  const sameCell = activeCell?.[0] === r && activeCell?.[1] === c;
+  let next = candidates[0];
+  if (sameCell && selected && candidates.length > 1) {
+    next = candidates.find((w) => w !== selected) ?? next;
+  } else if (selected && candidates.includes(selected)) {
+    next = selected;
+  }
+  select(next, [r, c]);
+}
+
+function enter(text) {
+  if (!selected) return setMessage('先にカギを選んでください。');
+  const letters = [...normalize(text)];
+  const invalid = letters.filter((ch) => !isValidAnswer(ch));
+  if (invalid.length) return setMessage(`使えない文字があります: ${[...new Set(invalid)].join(' ')}`);
+  const target = selected;
+  const correctBefore = new Set(words.filter(isCorrect));
+  const len = selected.cells.length;
+  selected.cells.forEach(([r, c], i) => {
+    if (revealed[r][c]) return;
+    if (i < letters.length) filled[r][c] = letters[i];
+  });
+  checkRequested = false;
+  save();
+  render();
+  // 正解なら、入力した場所の近くにも解説を出す。
+  // 交差で一緒に正解になった単語も並べる（入力した単語を先頭に）
+  const newlyCorrect = words.filter((w) => isCorrect(w) && (w === target || !correctBefore.has(w)));
+  newlyCorrect.sort((a, b) => (a === target ? -1 : b === target ? 1 : 0));
+  if (newlyCorrect.length) showNote(newlyCorrect, '正解！');
+  else hideNote();
+  if (allFilled()) return judge();
+  if (letters.length !== len) {
+    setMessage(`${len}文字の答えです（${letters.length}文字入力されました）。`);
+  } else {
+    setMessage('');
+    selectNextEmpty();
+  }
+}
+
+function selectNextEmpty() {
+  const start = selected ? selected.index + 1 : 0;
+  for (let k = 0; k < words.length; k++) {
+    const w = words[(start + k) % words.length];
+    if (w.cells.some(([r, c]) => !filled[r][c])) return select(w);
+  }
+}
+
+function allFilled() {
+  return solution.every((row, r) => row.every((ch, c) => ch === '#' || filled[r][c]));
+}
+
+function wrongWords() {
+  return words.filter((w) => w.cells.some(([r, c]) => filled[r][c] && filled[r][c] !== solution[r][c]));
+}
+
+// 全部埋まったときの判定
+function judge() {
+  if (isSolved()) return finish();
+  setMessage(`間違いがあります（${wrongWords().length}語）。赤いカギを見直してください。`);
+}
+
+function check() {
+  checkRequested = true;
+  render();
+  if (allFilled()) return judge();
+  const n = wrongWords().length;
+  setMessage(n ? `間違いがあります（${n}語）。赤いカギを見直してください。` : 'いまのところ、間違いはありません。');
+}
+
+function reveal(targets) {
+  for (const w of targets) if (!shownWords.includes(w.index)) shownWords.push(w.index);
+  const cells = targets.flatMap((w) => w.cells);
+  for (const [r, c] of cells) {
+    if (filled[r][c] !== solution[r][c]) revealed[r][c] = true;
+    filled[r][c] = solution[r][c];
+  }
+  save();
+  render();
+}
+
+function isCorrect(w) {
+  return w.cells.every(([r, c]) => filled[r][c] === solution[r][c]);
+}
+
+function showNote(targets, label) {
+  const note = document.getElementById('note');
+  note.replaceChildren(
+    ...targets.map((w) => {
+      const p = document.createElement('p');
+      p.innerHTML = '<span class="label"></span><span class="word"></span><span class="body"></span>';
+      p.querySelector('.label').textContent = label;
+      p.querySelector('.word').textContent = w.display;
+      p.querySelector('.body').textContent = w.explanation ?? '';
+      return p;
+    }),
+  );
+  note.hidden = false;
+}
+
+function hideNote() {
+  document.getElementById('note').hidden = true;
+}
+
+function isSolved() {
+  return solution.every((row, r) => row.every((ch, c) => ch === '#' || filled[r][c] === ch));
+}
+
+function finish() {
+  const usedReveal = shownWords.length > 0;
+  setMessage(usedReveal ? '全部うまりました。カギの下に解説を出しました。' : '完成！ おめでとうございます。カギの下に解説を出しました。');
+}
+
+// 最初にテーマの絵を盤面の上に出し、すぐに消して盤面を見せる
+function showCover() {
+  const cover = document.getElementById('cover');
+  const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  if (!PUZZLE.image || reduce) return cover.remove();
+  let hidden = false;
+  const hide = () => {
+    if (hidden) return;
+    hidden = true;
+    cover.classList.add('hide');
+    setTimeout(() => cover.remove(), 700);
+  };
+  cover.addEventListener('click', hide);
+  cover.src = PUZZLE.image;
+  cover.hidden = false;
+  // ページ（フォントなど）を読み終えてから 1.2 秒見せる。読み込みが遅くても 4 秒で消す
+  const pageLoaded = document.readyState === 'complete' ? Promise.resolve() : new Promise((r) => addEventListener('load', r, { once: true }));
+  Promise.all([cover.decode(), pageLoaded]).then(() => setTimeout(hide, 1200), () => cover.remove());
+  setTimeout(hide, 4000);
+}
+
+function setMessage(text) {
+  document.getElementById('message').textContent = text;
+}
+
+// ---- 開始 ----
+const [y, m, d] = PUZZLE.date.split('-').map(Number);
+document.getElementById('date').textContent = `${y}年${m}月${d}日`;
+document.getElementById('title').textContent = `${PUZZLE.title}のクロスワードパズル`;
+const roundEl = document.createElement('span');
+roundEl.className = 'round';
+roundEl.textContent = `第${PUZZLE.round ?? 1}回`;
+document.getElementById('title').append(roundEl);
+document.getElementById('subtitle').textContent = PUZZLE.subtitle ?? '';
+document.getElementById('description').textContent = PUZZLE.description ?? '';
+// テーマの色（テーマファイルの design）
+for (const [key, value] of Object.entries(PUZZLE.design ?? {})) {
+  document.documentElement.style.setProperty(`--${key}`, value);
+}
+showCover();
+const rulesEl = document.getElementById('rules');
+for (const text of [...PUZZLE.rules, ...rules]) {
+  const li = document.createElement('li');
+  li.textContent = text;
+  rulesEl.append(li);
+}
+document.getElementById('form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  enter(document.getElementById('answer').value);
+});
+document.getElementById('check').addEventListener('click', check);
+document.getElementById('reveal-word').addEventListener('click', () => {
+  if (!selected) return setMessage('先にカギを選んでください。');
+  reveal([selected]);
+  document.getElementById('answer').value = selected.answer;
+  showNote([selected], '答え');
+  if (allFilled()) judge();
+  else setMessage('');
+});
+document.getElementById('reveal-all').addEventListener('click', () => {
+  if (!confirm('全部の答えを表示しますか？')) return;
+  reveal(words);
+  hideNote();
+  setMessage('全部の答えを表示しました。カギの下に解説を出しました。');
+});
+document.getElementById('reset').addEventListener('click', () => {
+  if (!confirm('入力をすべて消しますか？')) return;
+  filled = emptyGrid();
+  revealed = emptyGrid(false);
+  shownWords = [];
+  checkRequested = false;
+  save();
+  setMessage('');
+  hideNote();
+  render();
+});
+
+buildBoard();
+buildClues();
+load();
+render();
+if (allFilled()) judge();
+</script>
+</body>
+</html>
