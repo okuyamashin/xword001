@@ -138,6 +138,17 @@
   .related h2 { font-size: 1rem; letter-spacing: .2em; margin: 0 0 6px; }
   .related ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 6px 18px; }
   .related a { color: var(--fg); }
+  .recent { margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--rule); }
+  .recent h2 { font-size: 1.1rem; letter-spacing: .2em; margin: 0 0 8px; }
+  .recent ul { list-style: none; padding: 0; margin: 0; }
+  .recent li { padding: 8px 0; border-bottom: 1px dotted var(--rule); }
+  .recent a { color: var(--fg); text-decoration: none; display: block; }
+  .recent a:hover .title { text-decoration: underline; }
+  .recent .date { display: block; font-size: .8rem; letter-spacing: .1em; color: var(--muted); }
+  .recent .title { font-weight: 700; }
+  .recent .round { margin-left: 6px; font-size: .85em; letter-spacing: .2em; color: var(--accent); }
+  .recent .more { margin: 10px 0 0; text-align: right; }
+  .recent .more a { display: inline; border-bottom: 1px solid var(--fg); }
   .rules { margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--rule); font-size: 0.9rem; color: var(--muted); }
   .rules ul { padding-left: 1.2em; margin: 4px 0; }
 </style>
@@ -187,6 +198,7 @@
       <ol id="down"></ol>
     </section>
   </div>
+
   <section class="related">
     <h2>単語帳</h2>
     <ul><li><a href="words-animals.html">動物の単語帳</a>（このジャンルの言葉とカギ・解説の一覧）</li></ul>

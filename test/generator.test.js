@@ -89,3 +89,20 @@ test('すべての単語リストが点検を通る（山月記はカギと解�
     assert.deepEqual(errors, [], fileName);
   }
 });
+
+test('サイトのページを作れる（トップページに最近の問題、バックナンバーにジャンルの説明と単語帳へのリンク）', async () => {
+  const { mkdtemp, readFile, readdir } = await import('node:fs/promises');
+  const { execFile } = await import('node:child_process');
+  const { promisify } = await import('node:util');
+  const os = await import('node:os');
+  const path = await import('node:path');
+  const out = await mkdtemp(path.join(os.tmpdir(), 'xword-site-'));
+  await promisify(execFile)(process.execPath, ['generator/cli/build-site.js', '--out', out], { cwd: new URL('..', import.meta.url) });
+  const files = await readdir(out);
+  for (const f of ['index.html', 'archive.html', 'words.html']) assert.ok(files.includes(f), f);
+  const index = await readFile(path.join(out, 'index.html'), 'utf8');
+  assert.match(index, /最近のクロスワード/);
+  assert.match(index, /href="archive.html">バックナンバーをすべて見る/);
+  const archive = await readFile(path.join(out, 'archive.html'), 'utf8');
+  assert.match(archive, /<p class="genre">.*の単語帳を見る/);
+});

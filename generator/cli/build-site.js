@@ -83,12 +83,14 @@ for (const puzzle of puzzles) {
   await writeFile(path.join(outDir, pageName(puzzle)), renderPuzzleHtml(args));
   console.error(`→ ${pageName(puzzle)}`);
   if (puzzle === latest) {
-    await writeFile(path.join(outDir, 'index.html'), renderPuzzleHtml({ ...args, isLatest: true }));
+    // トップページ: 最新の問題と、その前の最近の 3 問
+    const recent = puzzles.filter((p) => p !== puzzle).slice(-3).reverse();
+    await writeFile(path.join(outDir, 'index.html'), renderPuzzleHtml({ ...args, recent, isLatest: true }));
     console.error('→ index.html');
   }
 }
 const entries = puzzles.map((puzzle) => ({ puzzle, image: thumbFor(imageFor(puzzle)) }));
-await writeFile(path.join(outDir, 'archive.html'), renderArchiveHtml({ template: archiveTemplate, parts, site, entries }));
+await writeFile(path.join(outDir, 'archive.html'), renderArchiveHtml({ template: archiveTemplate, parts, site, entries, themeFiles: new Map(themes.map((t) => [t.theme, t])) }));
 console.error('→ archive.html');
 
 // 単語帳

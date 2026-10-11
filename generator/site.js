@@ -38,7 +38,8 @@ function fillCommon(html, { parts, site, current }) {
 
 // image: site/images/ の中のファイル名（ジャンルの絵。なければ方眼紙。呼び出し側で決める）
 // related: 同じテーマのほかの回（このパズルを除く）
-export function renderPuzzleHtml({ template, parts, puzzle, localeSource, site, image, related = [], isLatest = false }) {
+// recent: トップページに出す、ほかの最近のクロスワード（トップページのときだけ渡す）
+export function renderPuzzleHtml({ template, parts, puzzle, localeSource, site, image, related = [], recent = [], isLatest = false }) {
   const description = puzzle.description ?? '';
   const data = { ...puzzle, description, image: `images/${image ?? puzzle.image ?? DEFAULT_IMAGE}` };
   const json = JSON.stringify(data).replace(/</g, '\\u003c');
@@ -55,14 +56,33 @@ export function renderPuzzleHtml({ template, parts, puzzle, localeSource, site, 
   const html = template
     .replace('__TITLE__', `${escapeHtml(puzzleHeading(puzzle))} 第${puzzle.round ?? 1}回｜${escapeHtml(site.name)}`)
     .replace('__DESCRIPTION__', escapeHtml(description))
+    .replace('<!--__RECENT__-->', () => recentHtml(recent))
     .replace('<!--__RELATED__-->', () => relatedHtml)
     .replace('/*__LOCALE__*/', () => inlineLocale(localeSource))
     .replace('/*__PUZZLE__*/null', () => json);
   return fillCommon(html, { parts, site, current: isLatest ? 'index.html' : null });
 }
 
+function recentHtml(recent) {
+  if (!recent.length) return '';
+  const items = recent
+    .map(
+      (p) =>
+        `      <li><a href="${pageName(p)}"><span class="date">${formatDate(p.date)}</span><span class="title">${escapeHtml(puzzleHeading(p))}</span><span class="round">第${p.round ?? 1}回</span></a></li>`,
+    )
+    .join('\n');
+  return `  <section class="recent">
+    <h2>最近のクロスワード</h2>
+    <ul>
+${items}
+    </ul>
+    <p class="more"><a href="archive.html">バックナンバーをすべて見る →</a></p>
+  </section>`;
+}
+
 // 一覧ページ。entries: [{ puzzle, image }]
-export function renderArchiveHtml({ template, parts, site, entries, latestCount = 4 }) {
+// themeFiles: テーマ ID → テーマファイル（ジャンルの説明と単語帳へのリンクに使う）
+export function renderArchiveHtml({ template, parts, site, entries, themeFiles = new Map(), latestCount = 4 }) {
   const byDate = [...entries].sort((a, b) => b.puzzle.serial - a.puzzle.serial);
   const card = ({ puzzle, image }) => {
     const description = puzzle.description ?? '';
@@ -87,8 +107,12 @@ export function renderArchiveHtml({ template, parts, site, entries, latestCount 
     .map((items) => {
       const p = items[0].puzzle;
       const en = p.subtitle ? `<span class="en">${escapeHtml(p.subtitle)}</span>` : '';
-      const book = `<a class="book" href="${wordsPageName(p.theme.split('+')[0])}">単語帳</a>`;
-      return `  <h2 class="section" id="theme-${escapeHtml(p.theme)}">${escapeHtml(p.title)}${en}${book}</h2>\n${list(items)}`;
+      const genre = p.theme.split('+')[0];
+      const description = themeFiles.get(genre)?.description ?? p.description ?? '';
+      const book = `<a href="${wordsPageName(genre)}">${escapeHtml(p.title)}の単語帳を見る →</a>`;
+      return `  <h2 class="section" id="theme-${escapeHtml(p.theme)}">${escapeHtml(p.title)}${en}</h2>
+  <p class="genre">${escapeHtml(description)}<br>${book}</p>
+${list(items)}`;
     })
     .join('\n');
 
