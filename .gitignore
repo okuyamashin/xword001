@@ -5,3 +5,4 @@ data/images/*.png
 data/images/*.jpg
 data/images/*.jpeg
 
+.env

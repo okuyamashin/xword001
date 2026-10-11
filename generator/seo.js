@@ -130,6 +130,7 @@ export function renderLlmsTxt({ site, puzzles, themes, pageName, wordsPageName, 
       link('つなぎの言葉の単語帳', wordsPageName(t.theme), `${t.words.length} 語。盤面のすき間を埋めるために、どのジャンルにも入ることがある身近な言葉`),
       link('つなぎの言葉の単語リスト（JSON）', `words-${t.theme}.json`),
     ]),
+    link('プライバシーポリシー', 'privacy.html', '訪問の計測に使うクッキーについて'),
     link('サイトマップ', 'sitemap.xml'),
   ];
   return `${lines.join('\n').replace(/\n{3,}/g, '\n\n')}\n`;

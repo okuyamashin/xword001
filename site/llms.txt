@@ -35,4 +35,5 @@
 
 - [つなぎの言葉の単語帳](https://xword.engawa5656.com/words-general.html): 496 語。盤面のすき間を埋めるために、どのジャンルにも入ることがある身近な言葉
 - [つなぎの言葉の単語リスト（JSON）](https://xword.engawa5656.com/words-general.json)
+- [プライバシーポリシー](https://xword.engawa5656.com/privacy.html): 訪問の計測に使うクッキーについて
 - [サイトマップ](https://xword.engawa5656.com/sitemap.xml)

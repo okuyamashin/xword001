@@ -41,6 +41,16 @@ function fillCommon(html, { parts, site, current, head }) {
     .replaceAll('__SITE_NAME__', escapeHtml(site.name));
 }
 
+export function renderPrivacyHtml({ template, parts, site }) {
+  const head = {
+    path: 'privacy.html',
+    title: `プライバシーポリシー｜${site.name}`,
+    description: `${site.name}が訪問の計測に使うクッキーについて。`,
+    jsonLd: [breadcrumbJsonLd(site, [{ name: site.name, path: '' }, { name: 'プライバシーポリシー', path: 'privacy.html' }])],
+  };
+  return fillCommon(template, { parts, site, current: null, head });
+}
+
 // image: site/images/ の中のファイル名（ジャンルの絵。なければ方眼紙。呼び出し側で決める）
 // related: 同じテーマのほかの回（このパズルを除く）
 // recent: トップページに出す、ほかの最近のクロスワード（トップページのときだけ渡す）

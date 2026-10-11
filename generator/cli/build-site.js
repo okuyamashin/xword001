@@ -10,7 +10,7 @@
 import { readFile, readdir, writeFile, mkdir, cp, rm } from 'node:fs/promises';
 import path from 'node:path';
 import { parseArgs } from 'node:util';
-import { renderPuzzleHtml, renderArchiveHtml, renderWordsHtml, renderWordsIndexHtml, publicWordList, pageName, wordsPageName, puzzleHeading, DEFAULT_IMAGE } from '../site.js';
+import { renderPuzzleHtml, renderArchiveHtml, renderWordsHtml, renderWordsIndexHtml, renderPrivacyHtml, publicWordList, pageName, wordsPageName, puzzleHeading, DEFAULT_IMAGE } from '../site.js';
 import { renderSitemap, renderRobots, renderLlmsTxt } from '../seo.js';
 import { ROOT } from '../lib/words.js';
 
@@ -114,6 +114,10 @@ for (const theme of themes) {
 }
 await writeFile(path.join(outDir, 'words.html'), renderWordsIndexHtml({ template: wordsIndexTemplate, parts, site, books }));
 console.error(`→ words.html と単語帳 ${books.length} 冊`);
+await cp(path.join(ROOT, 'template/consent-gate.js'), path.join(outDir, 'consent-gate.js'));
+await cp(path.join(ROOT, 'template/consent.js'), path.join(outDir, 'consent.js'));
+await writeFile(path.join(outDir, 'privacy.html'), renderPrivacyHtml({ template: await read('template/privacy.html'), parts, site }));
+console.error('→ privacy.html と計測の同意');
 
 // 検索エンジンと AI 向けの案内
 if (site.baseUrl) {
@@ -122,6 +126,7 @@ if (site.baseUrl) {
     { path: 'index.html', lastmod: newest },
     { path: 'archive.html', lastmod: newest },
     { path: 'words.html', lastmod: newest },
+    { path: 'privacy.html' },
     ...[...puzzles].reverse().map((p) => ({ path: pageName(p), lastmod: p.date })),
     ...books.map(({ theme, lastmod }) => ({ path: wordsPageName(theme.theme), lastmod })),
   ];

@@ -99,8 +99,9 @@ test('サイトのページを作れる（トップページに最近の問題�
   const out = await mkdtemp(path.join(os.tmpdir(), 'xword-site-'));
   await promisify(execFile)(process.execPath, ['generator/cli/build-site.js', '--out', out], { cwd: new URL('..', import.meta.url) });
   const files = await readdir(out);
-  for (const f of ['index.html', 'archive.html', 'words.html']) assert.ok(files.includes(f), f);
+  for (const f of ['index.html', 'archive.html', 'words.html', 'privacy.html', 'consent-gate.js', 'consent.js']) assert.ok(files.includes(f), f);
   const index = await readFile(path.join(out, 'index.html'), 'utf8');
+  assert.match(index, /consent-gate\.js/);
   assert.match(index, /最近のクロスワード/);
   assert.match(index, /href="archive.html">バックナンバーをすべて見る/);
   const archive = await readFile(path.join(out, 'archive.html'), 'utf8');
