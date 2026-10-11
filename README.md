@@ -4,6 +4,7 @@
 
 - ジャンルの作り方: [docs/genre-guide.md](docs/genre-guide.md)
 - 設計: [docs/design.md](docs/design.md)
+- 本番に上げる（S3 + CloudFront）: [docs/deploy.md](docs/deploy.md)
 
 ## 使い方（Node.js 20 以上）
 
@@ -15,5 +16,6 @@ npm run make -- --theme countries                      # puzzles/00004-countries
 npm run trial -- --theme countries --days 30           # 何日分か組んで集計する
 npm run texts -- --puzzle puzzles/00001-countries-001.json   # 作り置きのない語だけ、その場でカギと解説をつける（予備）
 npm run site                                           # site/ に HTML を作る
+npm run deploy                                         # 本番（S3）に上げる（要 AWS CLI・S3_BUCKET）
 npm test
 ```

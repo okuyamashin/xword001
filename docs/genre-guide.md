@@ -22,7 +22,7 @@
                             npm test
 6. パズルを作る              npm run make -- --theme <ジャンル>
 7. ページを作る              npm run site
-8. コミットして公開          main に入れる → GitHub Actions が GitHub Pages に公開
+8. 本番に上げる              main に入れる → npm run deploy（S3 + CloudFront。docs/deploy.md）
 ```
 
 ---
@@ -281,11 +281,13 @@ npm run site                          # site/ にページを作る
   単語リストの表記・読み・難しさ・カギ・解説がそのまま公開されるので、**公開してよい内容だけを書きます**。
   作る側のメモ（`note`）は単語帳にもダウンロード用の JSON にも出ません。
 
-公開:
+公開（くわしくは `docs/deploy.md`）:
 
-1. 変更をコミットして、作業ブランチにプッシュする
-2. `main` に入れる（入れるのは持ち主が確認してから）
-3. `main` に入ると GitHub Actions（`.github/workflows/pages.yml`）が `site/` を作り直して GitHub Pages に公開する
+1. `npm run site` で作ったページ（`site/*.html`）をブラウザで開いて確かめる（スマホの幅でも）
+2. 変更をコミットして、作業ブランチにプッシュする（`site/` はリポジトリに入れない）
+3. `main` に入れる（入れるのは持ち主が確認してから）
+4. `main` の内容で `npm run deploy` を実行し、本番（S3 + CloudFront、`https://xword.engawa5656.com/`）に上げる。
+   最初に `npm run deploy -- --dryrun` で、送られるもの・消えるものを確かめる
 
 ---
 
@@ -302,6 +304,7 @@ npm run site                          # site/ にページを作る
 - [ ] `npm run trial` で 1 問 15〜20 語入る
 - [ ] `npm test` が通る
 - [ ] パズルを作り、ページをブラウザ（スマホの幅も）で開いて確かめた
+- [ ] main に入れ、`npm run deploy` で本番に上げ、本番のページを確かめた
 
 ---
 

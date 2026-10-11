@@ -590,7 +590,7 @@ xword001/
 │   └── themes/      日付ごとのテーマ設定
 ├── puzzles/         生成したクロスワード（日付ごとの JSON）
 ├── template/        HTML テンプレート（puzzle.html）
-├── site/            生成された HTML（GitHub Pages で公開）
+├── site/            生成された HTML（リポジトリには入れない。npm run deploy で S3 に上げる）
 └── .github/workflows/daily.yml   毎日のビルド
 ```
 
@@ -703,12 +703,16 @@ npm test
 | AWS Lambda | Secrets Manager か SSM パラメータストア（SecureString） |
 | 手元のパソコン | `export OPENAI_API_KEY=...` |
 
-### 13.6 公開（GitHub Pages）
+### 13.6 公開（S3 + CloudFront）
 
-- `.github/workflows/pages.yml`: `main` に入るたびに `site/` を作り直し、GitHub Pages に公開する（手動実行も可）。
-- テスト用の URL: `https://okuyamashin.github.io/xword001/`
-- 本番では `engawa5656.com` のサブドメインを使う。リポジトリの Settings → Pages の Custom domain に入れ、
-  DNS にそのサブドメインの CNAME（向け先 `okuyamashin.github.io`）を追加する。
+- 本番は `https://xword.engawa5656.com/`。S3 に置き、CloudFront（HTTPS・独自ドメイン・キャッシュ）を通して公開する。
+  手順と AWS の準備は `docs/deploy.md`。
+- `npm run deploy`: `site/` を作り直し、S3 に同期（消えたファイルは消す）、CloudFront のキャッシュを消す。
+  キャッシュは絵 1 週間、ページと JSON 5 分。
+- 流れ: 作業ブランチで作る → 点検・動作確認 → `main` に入れる → `main` の内容で `npm run deploy`。
+- `site/` はリポジトリに入れない（毎回作り直す）。
+- 以前は GitHub Pages（`okuyamashin.github.io/xword001/`）で公開していたが、ファイル容量などの制限があるため S3 に切り替えた。
+  GitHub Pages の自動公開（`.github/workflows/pages.yml`）は削除した。
 
 ### 13.7 ページ構成とバックナンバー
 
