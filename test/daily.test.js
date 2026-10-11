@@ -59,7 +59,7 @@ test('Lambda: 指定がなければ予定表、なければランダム。その
   assert.equal(r.id, '00005-programming_languages-002');
   const again = await runDaily({ store, sources, locale: ja, date: '2026-10-12' });
   assert.equal(again.skipped, true);
-  // ランダムに選ばれるのは、カギのある言葉が十分あるジャンルだけ（いまは山月記とプログラミング言語）。直前の回と同じジャンルは避ける
+  // ランダムに選ばれるのは、カギのある言葉が十分あるジャンルだけ。直前の回と同じジャンルは避ける
   const r3 = await runDaily({ store, sources, locale: ja, date: '2026-10-13', random: () => 0.99 });
   assert.equal(r3.source, 'random');
   assert.equal(r3.genre, 'sangetsuki');
