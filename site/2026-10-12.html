@@ -68,7 +68,11 @@
   .clues li .n { font-weight: bold; margin-right: 4px; }
   .clues li .ans { color: var(--revealed); margin-left: 4px; }
   .clues li .explain { display: none; margin: 4px 0 2px; font-size: 0.9rem; color: var(--fg); }
-  .explained .clues li .explain { display: block; }
+  .clues li.show-explain .explain { display: block; }
+  .note { margin: 8px 0 0; padding: 8px 10px; border-left: 4px solid var(--accent); background: var(--word); font-size: 0.95rem; }
+  .note[hidden] { display: none; }
+  .note .label { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .note .word { font-weight: bold; margin-right: 6px; }
   .clues li .tag[hidden] { display: none; }
   .clues li .tag { display: inline-block; margin-right: 6px; padding: 0 6px; border: 1px solid var(--muted); border-radius: 999px; font-size: 0.75rem; color: var(--muted); }
 
@@ -96,6 +100,7 @@
           <button type="button" id="reset">リセット</button>
         </div>
         <p class="message" id="message" role="status"></p>
+        <div class="note" id="note" hidden><span class="label"></span><span class="word"></span><span class="body"></span></div>
       </div>
     </section>
     <section class="clues">
@@ -293,15 +298,15 @@ function render() {
   const showWrong = checkRequested || allFilled();
   const isWrong = (r, c) => showWrong && filled[r][c] && filled[r][c] !== solution[r][c];
   board.innerHTML = boardSvg({ selectedCells, isWrong });
-  // 完成したとき・全部の答えを見たときは、解説を出す
+  // 正解した単語・答えを見た単語は、解説を出す（完成時・全部の答えを見たときは全部）
   const explained = isSolved() || words.every((w) => shownWords.includes(w.index));
-  document.getElementById('main').classList.toggle('explained', explained);
   for (const w of words) {
     w.li.classList.toggle('selected', w === selected);
     const complete = w.cells.every(([r, c]) => filled[r][c]);
     w.li.classList.toggle('done', complete);
     w.li.classList.toggle('wrong', w.cells.some(([r, c]) => isWrong(r, c)));
-    const shown = explained || shownWords.includes(w.index);
+    const shown = explained || isCorrect(w) || shownWords.includes(w.index);
+    w.li.classList.toggle('show-explain', shown);
     w.li.querySelector('.ans').textContent = shown ? `→ ${w.display}` : '';
   }
   const current = document.getElementById('current');
@@ -343,6 +348,7 @@ function enter(text) {
   const letters = [...normalize(text)];
   const invalid = letters.filter((ch) => !isValidAnswer(ch));
   if (invalid.length) return setMessage(`使えない文字があります: ${[...new Set(invalid)].join(' ')}`);
+  const target = selected;
   const len = selected.cells.length;
   selected.cells.forEach(([r, c], i) => {
     if (revealed[r][c]) return;
@@ -351,6 +357,9 @@ function enter(text) {
   checkRequested = false;
   save();
   render();
+  // 正解なら、入力した場所の近くにも解説を出す
+  if (isCorrect(target)) showNote(target, '正解！');
+  else hideNote();
   if (allFilled()) return judge();
   if (letters.length !== len) {
     setMessage(`${len}文字の答えです（${letters.length}文字入力されました）。`);
@@ -401,6 +410,22 @@ function reveal(targets) {
   render();
 }
 
+function isCorrect(w) {
+  return w.cells.every(([r, c]) => filled[r][c] === solution[r][c]);
+}
+
+function showNote(w, label) {
+  const note = document.getElementById('note');
+  note.querySelector('.label').textContent = label;
+  note.querySelector('.word').textContent = w.display;
+  note.querySelector('.body').textContent = w.explanation ?? '';
+  note.hidden = false;
+}
+
+function hideNote() {
+  document.getElementById('note').hidden = true;
+}
+
 function isSolved() {
   return solution.every((row, r) => row.every((ch, c) => ch === '#' || filled[r][c] === ch));
 }
@@ -431,12 +456,15 @@ document.getElementById('check').addEventListener('click', check);
 document.getElementById('reveal-word').addEventListener('click', () => {
   if (!selected) return setMessage('先にカギを選んでください。');
   reveal([selected]);
+  document.getElementById('answer').value = selected.answer;
+  showNote(selected, '答え');
   if (allFilled()) judge();
   else setMessage('');
 });
 document.getElementById('reveal-all').addEventListener('click', () => {
   if (!confirm('全部の答えを表示しますか？')) return;
   reveal(words);
+  hideNote();
   setMessage('全部の答えを表示しました。カギの下に解説を出しました。');
 });
 document.getElementById('reset').addEventListener('click', () => {
@@ -447,6 +475,7 @@ document.getElementById('reset').addEventListener('click', () => {
   checkRequested = false;
   save();
   setMessage('');
+  hideNote();
   render();
 });
 
