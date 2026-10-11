@@ -72,6 +72,7 @@
   .clues li { padding: 4px 6px; cursor: pointer; border-radius: 4px; }
   .clues li.selected { background: var(--word); }
   .clues li.done { color: var(--muted); }
+  .clues li.wrong { background: var(--wrong); color: var(--fg); }
   .clues li .n { font-weight: bold; margin-right: 4px; }
   .clues li .ans { color: var(--revealed); margin-left: 4px; }
 
@@ -131,6 +132,7 @@ let revealed = emptyGrid(false);
 let shownWords = []; // 答えを見た単語の index
 let selected = null;
 let activeCell = null;
+let checkRequested = false; // 「答え合わせ」を押した直後だけ true（次の入力で戻す）
 
 function emptyGrid(value = '') {
   return Array.from({ length: rows }, () => Array(cols).fill(value));
@@ -201,6 +203,9 @@ function buildClues() {
 
 function render() {
   const selectedCells = new Set(selected?.cells.map(([r, c]) => `${r},${c}`));
+  // 全部埋まったとき、または答え合わせを押したときは、まちがいに色をつける
+  const showWrong = checkRequested || allFilled();
+  const isWrong = (r, c) => showWrong && filled[r][c] && filled[r][c] !== solution[r][c];
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
       if (solution[r][c] === '#') continue;
@@ -209,12 +214,14 @@ function render() {
       el.classList.toggle('in-word', selectedCells.has(`${r},${c}`));
       el.classList.toggle('active', activeCell?.[0] === r && activeCell?.[1] === c);
       el.classList.toggle('revealed', revealed[r][c]);
+      el.classList.toggle('wrong', isWrong(r, c));
     }
   }
   for (const w of words) {
     w.li.classList.toggle('selected', w === selected);
     const complete = w.cells.every(([r, c]) => filled[r][c]);
     w.li.classList.toggle('done', complete);
+    w.li.classList.toggle('wrong', w.cells.some(([r, c]) => isWrong(r, c)));
     const shown = shownWords.includes(w.index);
     w.li.querySelector('.ans').textContent = shown ? `→ ${w.display}` : '';
   }
@@ -230,8 +237,7 @@ function render() {
 function select(w, cell = null) {
   selected = w;
   activeCell = cell ?? w.cells[0];
-  clearWrong();
-  setMessage('');
+  if (!allFilled()) setMessage('');
   render();
   const input = document.getElementById('answer');
   input.value = w.cells.map(([r, c]) => filled[r][c] || '').join('');
@@ -263,9 +269,10 @@ function enter(text) {
     if (revealed[r][c]) return;
     if (i < letters.length) filled[r][c] = letters[i];
   });
+  checkRequested = false;
   save();
   render();
-  if (isSolved()) return finish();
+  if (allFilled()) return judge();
   if (letters.length !== len) {
     setMessage(`${len}文字の答えです（${letters.length}文字入力されました）。`);
   } else {
@@ -282,22 +289,26 @@ function selectNextEmpty() {
   }
 }
 
-function clearWrong() {
-  for (const row of cellEls) for (const el of row) el?.classList.remove('wrong');
+function allFilled() {
+  return solution.every((row, r) => row.every((ch, c) => ch === '#' || filled[r][c]));
+}
+
+function wrongWords() {
+  return words.filter((w) => w.cells.some(([r, c]) => filled[r][c] && filled[r][c] !== solution[r][c]));
+}
+
+// 全部埋まったときの判定
+function judge() {
+  if (isSolved()) return finish();
+  setMessage(`間違いがあります（${wrongWords().length}語）。赤いカギを見直してください。`);
 }
 
 function check() {
-  clearWrong();
-  let wrong = 0;
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      if (filled[r][c] && filled[r][c] !== solution[r][c]) {
-        cellEls[r][c].classList.add('wrong');
-        wrong++;
-      }
-    }
-  }
-  setMessage(wrong ? `まちがいが ${wrong} マスあります。` : 'いまのところ、まちがいはありません。');
+  checkRequested = true;
+  render();
+  if (allFilled()) return judge();
+  const n = wrongWords().length;
+  setMessage(n ? `間違いがあります（${n}語）。赤いカギを見直してください。` : 'いまのところ、間違いはありません。');
 }
 
 function reveal(targets) {
@@ -308,7 +319,6 @@ function reveal(targets) {
     filled[r][c] = solution[r][c];
   }
   save();
-  clearWrong();
   render();
 }
 
@@ -342,7 +352,8 @@ document.getElementById('check').addEventListener('click', check);
 document.getElementById('reveal-word').addEventListener('click', () => {
   if (!selected) return setMessage('先にカギを選んでください。');
   reveal([selected]);
-  setMessage('');
+  if (allFilled()) judge();
+  else setMessage('');
 });
 document.getElementById('reveal-all').addEventListener('click', () => {
   if (!confirm('全部の答えを表示しますか？')) return;
@@ -354,8 +365,8 @@ document.getElementById('reset').addEventListener('click', () => {
   filled = emptyGrid();
   revealed = emptyGrid(false);
   shownWords = [];
+  checkRequested = false;
   save();
-  clearWrong();
   setMessage('');
   render();
 });
@@ -364,7 +375,7 @@ buildBoard();
 buildClues();
 load();
 render();
-if (isSolved()) finish();
+if (allFilled()) judge();
 </script>
 </body>
 </html>
