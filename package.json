@@ -10,7 +10,8 @@
     "make": "node generator/cli/make-puzzle.js",
     "trial": "node generator/cli/trial.js",
     "test": "node --test",
-    "clues": "node generator/cli/add-clues.js"
+    "clues": "node generator/cli/add-clues.js",
+    "site": "node generator/cli/build-site.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.133.0"
