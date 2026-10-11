@@ -35,7 +35,7 @@ function fillCommon(html, { parts, site, current }) {
 // image: site/images/ の中のファイル名（ジャンルの絵。なければ方眼紙。呼び出し側で決める）
 // related: 同じテーマのほかの回（このパズルを除く）
 export function renderPuzzleHtml({ template, parts, puzzle, localeSource, site, image, related = [], isLatest = false }) {
-  const description = puzzle.intro?.description ?? puzzle.description ?? '';
+  const description = puzzle.description ?? '';
   const data = { ...puzzle, description, image: `images/${image ?? puzzle.image ?? DEFAULT_IMAGE}` };
   const json = JSON.stringify(data).replace(/</g, '\\u003c');
   const relatedHtml = related.length
@@ -56,7 +56,7 @@ export function renderPuzzleHtml({ template, parts, puzzle, localeSource, site, 
 export function renderArchiveHtml({ template, parts, site, entries, latestCount = 4 }) {
   const byDate = [...entries].sort((a, b) => b.puzzle.serial - a.puzzle.serial);
   const card = ({ puzzle, image }) => {
-    const description = puzzle.intro?.description ?? puzzle.description ?? '';
+    const description = puzzle.description ?? '';
     return `    <li><a class="card" href="${pageName(puzzle)}" data-id="${escapeHtml(puzzle.id)}">
       <img src="images/${escapeHtml(image)}" alt="" loading="lazy" width="88" height="88">
       <div class="meta">

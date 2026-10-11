@@ -202,7 +202,8 @@ function finalize({ grid, placed, stats }, rows, cols) {
       answer: word.answer,
       display: word.display,
       theme: word.theme,
-      clue: null,
+      clue: word.clue ?? null,
+      explanation: word.explanation ?? null,
     }))
     .sort((a, b) => (a.direction === b.direction ? a.number - b.number : a.direction === 'across' ? -1 : 1));
   return {

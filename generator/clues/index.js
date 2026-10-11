@@ -10,14 +10,18 @@
 import { buildRequest } from './request.js';
 import { CHECKS } from './checks.js';
 
-export async function addTexts({ field, puzzle, themeFiles, locale, writer, maxRounds = 3 }) {
+export async function addTexts({ field, puzzle, themeFiles, locale, writer, maxRounds = 3, batchSize = 25, onBatch }) {
   const check = CHECKS[field];
   if (!check) throw new Error(`未知の項目: ${field}`);
   const themeById = new Map(themeFiles.map((f) => [f.theme, f]));
   const words = puzzle.words.map((w) => ({ ...w }));
   const problems = [];
 
+  const batches = [];
   for (const [theme, group] of groupBy(words.filter((w) => !w[field]), (w) => w.theme)) {
+    for (let i = 0; i < group.length; i += batchSize) batches.push([theme, group.slice(i, i + batchSize)]);
+  }
+  for (const [index, [theme, group]] of batches.entries()) {
     const themeFile = themeById.get(theme);
     if (!themeFile) throw new Error(`テーマファイル ${theme} がない`);
     const notes = new Map(themeFile.words.map((w) => [`${w.answer}|${w.display}`, w.note]));
@@ -55,6 +59,7 @@ export async function addTexts({ field, puzzle, themeFiles, locale, writer, maxR
       pending = next;
     }
     problems.push(...retry.map((r) => ({ ...r, field })));
+    await onBatch?.({ index, total: batches.length, words });
   }
   return { puzzle: { ...puzzle, words }, problems };
 }

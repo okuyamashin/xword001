@@ -45,3 +45,14 @@ test('検証は意図しない並びを見つける', () => {
   };
   assert.ok(validatePuzzle(puzzle).length > 0);
 });
+
+test('パズルを作るとき、単語リストのカギと解説を書き写す（AI を使わない）', async () => {
+  const themeFiles = [await loadThemeFile('ja', 'sangetsuki')];
+  const generalFile = await loadThemeFile('ja', 'general');
+  const { puzzle } = buildPuzzle({ serial: 9, round: 1, date: '2026-10-15', locale: 'ja', themeFiles, generalFile, layout: { attempts: 30 } });
+  for (const w of puzzle.words.filter((x) => x.theme === 'sangetsuki')) {
+    assert.ok(w.clue, `${w.display} のカギ`);
+    assert.ok(w.explanation, `${w.display} の解説`);
+  }
+  assert.equal(puzzle.description, themeFiles[0].description);
+});
