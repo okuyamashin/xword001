@@ -118,7 +118,7 @@ test('解説: 空のものだけを埋め、カギを依頼に添え、答えを
   assert.equal(checkExplanation({ text: 'あ'.repeat(121), maxLength: 120 }) !== null, true);
 });
 
-test('紹介文: 答えを見て書かせ、画風を付け、答えの漏れは注意として返す', async () => {
+test('紹介文: 答えを見て書かせ、答えの漏れは注意として返す', async () => {
   const { addIntro } = await import('../generator/clues/intro.js');
   const countries = await loadThemeFile('ja', 'countries');
   const puzzle = {
@@ -126,16 +126,15 @@ test('紹介文: 答えを見て書かせ、画風を付け、答えの漏れは
     words: [{ answer: 'ケニア', display: 'ケニア', theme: 'countries' }, { answer: 'ドア', display: 'ドア', theme: 'general' }],
   };
   let request;
-  const writer = { name: 'fake', async generate(req) { request = req; return { description: 'ケニアなど世界の国を集めました。', imageSubject: 'A globe on a desk.' }; } };
-  const site = { imageStyle: 'Engraving style.' };
-  const result = await addIntro({ puzzle, themeFiles: [countries], locale: ja, site, writer });
+  const writer = { name: 'fake', async generate(req) { request = req; return { description: 'ケニアなど世界の国を集めました。' }; } };
+  const result = await addIntro({ puzzle, themeFiles: [countries], locale: ja, writer });
   assert.ok(request.prompt.includes('ケニア（ケニア）'));
   assert.ok(request.prompt.includes('ドア（ドア）［テーマ外のつなぎの言葉］'));
   assert.equal(result.puzzle.intro.theme, '世界の国と地域');
-  assert.equal(result.puzzle.intro.imagePrompt, 'A globe on a desk. Engraving style.');
+  assert.deepEqual(Object.keys(result.puzzle.intro), ['theme', 'description']);
   assert.equal(result.warnings.length, 1);
   // すでにあるときは呼ばない
-  const again = await addIntro({ puzzle: result.puzzle, themeFiles: [countries], locale: ja, site, writer: { generate() { throw new Error('呼ばれた'); } } });
+  const again = await addIntro({ puzzle: result.puzzle, themeFiles: [countries], locale: ja, writer: { generate() { throw new Error('呼ばれた'); } } });
   assert.equal(again.puzzle.intro.description, 'ケニアなど世界の国を集めました。');
 });
 

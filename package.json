@@ -12,7 +12,8 @@
     "test": "node --test",
     "site": "node generator/cli/build-site.js",
     "texts": "NODE_USE_ENV_PROXY=1 node generator/cli/write-texts.js",
-    "images": "node generator/cli/images.js"
+    "images": "node generator/cli/images.js",
+    "theme-image": "NODE_USE_ENV_PROXY=1 node generator/cli/theme-image.js"
   },
   "dependencies": {
     "openai": "^7.32.0"

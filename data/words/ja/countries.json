@@ -4,7 +4,7 @@
   "title": "世界の国と地域",
   "subtitle": "Countries and Regions",
   "description": "世界の国と地域の名前を集めました。首都や名物、歴史をヒントに、国名をカタカナで埋めていきましょう。",
-  "image": "countries.svg",
+  "image": "countries.webp",
   "imagePrompt": "An antique world globe on a scholar's desk with a compass, a spyglass and an old map, framed by distant landscapes from around the world: tropical palms and a sailing ship, snowy mountains, desert dunes, savanna animals and classical ruins. Square 1:1 composition. Antique copperplate engraving style with fine line work and cross-hatching, sepia ink on aged parchment paper, muted warm tones, 19th-century book illustration. No text, no letters, no numbers, no labels, no border.",
   "design": {
     "accent": "#2f4f6f"

@@ -47,10 +47,18 @@ for (const file of (await readdir(values.puzzles)).filter((f) => f.endsWith('.js
 }
 puzzles.sort((a, b) => a.serial - b.serial);
 
-// パズル専用の絵（data/images/<id>.png など）→ テーマの絵 → 方眼紙
-const imageFor = (puzzle) =>
-  imageFiles.find((f) => f.replace(/\.[^.]+$/, '') === puzzle.id) ??
-  (puzzle.image && imageFiles.includes(puzzle.image) ? puzzle.image : DEFAULT_IMAGE);
+// 絵はジャンル（テーマ）ごとに 1 枚。テーマファイルの image を使い、なければ方眼紙
+const themeImages = new Map();
+for (const f of (await readdir(path.join(ROOT, 'data/words', values.locale))).filter((f) => f.endsWith('.json'))) {
+  const t = JSON.parse(await read(`data/words/${values.locale}/${f}`));
+  if (t.image) themeImages.set(t.theme, t.image);
+}
+const imageFor = (puzzle) => {
+  const image = themeImages.get(puzzle.theme.split('+')[0]);
+  if (image && imageFiles.includes(image)) return image;
+  if (image) console.error(`${puzzle.id}: テーマの絵 ${image} がまだありません（npm run theme-image）`);
+  return DEFAULT_IMAGE;
+};
 
 const latest = puzzles.at(-1);
 for (const puzzle of puzzles) {

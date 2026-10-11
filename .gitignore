@@ -1,1 +1,6 @@
 node_modules/
+
+# 絵の元の PNG・JPEG は入れない（WebP に変えてから入れる）
+data/images/*.png
+data/images/*.jpg
+data/images/*.jpeg

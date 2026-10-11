@@ -1,6 +1,6 @@
 // 用意しておいた文章を使う（手で書いたもの、他の手段で作ったものなど）
 // drafts: [{ answer, display, clue?, explanation? }]
-//   または { words: [...], intro: { description, imageSubject } }
+//   または { words: [...], intro: { description } }
 
 export function createFileWriter(drafts) {
   const list = Array.isArray(drafts) ? drafts : (drafts.words ?? []);

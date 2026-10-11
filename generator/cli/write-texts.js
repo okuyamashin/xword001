@@ -1,8 +1,8 @@
-// クロスワードに、カギ（clue）・解説（explanation）・紹介文と画像プロンプト（intro）をつける。
+// クロスワードに、カギ（clue）・解説（explanation）・紹介文（intro）をつける。
 // まだ空のものだけを埋める。
 // 使い方:
 //   node generator/cli/write-texts.js --puzzle puzzles/00001-countries-001.json                       # カギ → 解説 → 紹介文の順に OpenAI で書く
-//   node generator/cli/write-texts.js --puzzle puzzles/00001-countries-001.json --only intro          # 紹介文と画像プロンプトだけ
+//   node generator/cli/write-texts.js --puzzle puzzles/00001-countries-001.json --only intro          # 紹介文だけ
 //   node generator/cli/write-texts.js --puzzle puzzles/00001-countries-001.json --only explanation    # 解説だけ
 //   node generator/cli/write-texts.js --puzzle puzzles/00001-countries-001.json --drafts texts.json   # 用意した文章を使う
 // どれも同じ自動チェックを通し、通ったものを同じファイルに書き込む。
@@ -33,7 +33,6 @@ let puzzle = JSON.parse(await readFile(values.puzzle, 'utf8'));
 const locale = await import(`../locales/${puzzle.locale}.js`);
 const themes = [...new Set(puzzle.words.map((w) => w.theme))];
 const themeFiles = await Promise.all(themes.map((t) => loadThemeFile(puzzle.locale, t)));
-const site = JSON.parse(await readFile(path.join(ROOT, 'data/site', `${puzzle.locale}.json`), 'utf8'));
 
 let writer;
 if (values.drafts) {
@@ -53,11 +52,10 @@ for (const field of fields) {
   await writeFile(values.puzzle, `${JSON.stringify(puzzle, null, 2)}\n`);
 }
 if (steps.includes('intro')) {
-  const result = await addIntro({ puzzle, themeFiles, locale, site, writer });
+  const result = await addIntro({ puzzle, themeFiles, locale, writer });
   puzzle = result.puzzle;
   await writeFile(values.puzzle, `${JSON.stringify(puzzle, null, 2)}\n`);
   console.error(`紹介文: ${puzzle.intro?.description ?? '（なし）'}`);
-  console.error(`画像プロンプト: ${puzzle.intro?.imagePrompt ?? '（なし）'}`);
   for (const w of result.warnings) console.error(`注意（紹介文）: ${w}`);
   for (const p of result.problems) problems.push({ ...p, field: 'intro', display: '紹介文', answer: '-', text: p.description });
 }

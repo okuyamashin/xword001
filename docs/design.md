@@ -149,8 +149,8 @@
 |---|---|
 | `subtitle` | テーマの英語名。見出しの下に出す |
 | `description` | テーマの説明。見出しの下に罫線で囲んで出す。meta description にも使う |
-| `image` | 最初に出す正方形の絵（`data/images/` のファイル名）。パズル専用の絵 `data/images/<パズルのID>.png`（例: `00001-countries-001.png`、webp/jpg/svg も可）があればそちらを優先。どちらもなければ方眼紙の絵（`default.svg`） |
-| `imagePrompt` | テーマの絵（`image`）を作るための画像プロンプト（英語。サイト共通の画風の指定まで含めた、そのまま使える形）。パズルごとの絵のプロンプトはクロスワードの `intro.imagePrompt` |
+| `image` | ジャンルの絵（`data/images/` のファイル名。例: `sangetsuki.webp`）。絵はジャンルにつき 1 枚で、そのジャンルのどの回でも最初に出す。なければ方眼紙の絵（`default.svg`） |
+| `imagePrompt` | ジャンルの絵を作るための画像プロンプト（英語。サイト共通の画風 `data/site/<locale>.json` の `imageStyle` まで含めた、そのまま使える形） |
 | `design` | 色の差し替え。CSS 変数名と値（例: `{"accent": "#2f4f6f"}`） |
 
 - サイト名は `data/site/<locale>.json` の `name`。
@@ -297,7 +297,7 @@
 ```
 npm run texts -- --puzzle puzzles/00001-countries-001.json                       # カギ → 解説の順に OpenAI で書く
 npm run texts -- --puzzle puzzles/00001-countries-001.json --only explanation    # 解説だけ
-npm run texts -- --puzzle puzzles/00001-countries-001.json --only intro          # 紹介文と画像プロンプトだけ
+npm run texts -- --puzzle puzzles/00001-countries-001.json --only intro          # 紹介文だけ
 npm run texts -- --puzzle puzzles/00001-countries-001.json --drafts texts.json   # 用意した文章を使う
 ```
 
@@ -503,7 +503,6 @@ data/words/ja/
 | `round` | ジャンル内の連番。見出しとタイトルに「第N回」と出す（8.5） |
 | `intro.theme` | テーマ（作るときに指定したもの） |
 | `intro.description` | このパズルの紹介文。入った答えを見て AI が書く（答えは書かないよう指示。漏れたら注意を出すだけで止めない）。見出しの下と meta description に使う |
-| `intro.imagePrompt` | 表紙の絵を作るための画像プロンプト（英語）。AI が書いた題材に、サイト共通の画風（`data/site/<locale>.json` の `imageStyle`）を付けたもの |
 | `words[].explanation` | 解説。完成したとき・全部の答えを見たときに表示する。③で書き込む |
 | `words[].clue` | ヒント。①の時点では `null`、②で書き込む |
 
@@ -525,7 +524,7 @@ data/words/ja/
 ```
 
 - この ID を、クロスワードのファイル（`puzzles/<ID>.json`）、ページ（`site/<ID>.html`）、
-  その回の絵（`data/images/<ID>.png` → `.webp`）、進み具合の保存（localStorage の `xword:<ID>`）に使う。
+  進み具合の保存（localStorage の `xword:<ID>`）に使う。
 - 番号は `npm run make` が `puzzles/` の既存分から自動で決める（通し番号は最大＋1、ジャンル内連番はそのジャンルの最大＋1）。
 - `date` は作った日の記録。ページに表示するが、並び順や名前には使わない。並び順は通し番号。
 - 複数テーマを合わせたパズルのジャンル名は、テーマ ID を `_` でつなぐ。
@@ -685,27 +684,21 @@ npm test
 - どのページにもヘッダーに「最新の問題」「バックナンバー」へのリンク。
 - 共通部分は `template/base.css`（色・文字・ヘッダー）、`template/header.html`、`template/footer.html` にまとめ、作るときにはめこむ。
 
-### 13.8 絵の形式と大きさ
+### 13.8 絵（ジャンルにつき 1 枚）
 
-- 表紙の絵（PNG・JPEG）は `data/images/<パズルのID>.png`（その回だけの絵）または `data/images/<テーマID>.png`（テーマの絵。例: `animals.png`）に置き、`npm run images` で WebP に変える。
-  - `<ID>.webp`: 800px 四方、品質 72。表紙は 1.2 秒ほどしか出ないので軽さを優先（1040px・品質 78 と見比べて差はほぼなし）。
-    例: 2026-10-12 の絵は PNG 4.3MB → WebP 約 200KB
-  - `<ID>.thumb.webp`: 176px 四方（一覧の 88px の 2 倍）。品質 72
-  - 変換後、元の PNG・JPEG は消す（`--keep` で残す）。リポジトリには WebP だけを入れる。
-- 変換には sharp を使う（開発用の依存。公開のワークフローでは使わない）。
+- 絵はジャンル（テーマ）ごとに 1 枚。単語リストを作るときに、テーマファイルの `imagePrompt` から OpenAI の画像生成 API で作る。
 
-### 動物 `animals.json`
+```
+npm run theme-image -- --theme sangetsuki          # 絵を作り、WebP に変え、テーマファイルの image に名前を書く
+npm run theme-image -- --theme sangetsuki --force  # 作り直す
+```
 
-- 279語（哺乳類114、鳥68、虫43、海や水辺の生き物26、爬虫類20、両生類8）。魚は別テーマにするため入れない。
-- 答えは一般的なカタカナの呼び名。漢字表記（象、鶴など）は `note` に入れ、カギの手がかりにする。
-- 但し書き: 「動物の名前は、一般的なカタカナの呼び名で答えてください（例: 象 → ゾウ）」「魚は含みません」
-- 試行（30日分）: 毎回 19〜20語、汎用語は平均 0.3語。短い名前が多く、国名より組みやすい。
-
-### 山月記 `sangetsuki.json`
-
-- 中島敦「山月記」（1942年。著作権の保護期間は終了）から、人物・作者と関連作品・地名・官職・印象的な言葉・読みの難しい漢語など80語。
-- 答えは読みのカタカナ（例: 李徴 → リチョウ）。本文中でひらがなの語（さだめ）はそのまま。
-- `note` に作中のどこで、どんな意味で使われているかを書き、カギと解説は「メモにある内容だけを根拠にする」よう指示する
-  （文学作品は筋書きや引用の誤りが目立つため）。本文の引用に自信がないものは、メモに引用を書かない。
-- 但し書き: 「作中の言葉は、読みをカタカナで答えてください（例: 李徴 → リチョウ）」「本文は青空文庫などで読めます」
-- 試行（20日分）: 毎回 18〜20語、汎用語は平均 1.7語。
+  - モデルは `gpt-image-2`（環境変数 `OPENAI_IMAGE_MODEL` で変更可）、1024px 四方、品質 medium（`--quality` で変更可）。
+  - ストリーミングで受け取る（途中経過の画像が届く）。まとめて待つ方式ではプロキシ経由で 502 になった。
+  - 受け取った PNG（約 3MB）はファイルに保存せず、そのまま WebP に変える。GitHub に大きなファイルを入れないため。
+    - `<テーマID>.webp`: 800px 四方、品質 72（約 200KB）。表紙は 1.2 秒ほどしか出ないので軽さを優先
+    - `<テーマID>.thumb.webp`: 176px 四方（一覧の 88px の 2 倍。約 10KB）
+- 手で用意した絵を使うときは `data/images/<テーマID>.png` に置いて `npm run images`（WebP に変えて PNG を消す）。
+  `.gitignore` で `data/images/*.png` などは入らないようにしている。
+- パズルを作るときは絵を作らない（AI の仕事はカギ・解説・紹介文だけ）。
+- いまの絵: 国名 `countries.webp`・動物 `animals.webp`（手で用意したもの）、山月記 `sangetsuki.webp`（gpt-image-2 で生成）。

@@ -32,7 +32,7 @@ function fillCommon(html, { parts, site, current }) {
     .replaceAll('__SITE_NAME__', escapeHtml(site.name));
 }
 
-// image: site/images/ の中のファイル名（パズル専用の絵 → テーマの絵 → 方眼紙 の順に、呼び出し側で決める）
+// image: site/images/ の中のファイル名（ジャンルの絵。なければ方眼紙。呼び出し側で決める）
 // related: 同じテーマのほかの回（このパズルを除く）
 export function renderPuzzleHtml({ template, parts, puzzle, localeSource, site, image, related = [], isLatest = false }) {
   const description = puzzle.intro?.description ?? puzzle.description ?? '';
